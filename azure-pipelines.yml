@@ -16,6 +16,19 @@ pool:
 
 steps:
   - task: Gradle@2
+    displayName: Verify Code Formatting
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew'
+      gradleOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/TEST-*.xml'
+      tasks: 'verifyGoogleJavaFormat'
+  - task: Gradle@2
+    displayName: Gradle Check Task
     inputs:
       workingDirectory: ''
       gradleWrapperFile: 'gradlew'
