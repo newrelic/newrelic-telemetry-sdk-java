@@ -1,0 +1,28 @@
+slack_channel: java-agent-bots
+require_sidekick_approval: false
+config:
+  deploy_mechanism: none
+
+test_suites:
+  - name: Unit Tests
+    command: ./gradlew --refresh-dependencies verifyGoogleJavaFormat clean check
+    environment:
+      docker_image: java:8
+    reports:
+      junit: {}
+
+build:
+  environment:
+    docker_image: java:8
+    secret_env_vars:
+      - name: GRADLE_ARTIFACTORY_USERNAME
+        shared_path: artifactory
+        vault_name: ARTIFACTORY_USERNAME
+      - name: GRADLE_ARTIFACTORY_PASSWORD
+        shared_path: artifactory
+        vault_name: ARTIFACTORY_PASSWORD
+  build_artifact:
+    command: ./gradlew build
+  publish:
+    ### note: doesn't actually publish, since we're moving this build to jenkins
+    command: ./gradlew check
