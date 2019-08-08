@@ -57,3 +57,7 @@ easily applied via an included [gradle plugin](https://github.com/sherter/google
 
 Please be sure to run the formatter before committing any changes. There is a `pre-commit-hook.sh` which can 
 be applied automatically before commits by moving it into `.git/hooks/pre-commit`.
+
+
+### Contributing
+TODO
