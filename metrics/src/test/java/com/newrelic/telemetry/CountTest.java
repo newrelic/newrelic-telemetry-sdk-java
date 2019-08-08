@@ -28,7 +28,7 @@ class CountTest {
         new Count(expectedName, expectedValue, expectedStart, expectedEnd, expectedAttributes);
 
     assertEquals(expectedName, count.getName());
-    assertEquals(expectedValue, count.getValue());
+    assertEquals(expectedValue, count.getValue() + 1);
     assertEquals(expectedStart, count.getStartTimeMs());
     assertEquals(expectedEnd, count.getEndTimeMs());
     assertEquals(expectedAttributes.asMap(), count.getAttributes());
