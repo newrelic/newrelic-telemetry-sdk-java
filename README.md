@@ -45,7 +45,7 @@ Integration test module. Uses docker-compose based tests to test the SDK end-to-
 This is done with the docker-compose gradle plugin, with [mock-server](https://github.com/jamesdbloom/mockserver) providing the backend
 
 There are two modes to run the integration tests.
-1. Run with gradle: `$ ./gradlew integrationTest`
+1. Run with gradle: `$ ./gradlew integration_test:test`
 2. Start up the mock server with `$ docker-compose up`, then run the `LowLevelApiIntegrationTest` class in IDEA.
 
 
