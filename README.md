@@ -1,5 +1,5 @@
-# Java Telemetry SDK
-The Java Telemetry SDK for writing data to New Relic.
+# New Relic Java Telemetry SDK
+The New Relic Java Telemetry SDK for sending dimensional metrics to New Relic.
 
 ### Module structure:
 
