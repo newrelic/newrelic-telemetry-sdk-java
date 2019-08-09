@@ -27,7 +27,7 @@ steps:
 - script: |
     echo Getting some info
     pwd
-    echo $USER_HOME
+    ls ~/
     echo $(secring.secureFilePath)
     mkdir .gradle
     cp $(gradleprops.secureFilePath) .gradle/
@@ -37,7 +37,8 @@ steps:
   inputs:
     workingDirectory: ''
     gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m -Psigning.secretKeyRingFile=$(secring.secureFilePath)'
+    gradleOptions: '-Xmx3072m'
+    options: "-Psigning.secretKeyRingFile=$(secring.secureFilePath)"
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
