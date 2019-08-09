@@ -1,7 +1,4 @@
-# Gradle
-# Build your Java project and run tests with Gradle using a Gradle wrapper script.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+# Azure Pipeline that publishes to maven central on every master merge.
 name: Upload to Maven Central Sonatype
 trigger:
 - master
@@ -22,25 +19,20 @@ steps:
   inputs:
     secureFile: 'gradle.properties'
 
-#      echo Putting the secring file into the gpg directory
-#      sudo cp ~/.gpg $(caCertificate.secureFilePath)
 - script: |
-    echo Getting some info
-    pwd
-    echo $(gradleprops.secureFilePath)
-    echo Making .gradle directory
+    echo Setting up secure things...
+    echo Making .gradle directory...
     mkdir ~/.gradle
-    echo Moving gradle.properties into it
+    echo Done!
+    echo Moving gradle.properties into it...
     cp $(gradleprops.secureFilePath) ~/.gradle/
-    ls -al ~/
-    ls -al ~/.gradle/
+    echo Done!
 
 
 - task: Gradle@2
   inputs:
     workingDirectory: ''
     gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
     options: "-Psigning.secretKeyRingFile=$(secring.secureFilePath)"
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
