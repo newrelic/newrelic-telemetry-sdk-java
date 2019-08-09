@@ -27,11 +27,11 @@ steps:
 - script: |
     echo Getting some info
     pwd
-    echo $(gradleprops)
+    echo $(gradleprops.secureFilePath)
     echo Making .gradle directory
-    mkdir .gradle
+    mkdir ~/.gradle
     echo Moving gradle.properties into it
-    cp $(gradleprops.secureFilePath) .gradle/
+    cp $(gradleprops.secureFilePath) ~/.gradle/
     ls -al ~/
     ls -al ~/.gradle/
 
