@@ -2,6 +2,7 @@
 name: Upload to Maven Central Sonatype
 trigger:
 - master
+pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
