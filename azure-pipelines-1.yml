@@ -16,6 +16,12 @@ steps:
   inputs:
     secureFile: 'secring.gpg'
 
+- task: DownloadSecureFile@1
+  name: gradleprops
+  displayName: 'Download gradle.properties'
+  inputs:
+    secureFile: 'gradle.properties'
+
 #      echo Putting the secring file into the gpg directory
 #      sudo cp ~/.gpg $(caCertificate.secureFilePath)
 - script: |
@@ -24,13 +30,14 @@ steps:
     echo $USER_HOME
     echo $(secring.secureFilePath)
     mkdir .gradle
+    cp $(gradleprops.secureFilePath) .gradle/
 
 
 - task: Gradle@2
   inputs:
     workingDirectory: ''
     gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m -Psigning.secretKeyRingFile=${secring.secureFilePath}'
+    gradleOptions: '-Xmx3072m -Psigning.secretKeyRingFile=$(secring.secureFilePath)'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
