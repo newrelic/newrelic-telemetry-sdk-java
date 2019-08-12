@@ -22,9 +22,9 @@ consider "best practice" implementations of how to interact with the lower-level
 #### `telemetry_components`
 This is additional components that are useful for using the SDK. It contains reference implementations for
 required components, implemented using standard open source libraries. 
-The `telemetry_components` library is published under the maven coordinates:
+The `telemetry-components` library is published under the maven coordinates:
 
-`com.newrelic.telemetry:telemetry_components`
+`com.newrelic.telemetry:telemetry-components`
 
 #### `metrics_examples`
 Example code for using the metrics API.
