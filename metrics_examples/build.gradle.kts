@@ -12,7 +12,7 @@ apply(plugin = "java-library")
 
 dependencies {
     implementation(project(":metrics"))
-    implementation(project(":telemetry_components"))
+    implementation(project(":telemetry-components"))
     runtimeOnly("org.slf4j:slf4j-jdk14:${Versions.slf4j}")
 }
 
