@@ -1,11 +1,11 @@
 /*
- * ---------------------------------------------------------------------------------------------
- *  Copyright (c) 2019 New Relic Corporation. All rights reserved.
- *  Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
  * --------------------------------------------------------------------------------------------
+ *   Copyright (c) 2019 New Relic Corporation. All rights reserved.
+ *   Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
+ *  --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry.boundaries;
+package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Count;
@@ -20,16 +20,30 @@ import java.net.URI;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
+/**
+ * The purpose of this example is demonstrate some of the boundaries of the New Relic Metric API,
+ * and exercise those boundaries. When metrics are invalid, for whatever reason, a
+ * "NrIntegrationError" custom event will be created in your account in Insights with your API Key
+ * and the requestId as custom attributes.
+ *
+ * <p>The exact response of the Metric API is not guaranteed for any of these edge cases. They are
+ * just provided as example of things that might cause issues.
+ *
+ * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
+ * endpoint, and the 2nd is the Insights Insert key.
+ */
 public class BoundaryExample {
   private static final Logger logger = Logger.getLogger(BoundaryExample.class.getName());
 
   public static void main(String[] args) throws MalformedURLException {
-    MetricBatchSender sender =
-        SimpleMetricBatchSender.builder(args[0])
-            .uriOverride(URI.create("https://staging-metric-api.newrelic.com"))
-            .build();
+    URI metricApiEndpoint = URI.create(args[0]);
+    String insightsInsertKey = args[1];
 
-    MetricBuffer metricBuffer = new MetricBuffer(new Attributes());
+    MetricBatchSender sender =
+        SimpleMetricBatchSender.builder(insightsInsertKey).uriOverride(metricApiEndpoint).build();
+
+    MetricBuffer metricBuffer =
+        new MetricBuffer(new Attributes().put("exampleName", "BoundaryExample"));
     metricBuffer.addMetric(getWithLongMetricName());
     metricBuffer.addMetric(getWithManyAttributes());
     metricBuffer.addMetric(getWithBigIntegerAttribute());
@@ -45,6 +59,7 @@ public class BoundaryExample {
     }
   }
 
+  /** At publication time, this did not cause errors in ingest. */
   private static Count getWithBasicMultilingualUnicodeMetricName() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithBasicMultilingualUnicodeMetricName");
@@ -53,6 +68,7 @@ public class BoundaryExample {
         "我是一个指标", 1.0, System.currentTimeMillis(), System.currentTimeMillis(), attribs);
   }
 
+  /** At publication time, this did not cause errors in ingest. */
   private static Count getWithLongMetricName() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithLongMetricName");
@@ -65,6 +81,7 @@ public class BoundaryExample {
         attribs);
   }
 
+  /** At publication time, this did not cause errors in ingest. */
   private static Count getWithManyAttributes() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithManyAttributes");
@@ -76,6 +93,7 @@ public class BoundaryExample {
         "attributeOverload", 1.0, System.currentTimeMillis(), System.currentTimeMillis(), attribs);
   }
 
+  /** At publication time, this metric failed to be ingested and caused an NrIntegrationError */
   private static Count getWithBigIntegerAttribute() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithBigIntegerAttribute");
@@ -89,6 +107,10 @@ public class BoundaryExample {
         attribs);
   }
 
+  /**
+   * At publication time, this did cause an NrIntegration. However, the metric did make it into the
+   * system, but the superBig attribute got dropped.
+   */
   private static Count getWithBigDecimalAttributes() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithBigDecimalAttributes");
@@ -103,6 +125,10 @@ public class BoundaryExample {
         attribs);
   }
 
+  /**
+   * At publication time, this did not cause errors in ingest. YMMV with whether the emoji will be
+   * viewable in the NR UI.
+   */
   private static Count getWithEmojiMetricName() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithEmojiMetricName");

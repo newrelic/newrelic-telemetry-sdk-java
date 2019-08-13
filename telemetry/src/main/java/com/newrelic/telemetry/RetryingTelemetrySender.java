@@ -88,4 +88,9 @@ public class RetryingTelemetrySender {
   private void scheduleBatchSend(MetricBatch batch, int waitTime, TimeUnit timeUnit) {
     executor.schedule(() -> sendBatch(batch, waitTime, timeUnit), waitTime, timeUnit);
   }
+
+  /** Cleanly shuts down the background Executor thread. */
+  public void shutdown() {
+    executor.shutdown();
+  }
 }

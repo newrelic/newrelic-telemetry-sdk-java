@@ -27,7 +27,7 @@ The `telemetry-components` library is published under the maven coordinates:
 `com.newrelic.telemetry:telemetry-components`
 
 #### `metrics_examples`
-Example code for using the metrics API.
+Example code for using the metrics and telemetry APIs.
 
 #### `integration_test`
 Integration test module. Uses docker-compose based tests to test the SDK end-to-end.

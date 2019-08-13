@@ -1,7 +1,6 @@
 include ':telemetry'
 include ':telemetry_examples'
 include ':metrics'
-include ':metrics_examples'
 include ':integration_test'
 include 'telemetry-components'
 
