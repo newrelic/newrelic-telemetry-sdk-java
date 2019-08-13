@@ -27,5 +27,5 @@ and how you can see what happens when things go wrong.
 
 #### [RetryingExample.java](src/main/java/com/newrelic/telemetry/examples/RetryingExample.java)
 
-This is an example of how to use the provided RetryingTelemetrySender to handle
+This is an example of how to use the provided `com.newrelic.telemetry.RetryingTelemetrySender` to handle
 errors in the recommended way.
