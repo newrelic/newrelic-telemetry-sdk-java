@@ -6,14 +6,14 @@ Why is this cool?
 
 Dimensional Metrics in New Relic! No agent required. Instrument to your heart's content!
 
-Most recently published version : 0.2.0
+For the most recently published version, see [Releases](https://github.com/newrelic/newrelic-telemetry-sdk-java/releases)
 
 ### Getting Started: Requirements
 
 * Java 8 or greater
 * For IDEA:
     * lombok plugin installed
-    * annotation processing enabled for the project
+    * Annotation processing enabled for the project (Sample instructions can be found [here](https://immutables.github.io/apt.html) for popular IDEs)
 * Docker & docker-compose must be installed for integration testing
 
 ### Sample code
@@ -36,8 +36,8 @@ End-to-end integration tests are included.
 They are implemented with the testcontainers library; [mock-server](https://github.com/jamesdbloom/mockserver) provides the backend.
 
 There are two modes to run the integration tests.
-1. Run with gradle: `$ ./gradlew integration_test:test`
-2. Run the `LowLevelApiIntegrationTest` class in IDEA.
+* Run with gradle: `$ ./gradlew integration_test:test`
+* Run the `LowLevelApiIntegrationTest` class in IDEA.
 
 ### Code style
 This project uses the [google-java-format](https://github.com/google/google-java-format) code style, and it is 
