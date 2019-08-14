@@ -25,7 +25,7 @@ This is an example of how to write Count metrics to New Relic using the SDK.
 This is an example of pushing the boundaries of what is accepted by the New Relic APIs,
 and how you can see what happens when things go wrong.
 
-#### [RetryingExample.java](src/main/java/com/newrelic/telemetry/examples/RetryingExample.java)
+#### [TelemetryClientExample.java](src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 
 This is an example of how to use the provided `com.newrelic.telemetry.RetryingTelemetrySender` to handle
 errors in the recommended way.

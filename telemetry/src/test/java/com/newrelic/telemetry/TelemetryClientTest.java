@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
-class RetryingTelemetrySenderTest {
+class TelemetryClientTest {
 
   private MetricBatch batch;
 
@@ -45,9 +45,9 @@ class RetryingTelemetrySenderTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(batch)).thenAnswer(countDown(sendLatch));
 
-    RetryingTelemetrySender testClass = new RetryingTelemetrySender(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -64,9 +64,9 @@ class RetryingTelemetrySenderTest {
             })
         .thenAnswer(countDown(sendLatch));
 
-    RetryingTelemetrySender testClass = new RetryingTelemetrySender(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -82,9 +82,9 @@ class RetryingTelemetrySenderTest {
             })
         .thenAnswer(countDown(sendLatch));
 
-    RetryingTelemetrySender testClass = new RetryingTelemetrySender(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -106,9 +106,9 @@ class RetryingTelemetrySenderTest {
     when(batchSender.sendBatch(splitBatch.get(0))).thenAnswer(countDown(sendLatch));
     when(batchSender.sendBatch(splitBatch.get(1))).thenAnswer(countDown(sendLatch));
 
-    RetryingTelemetrySender testClass = new RetryingTelemetrySender(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }

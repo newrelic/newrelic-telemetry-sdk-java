@@ -13,9 +13,9 @@ import com.newrelic.telemetry.Gauge;
 import com.newrelic.telemetry.MetricBatch;
 import com.newrelic.telemetry.MetricBatchSender;
 import com.newrelic.telemetry.MetricBuffer;
-import com.newrelic.telemetry.RetryingTelemetrySender;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.Summary;
+import com.newrelic.telemetry.TelemetryClient;
 import java.net.InetAddress;
 import java.net.URI;
 import java.time.Duration;
@@ -29,18 +29,18 @@ import java.time.temporal.ChronoUnit;
  * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
  * endpoint, and the 2nd is the Insights Insert key.
  */
-public class RetryingExample {
+public class TelemetryClientExample {
 
   public static void main(String[] args) throws Exception {
     URI metricApiEndpoint = URI.create(args[0]);
     String insightsInsertKey = args[1];
 
-    MetricBatchSender ss =
+    MetricBatchSender batchSender =
         SimpleMetricBatchSender.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
             .uriOverride(metricApiEndpoint)
             .build();
 
-    RetryingTelemetrySender sender = new RetryingTelemetrySender(ss);
+    TelemetryClient sender = new TelemetryClient(batchSender);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "RetryingExample");
     commonAttributes.put("host", InetAddress.getLocalHost().getHostName());
@@ -74,7 +74,7 @@ public class RetryingExample {
     // The retrying sender uses the recommended techniques for responding to errors from the
     // New Relic APIs. It uses a background thread to schedule the sending, handling retries
     // transparently.
-    sender.send(batch);
+    sender.sendBatch(batch);
 
     // make sure to shutdown the sender, else the background Executor will stop the program from
     // exiting.

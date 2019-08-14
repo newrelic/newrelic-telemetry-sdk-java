@@ -22,24 +22,34 @@ import org.slf4j.LoggerFactory;
  * This class should be the go-to spot for sending telemetry to New Relic. It includes the canonical
  * implementation of retry-logic that we recommend being used when interacting with the ingest APIs.
  *
- * <p>Note: This class creates a single threaded scheduled executor on which all sending happens.
+ * <p>Note: This class creates a single threaded scheduled executor on which all sending happens. Be
+ * sure to call {@link #shutdown()} if you don't want this background thread to keep the VM from
+ * exiting.
  */
-public class RetryingTelemetrySender {
+public class TelemetryClient {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RetryingTelemetrySender.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
 
   private final MetricBatchSender sender;
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-  public RetryingTelemetrySender(MetricBatchSender sender) {
+  public TelemetryClient(MetricBatchSender sender) {
     this.sender = sender;
   }
 
-  public void send(MetricBatch batch) {
+  /**
+   * Send a batch, with standard retry logic. This happens on a background thread, asynchronously,
+   * so currently there will be no feedback to the caller outside of the logs.
+   */
+  public void sendBatch(MetricBatch batch) {
     scheduleBatchSend(batch, 0, TimeUnit.SECONDS);
   }
 
-  private void sendBatch(MetricBatch batch, int preWaitTime, TimeUnit timeUnit) {
+  private void scheduleBatchSend(MetricBatch batch, int waitTime, TimeUnit timeUnit) {
+    executor.schedule(() -> sendWithErrorHandling(batch, waitTime, timeUnit), waitTime, timeUnit);
+  }
+
+  private void sendWithErrorHandling(MetricBatch batch, int preWaitTime, TimeUnit timeUnit) {
     try {
       sender.sendBatch(batch);
       LOG.debug("Metric batch sent");
@@ -83,10 +93,6 @@ public class RetryingTelemetrySender {
     }
     LOG.info("Metric batch sending failed. Backing off {} {}", newWaitTime, timeUnit);
     scheduleBatchSend(batch, newWaitTime, timeUnit);
-  }
-
-  private void scheduleBatchSend(MetricBatch batch, int waitTime, TimeUnit timeUnit) {
-    executor.schedule(() -> sendBatch(batch, waitTime, timeUnit), waitTime, timeUnit);
   }
 
   /** Cleanly shuts down the background Executor thread. */
