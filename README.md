@@ -16,6 +16,10 @@ Most recently published version : 0.2.0
     * annotation processing enabled for the project
 * Docker & docker-compose must be installed for integration testing
 
+### Sample code
+
+Fully runnable examples of how to use the SDK are found in the [telemetry_examples](telemetry_examples) module.
+
 ### Building
 CI builds are run on Azure Pipelines: 
 [![Build Status](https://dev.azure.com/newrelic-builds/java/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/newrelic-builds/java/_build/latest?definitionId=8&branchName=master)
