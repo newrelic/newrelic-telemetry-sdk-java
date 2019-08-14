@@ -15,7 +15,7 @@ Dimensional Metrics in New Relic! No agent required. Instrument to your heart's 
 * Docker & docker-compose must be installed for integration testing
 
 ### Building
-Automated builds are run on Azure Pipelines: 
+CI builds are run on Azure Pipelines: 
 [![Build Status](https://dev.azure.com/newrelic-builds/java/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/newrelic-builds/java/_build/latest?definitionId=8&branchName=master)
 
 The project uses gradle 5 for building, and the gradle wrapper is provided.
@@ -31,7 +31,7 @@ They are implemented with the testcontainers library; [mock-server](https://gith
 
 There are two modes to run the integration tests.
 1. Run with gradle: `$ ./gradlew integration_test:test`
-2. Start up the mock server with `$ docker-compose up`, then run the `LowLevelApiIntegrationTest` class in IDEA.
+2. Run the `LowLevelApiIntegrationTest` class in IDEA.
 
 ### Code style
 This project uses the [google-java-format](https://github.com/google/google-java-format) code style, and it is 
@@ -59,6 +59,11 @@ for more information.
 #### `telemetry`
 This module contains code for using all New Relic telemetry modules, gathered in one place, as well as what we 
 consider "best practice" implementations of how to interact with the lower-level modules.
+
+The `telemetry` library is published under the maven coordinates:
+
+`com.newrelic.telemetry:telemetry`
+
 
 #### `telemetry_components`
 This is additional components that are useful for using the SDK. It contains reference implementations for
