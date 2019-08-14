@@ -6,6 +6,8 @@ Why is this cool?
 
 Dimensional Metrics in New Relic! No agent required. Instrument to your heart's content!
 
+Most recently published version : 0.2.0
+
 ### Getting Started: Requirements
 
 * Java 8 or greater

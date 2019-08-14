@@ -5,4 +5,8 @@ This module contains reference implementations of the required interfaces for th
 
 In addition, it has a builder shim that uses these called `SimpleMetricBatchSender`
 
-TODO: samples of using these things.
+See the `telemetry-examples` module for sample usage.
+
+This library can be consumed via the following maven coordinates:
+
+`com.newrelic.telemetry:telemetry-components`
