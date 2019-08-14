@@ -23,18 +23,24 @@ import org.slf4j.LoggerFactory;
  * implementation of retry-logic that we recommend being used when interacting with the ingest APIs.
  *
  * <p>Note: This class creates a single threaded scheduled executor on which all sending happens.
+ * Be sure to call {@link #shutdown()} if you don't want this background thread to keep
+ * the VM from exiting.
  */
-public class RetryingTelemetrySender {
+public class TelemetryClient {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RetryingTelemetrySender.class);
+  private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
 
   private final MetricBatchSender sender;
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-  public RetryingTelemetrySender(MetricBatchSender sender) {
+  public TelemetryClient(MetricBatchSender sender) {
     this.sender = sender;
   }
 
+  /**
+   * Send a batch, with standard retry logic. This happens on a background thread, asynchronously,
+   * so currently there will be no feedback to the caller outside of the logs.
+   */
   public void send(MetricBatch batch) {
     scheduleBatchSend(batch, 0, TimeUnit.SECONDS);
   }
