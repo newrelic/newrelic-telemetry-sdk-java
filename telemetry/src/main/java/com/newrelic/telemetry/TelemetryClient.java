@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
  * This class should be the go-to spot for sending telemetry to New Relic. It includes the canonical
  * implementation of retry-logic that we recommend being used when interacting with the ingest APIs.
  *
- * <p>Note: This class creates a single threaded scheduled executor on which all sending happens.
- * Be sure to call {@link #shutdown()} if you don't want this background thread to keep
- * the VM from exiting.
+ * <p>Note: This class creates a single threaded scheduled executor on which all sending happens. Be
+ * sure to call {@link #shutdown()} if you don't want this background thread to keep the VM from
+ * exiting.
  */
 public class TelemetryClient {
 
