@@ -41,11 +41,15 @@ public class TelemetryClient {
    * Send a batch, with standard retry logic. This happens on a background thread, asynchronously,
    * so currently there will be no feedback to the caller outside of the logs.
    */
-  public void send(MetricBatch batch) {
+  public void sendBatch(MetricBatch batch) {
     scheduleBatchSend(batch, 0, TimeUnit.SECONDS);
   }
 
-  private void sendBatch(MetricBatch batch, int preWaitTime, TimeUnit timeUnit) {
+  private void scheduleBatchSend(MetricBatch batch, int waitTime, TimeUnit timeUnit) {
+    executor.schedule(() -> sendWithErrorHandling(batch, waitTime, timeUnit), waitTime, timeUnit);
+  }
+
+  private void sendWithErrorHandling(MetricBatch batch, int preWaitTime, TimeUnit timeUnit) {
     try {
       sender.sendBatch(batch);
       LOG.debug("Metric batch sent");
@@ -89,10 +93,6 @@ public class TelemetryClient {
     }
     LOG.info("Metric batch sending failed. Backing off {} {}", newWaitTime, timeUnit);
     scheduleBatchSend(batch, newWaitTime, timeUnit);
-  }
-
-  private void scheduleBatchSend(MetricBatch batch, int waitTime, TimeUnit timeUnit) {
-    executor.schedule(() -> sendBatch(batch, waitTime, timeUnit), waitTime, timeUnit);
   }
 
   /** Cleanly shuts down the background Executor thread. */

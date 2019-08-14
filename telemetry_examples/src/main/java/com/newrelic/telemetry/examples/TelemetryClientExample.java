@@ -74,7 +74,7 @@ public class TelemetryClientExample {
     // The retrying sender uses the recommended techniques for responding to errors from the
     // New Relic APIs. It uses a background thread to schedule the sending, handling retries
     // transparently.
-    sender.send(batch);
+    sender.sendBatch(batch);
 
     // make sure to shutdown the sender, else the background Executor will stop the program from
     // exiting.

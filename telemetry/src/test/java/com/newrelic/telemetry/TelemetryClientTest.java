@@ -47,7 +47,7 @@ class TelemetryClientTest {
 
     TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -66,7 +66,7 @@ class TelemetryClientTest {
 
     TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -84,7 +84,7 @@ class TelemetryClientTest {
 
     TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -108,7 +108,7 @@ class TelemetryClientTest {
 
     TelemetryClient testClass = new TelemetryClient(batchSender);
 
-    testClass.send(batch);
+    testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
