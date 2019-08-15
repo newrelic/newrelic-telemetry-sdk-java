@@ -12,7 +12,6 @@ import com.newrelic.telemetry.Count;
 import com.newrelic.telemetry.MetricBatchSender;
 import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,11 +37,9 @@ public class CountExample {
   private static final List<String> items = Arrays.asList("apples", "oranges", "beer", "wine");
 
   public static void main(String[] args) throws Exception {
-    URI metricApiEndpoint = URI.create(args[0]);
-    String insightsInsertKey = args[1];
+    String insightsInsertKey = args[0];
 
-    MetricBatchSender sender =
-        SimpleMetricBatchSender.builder(insightsInsertKey).uriOverride(metricApiEndpoint).build();
+    MetricBatchSender sender = SimpleMetricBatchSender.builder(insightsInsertKey).build();
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
     for (int i = 0; i < 10; i++) {

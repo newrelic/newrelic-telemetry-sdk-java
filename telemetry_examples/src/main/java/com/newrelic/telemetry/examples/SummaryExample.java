@@ -12,7 +12,6 @@ import com.newrelic.telemetry.MetricBatchSender;
 import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.Summary;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,8 +25,7 @@ import java.util.concurrent.TimeUnit;
  * <p>Additionally, this provides an example of using a {@code com.newrelic.telemetry.MetricBuffer}
  * to hold on to metrics and send them as a batch.
  *
- * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest *
- * endpoint, and the 2nd is the Insights Insert key.
+ * <p>To run this example, provide a command line argument for your Insights Insert key.
  */
 public class SummaryExample {
 
@@ -37,11 +35,9 @@ public class SummaryExample {
       Arrays.asList("/posts (GET)", "/comments (GET)", "/users (GET)");
 
   public static void main(String[] args) throws Exception {
-    URI metricApiEndpoint = URI.create(args[0]);
-    String insightsInsertKey = args[1];
+    String insightsInsertKey = args[0];
 
-    MetricBatchSender sender =
-        SimpleMetricBatchSender.builder(insightsInsertKey).uriOverride(metricApiEndpoint).build();
+    MetricBatchSender sender = SimpleMetricBatchSender.builder(insightsInsertKey).build();
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
     for (int i = 0; i < 10; i++) {

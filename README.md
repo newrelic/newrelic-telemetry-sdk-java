@@ -55,10 +55,7 @@ This is the core module for sending dimensional metrics to New Relic. The librar
 
 `com.newrelic.telemetry:metrics`
 
-Note: in order to use these APIs, you will need to get access to the API endpoint. 
-Please contact `open-instrumentation@newrelic.com` to request access.
-
-You will also need an Insights Insert API Key. 
+In order to send metrics to New Relic, you will also need an Insights Insert API Key. 
 Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
 for more information.
 

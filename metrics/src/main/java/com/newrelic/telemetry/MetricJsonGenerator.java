@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * If you wish to provide your own json implementation, an implementation of this interface must be
  * provided. All of the methods must return valid JSON with properly escaped strings.
  *
- * <p>TODO: add links to external documentation of the json format.
+ * <p>TODO: add links to external documentation of the json format and APIs.
  */
 public interface MetricJsonGenerator {
   Logger logger = LoggerFactory.getLogger(MetricJsonGenerator.class);

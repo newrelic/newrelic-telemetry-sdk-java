@@ -98,6 +98,12 @@ public class MetricBatchSender {
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
       this.jsonGenerator = jsonGenerator;
+
+      try {
+        metricsUrl = constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+      } catch (MalformedURLException e) {
+        throw new IllegalStateException(e);
+      }
     }
 
     /**

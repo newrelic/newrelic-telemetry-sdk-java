@@ -13,10 +13,9 @@ import com.newrelic.telemetry.MetricBatchSender;
 import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.exceptions.ResponseException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
@@ -29,18 +28,15 @@ import java.util.stream.IntStream;
  * <p>The exact response of the Metric API is not guaranteed for any of these edge cases. They are
  * just provided as example of things that might cause issues.
  *
- * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
- * endpoint, and the 2nd is the Insights Insert key.
+ * <p>To run this example, provide a command line argument for your Insights Insert key.
  */
 public class BoundaryExample {
   private static final Logger logger = Logger.getLogger(BoundaryExample.class.getName());
 
-  public static void main(String[] args) throws MalformedURLException {
-    URI metricApiEndpoint = URI.create(args[0]);
-    String insightsInsertKey = args[1];
+  public static void main(String[] args) throws ResponseException {
+    String insightsInsertKey = args[0];
 
-    MetricBatchSender sender =
-        SimpleMetricBatchSender.builder(insightsInsertKey).uriOverride(metricApiEndpoint).build();
+    MetricBatchSender sender = SimpleMetricBatchSender.builder(insightsInsertKey).build();
 
     MetricBuffer metricBuffer =
         new MetricBuffer(new Attributes().put("exampleName", "BoundaryExample"));
@@ -51,12 +47,8 @@ public class BoundaryExample {
     metricBuffer.addMetric(getWithEmojiMetricName());
     metricBuffer.addMetric(getWithBasicMultilingualUnicodeMetricName());
 
-    try {
-      Response response = sender.sendBatch(metricBuffer.createBatch());
-      logger.info(response.getBody());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    Response response = sender.sendBatch(metricBuffer.createBatch());
+    logger.info(response.getBody());
   }
 
   /** At publication time, this did not cause errors in ingest. */
@@ -81,7 +73,7 @@ public class BoundaryExample {
         attribs);
   }
 
-  /** At publication time, this did not cause errors in ingest. */
+  /** At publication time, this metric failed to be ingested and caused an NrIntegrationError. */
   private static Count getWithManyAttributes() {
     Attributes attribs = new Attributes();
     attribs.put("finder", "getWithManyAttributes");
