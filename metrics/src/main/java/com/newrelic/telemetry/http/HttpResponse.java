@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.Value;
 
-/** TODO: javadoc me */
+/** The response from the backend APIs. */
 @Value
 public class HttpResponse {
   String body;

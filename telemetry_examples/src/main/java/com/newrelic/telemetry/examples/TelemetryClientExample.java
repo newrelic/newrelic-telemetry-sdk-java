@@ -17,7 +17,6 @@ import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.Summary;
 import com.newrelic.telemetry.TelemetryClient;
 import java.net.InetAddress;
-import java.net.URI;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
@@ -26,23 +25,20 @@ import java.time.temporal.ChronoUnit;
  *
  * <p>It also demonstrates that a single MetricBatch can contain metrics of different types.
  *
- * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
- * endpoint, and the 2nd is the Insights Insert key.
+ * <p>To run this example, provide a command line argument for your Insights Insert key.
  */
 public class TelemetryClientExample {
 
   public static void main(String[] args) throws Exception {
-    URI metricApiEndpoint = URI.create(args[0]);
-    String insightsInsertKey = args[1];
+    String insightsInsertKey = args[0];
 
     MetricBatchSender batchSender =
         SimpleMetricBatchSender.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
-            .uriOverride(metricApiEndpoint)
             .build();
 
     TelemetryClient sender = new TelemetryClient(batchSender);
 
-    Attributes commonAttributes = new Attributes().put("exampleName", "RetryingExample");
+    Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host", InetAddress.getLocalHost().getHostName());
     commonAttributes.put("appName", "testApplication");
     commonAttributes.put("environment", "staging");

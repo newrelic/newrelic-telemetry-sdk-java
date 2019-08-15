@@ -54,9 +54,13 @@ The Telemetry SDK comes with tests in:.
 
 `integration_test`
 `metrics/src/test`
+`telemetry/src/test`
 `telemetry_components/src/test`
 
-TODO update this section to accurately reflect expected testing guidelines.
+You can run all of these tests, and verify that your code is formatted correctly by running
+
+`./gradlew check`
 
 ## License
-By contributing to Telemetry SDK, you agree that your contributions will be licensed under the [License file](LICENSE) in the root directory of this source tree.
+By contributing to the Java Telemetry SDK, you agree that your contributions will be licensed under the [License file](LICENSE) 
+in the root directory of this source tree.

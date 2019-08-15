@@ -17,6 +17,7 @@ import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.util.Utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -98,6 +99,12 @@ public class MetricBatchSender {
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
       this.jsonGenerator = jsonGenerator;
+
+      try {
+        metricsUrl = constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+      } catch (MalformedURLException e) {
+        throw new UncheckedIOException("Bad hardcoded URL", e);
+      }
     }
 
     /**
