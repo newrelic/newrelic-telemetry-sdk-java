@@ -8,10 +8,17 @@ private object Versions {
 
 plugins {
     java
+    `maven-publish`
+    maven
+}
+
+repositories {
+    jcenter()
 }
 
 apply(plugin = "java")
 apply(plugin = "java-library")
+//apply(plugin = "maven-publish")
 
 dependencies {
     "api"(project(":metrics"))
@@ -40,6 +47,68 @@ tasks {
         add("archives", sourcesJar)
         add("archives", javadocJar)
     }
+
+    // TODO prefer the lazy string invoke once https://github.com/gradle/gradle-native/issues/718 is fixed
+    getByName<Upload>("uploadArchives") {
+
+        repositories {
+
+            withConvention(MavenRepositoryHandlerConvention::class) {
+
+                mavenDeployer {
+
+                    withGroovyBuilder {
+                        "repository"("url" to uri("$buildDir/repo"))
+                        "snapshotRepository"("url" to uri("$buildDir/repo"))
+                    }
+
+                    pom.project {
+                        withGroovyBuilder {
+                            "licenses" {
+                                "license" {
+                                    "name"("The Apache Software License, Version 2.0")
+                                    "url"("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                                    "distribution"("repo")
+                                }
+                            }
+                            "description"("This module contains reference implementations of the required interfaces for the SDK to function.")
+                            "name"(project.name)
+                            "url"("https://github.com/newrelic/newrelic-telemetry-sdk-java")
+                            "scm" {
+                                "url"("git@github.com:newrelic/newrelic-telemetry-sdk-java.git")
+                                "connection"("scm:git:git@github.com:newrelic/newrelic-telemetry-sdk-java.git")
+                            }
+                            "developers" {
+                                "developer" {
+                                    "id"("newrelic")
+                                    "name"("New Relic")
+                                    "email"("opensource@newrelic.com")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = uri("$buildDir/repo")
+            mavenLocal {
+
+            }
+        }
+    }
+    publications {
+        register("mavenJava", MavenPublication::class) {
+            from(components["java"])
+            artifact(tasks["sourcesJar"])
+        }
+    }
+}
 
