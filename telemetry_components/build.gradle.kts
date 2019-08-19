@@ -1,4 +1,3 @@
-import com.newrelic.telemetry.gradle.standardPublishBoilerplate
 
 private object Versions {
     const val gson = "2.8.5"
@@ -11,8 +10,8 @@ plugins {
     java
 }
 
+apply(plugin = "java")
 apply(plugin = "java-library")
-apply(plugin = "com.bmuschko.nexus")
 
 dependencies {
     "api"(project(":metrics"))
@@ -24,4 +23,23 @@ dependencies {
     testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
 }
 
-standardPublishBoilerplate()
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+
+    val javadocJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+
+    artifacts {
+        add("archives", sourcesJar)
+        add("archives", javadocJar)
+    }
+}
+
+

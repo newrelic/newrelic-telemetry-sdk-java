@@ -1,5 +1,3 @@
-import com.newrelic.telemetry.gradle.standardPublishBoilerplate
-
 private object Versions {
     const val lombok = "1.18.6"
     const val junit = "5.3.1"
@@ -13,7 +11,6 @@ plugins {
 }
 
 apply(plugin = "java-library")
-apply(plugin = "com.bmuschko.nexus")
 
 dependencies {
     "api"("org.slf4j:slf4j-api:${Versions.slf4j}")
@@ -29,4 +26,22 @@ dependencies {
     testImplementation("com.google.guava:guava:${Versions.guava}")
 }
 
-standardPublishBoilerplate()
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+
+    val javadocJar by creating(Jar::class) {
+        dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+
+    artifacts {
+        add("archives", sourcesJar)
+        add("archives", javadocJar)
+    }
+}
+
