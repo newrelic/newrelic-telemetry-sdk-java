@@ -9,6 +9,7 @@ plugins {
     java
     `maven-publish`
     maven
+    signing
 }
 
 repositories {
@@ -17,7 +18,7 @@ repositories {
 
 apply(plugin = "java")
 apply(plugin = "java-library")
-//apply(plugin = "maven-publish")
+//apply(plugin = "signing")
 
 dependencies {
     "api"(project(":metrics"))
@@ -69,6 +70,9 @@ tasks {
                             "snapshotRepository"("url" to "https://oss.sonatype.org/content/repositories/snapshots/")
                         }
                     }
+                    if (project.properties["useLocalSonatype"] != "true") {
+                        beforeDeployment { signing.signPom(this) }
+                    }
 
                     pom.project {
                         withGroovyBuilder {
@@ -99,5 +103,4 @@ tasks {
             }
         }
     }
-
 }

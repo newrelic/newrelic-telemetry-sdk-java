@@ -19,23 +19,3 @@ dependencies {
     testImplementation("org.mockito:mockito-core:${Versions.mockito}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
 }
-
-tasks {
-    val sourcesJar by creating(Jar::class) {
-        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
-        archiveClassifier.set("sources")
-        from(sourceSets.main.get().allSource)
-    }
-
-    val javadocJar by creating(Jar::class) {
-        dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
-        archiveClassifier.set("javadoc")
-        from(javadoc)
-    }
-
-    artifacts {
-        add("archives", sourcesJar)
-        add("archives", javadocJar)
-    }
-}
-

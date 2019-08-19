@@ -34,3 +34,29 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+//listOf(":metrics", ":telemetry", ":telemetry-components").forEach {
+//    project(it) {
+//        apply(plugin = "java-library")
+//        tasks {
+//            val taskScope = this
+//            val sources = sourceSets
+//            val sourcesJar by creating(Jar::class) {
+//                dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+//                archiveClassifier.set("sources")
+//                from(sources.main.get().allSource)
+//            }
+//
+//            val javadocJar by creating(Jar::class) {
+//                dependsOn(JavaPlugin.JAVADOC_TASK_NAME)
+//                archiveClassifier.set("javadoc")
+//                from(taskScope.javadoc)
+//            }
+//
+//            artifacts {
+//                add("archives", sourcesJar)
+//                add("archives", javadocJar)
+//            }
+//        }
+//    }
+//}
