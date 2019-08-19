@@ -1,4 +1,3 @@
-
 private object Versions {
     const val gson = "2.8.5"
     const val okhttp = "3.14.1"
@@ -48,18 +47,27 @@ tasks {
         add("archives", javadocJar)
     }
 
-    // TODO prefer the lazy string invoke once https://github.com/gradle/gradle-native/issues/718 is fixed
     getByName<Upload>("uploadArchives") {
 
         repositories {
-
             withConvention(MavenRepositoryHandlerConvention::class) {
-
                 mavenDeployer {
-
                     withGroovyBuilder {
-                        "repository"("url" to uri("$buildDir/repo"))
-                        "snapshotRepository"("url" to uri("$buildDir/repo"))
+                        if (project.properties["useLocalSonatype"] == "true") {
+                            val localCredentials = mapOf(
+                                "userName" to project.properties["localSonatypeUser"],
+                                "password" to project.properties["localSonatypePassword"]
+                            )
+                            "repository"("url" to "http://localhost:8081/repository/maven-releases/") {
+                                "authentication"(localCredentials)
+                            }
+                            "snapshotRepository"("url" to "http://localhost:8081/repository/maven-snapshots/") {
+                                "authentication"(localCredentials)
+                            }
+                        } else {
+                            "repository"("url" to "https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                            "snapshotRepository"("url" to "https://oss.sonatype.org/content/repositories/snapshots/")
+                        }
                     }
 
                     pom.project {
@@ -93,22 +101,3 @@ tasks {
     }
 
 }
-
-publishing {
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url = uri("$buildDir/repo")
-            mavenLocal {
-
-            }
-        }
-    }
-    publications {
-        register("mavenJava", MavenPublication::class) {
-            from(components["java"])
-            artifact(tasks["sourcesJar"])
-        }
-    }
-}
-
