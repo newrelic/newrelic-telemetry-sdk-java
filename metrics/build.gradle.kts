@@ -6,12 +6,6 @@ private object Versions {
     const val slf4j = "1.7.26"
 }
 
-plugins {
-    java
-}
-
-apply(plugin = "java-library")
-
 dependencies {
     "api"("org.slf4j:slf4j-api:${Versions.slf4j}")
     compileOnly("org.projectlombok:lombok:${Versions.lombok}")

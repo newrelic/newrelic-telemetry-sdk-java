@@ -5,12 +5,6 @@ private object Versions {
     const val slf4j = "1.7.26"
 }
 
-plugins {
-    java
-}
-
-apply(plugin = "java-library")
-
 dependencies {
     "api"(project(":metrics"))
 

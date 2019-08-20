@@ -5,16 +5,6 @@ private object Versions {
     const val jsonassert = "1.5.0"
 }
 
-plugins {
-    `java-library`
-    `maven-publish`
-    signing
-}
-
-repositories {
-    jcenter()
-}
-
 dependencies {
     "api"(project(":metrics"))
     "api"("com.google.code.gson:gson:${Versions.gson}")
