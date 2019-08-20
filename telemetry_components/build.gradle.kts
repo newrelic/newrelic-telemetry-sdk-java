@@ -6,7 +6,7 @@ private object Versions {
 }
 
 plugins {
-    java
+    `java-library`
     `maven-publish`
     maven
     signing
@@ -15,10 +15,6 @@ plugins {
 repositories {
     jcenter()
 }
-
-apply(plugin = "java")
-apply(plugin = "java-library")
-//apply(plugin = "signing")
 
 dependencies {
     "api"(project(":metrics"))
@@ -29,6 +25,80 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
     testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
 }
+
+tasks.register<Jar>("sourcesJar") {
+    from(sourceSets.main.get().allJava)
+    archiveClassifier.set("sources")
+}
+
+tasks.register<Jar>("javadocJar") {
+    from(tasks.javadoc)
+    archiveClassifier.set("javadoc")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "telemetry-components"
+            groupId = "com.newrelic.telemetry"
+            from(components["java"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            pom {
+                name.set(project.name)
+                description.set("This module contains reference implementations of the required interfaces for the SDK to function.")
+                url.set("https://github.com/newrelic/newrelic-telemetry-sdk-java")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        distribution.set("repo")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("newrelic")
+                        name.set("New Relic")
+                        email.set("opensource@newrelic.com")
+                    }
+                }
+                scm {
+                    url.set("git@github.com:newrelic/newrelic-telemetry-sdk-java.git")
+                    connection.set("scm:git:git@github.com:newrelic/newrelic-telemetry-sdk-java.git")
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            if (project.properties["useLocalSonatype"] == "true") {
+                val releasesRepoUrl = uri("http://localhost:8081/repository/maven-releases/")
+                val snapshotsRepoUrl = uri("http://localhost:8081/repository/maven-snapshots/")
+                url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                credentials {
+                    username = project.properties["localSonatypeUser"] as String?
+                    password = project.properties["localSonatypePassword"] as String?
+                }
+            }
+            else{
+                val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+                url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+}
+/*
 
 tasks {
     val sourcesJar by creating(Jar::class) {
@@ -70,9 +140,15 @@ tasks {
                             "snapshotRepository"("url" to "https://oss.sonatype.org/content/repositories/snapshots/")
                         }
                     }
-                    if (project.properties["useLocalSonatype"] != "true") {
-                        beforeDeployment { signing.signPom(this) }
-                    }
+//                    if (project.properties["useLocalSonatype"] != "true") {
+                        beforeDeployment {
+                            signing.signPom(this)
+                            signing.sign(publishing.publications.get())
+                        }
+//                        beforeDeployment {
+//                            signing.sign(configurations.archives.get())
+//                        }
+//                    }
 
                     pom.project {
                         withGroovyBuilder {
@@ -103,4 +179,4 @@ tasks {
             }
         }
     }
-}
+}*/
