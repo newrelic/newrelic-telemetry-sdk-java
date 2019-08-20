@@ -66,7 +66,7 @@ listOf(":metrics", ":telemetry", ":telemetry-components").forEach {
                     artifact(tasks["javadocJar"])
                     pom {
                         name.set(project.name)
-                        description.set("This module contains reference implementations of the required interfaces for the SDK to function.")
+                        description.set("Used to send telemetry data to New Relic")
                         url.set("https://github.com/newrelic/newrelic-telemetry-sdk-java")
                         licenses {
                             license {
