@@ -8,7 +8,6 @@ private object Versions {
 plugins {
     `java-library`
     `maven-publish`
-    maven
     signing
 }
 
@@ -26,21 +25,11 @@ dependencies {
     testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
 }
 
-tasks.register<Jar>("sourcesJar") {
-    from(sourceSets.main.get().allJava)
-    archiveClassifier.set("sources")
-}
-
-tasks.register<Jar>("javadocJar") {
-    from(tasks.javadoc)
-    archiveClassifier.set("javadoc")
-}
+val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
 
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            artifactId = "telemetry-components"
-            groupId = "com.newrelic.telemetry"
             from(components["java"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
@@ -71,7 +60,7 @@ publishing {
     }
     repositories {
         maven {
-            if (project.properties["useLocalSonatype"] == "true") {
+            if (useLocalSonatype) {
                 val releasesRepoUrl = uri("http://localhost:8081/repository/maven-releases/")
                 val snapshotsRepoUrl = uri("http://localhost:8081/repository/maven-snapshots/")
                 url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
@@ -90,7 +79,9 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications["mavenJava"])
+    if (!useLocalSonatype) {
+        sign(publishing.publications["mavenJava"])
+    }
 }
 
 tasks.javadoc {

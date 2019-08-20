@@ -28,6 +28,16 @@ allprojects {
             events("passed", "skipped", "failed")
         }
     }
+    tasks.register<Jar>("sourcesJar") {
+        from(sourceSets.main.get().allJava)
+        archiveClassifier.set("sources")
+    }
+
+    tasks.register<Jar>("javadocJar") {
+        from(tasks.javadoc)
+        archiveClassifier.set("javadoc")
+    }
+
 }
 
 configure<JavaPluginConvention> {
