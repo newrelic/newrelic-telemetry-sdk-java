@@ -95,10 +95,6 @@ listOf(":metrics", ":telemetry", ":telemetry-components").forEach {
                         val releasesRepoUrl = uri("http://localhost:8081/repository/maven-releases/")
                         val snapshotsRepoUrl = uri("http://localhost:8081/repository/maven-snapshots/")
                         url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-                        credentials {
-                            username = project.properties["localSonatypeUser"] as String?
-                            password = project.properties["localSonatypePassword"] as String?
-                        }
                     }
                     else {
                         val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
@@ -108,9 +104,12 @@ listOf(":metrics", ":telemetry", ":telemetry-components").forEach {
                             sign(publications["mavenJava"])
                         }
                     }
+                    credentials {
+                        username = project.properties["sonatypeUsername"] as String?
+                        password = project.properties["sonatypePassword"] as String?
+                    }
                 }
             }
         }
-
     }
 }
