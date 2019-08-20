@@ -1,17 +1,9 @@
-import com.newrelic.telemetry.gradle.standardPublishBoilerplate
 
 private object Versions {
     const val junit = "5.3.1"
     const val mockito = "2.23.0"
     const val slf4j = "1.7.26"
 }
-
-plugins {
-    java
-}
-
-apply(plugin = "java-library")
-apply(plugin = "com.bmuschko.nexus")
 
 dependencies {
     "api"(project(":metrics"))
@@ -21,5 +13,3 @@ dependencies {
     testImplementation("org.mockito:mockito-core:${Versions.mockito}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
 }
-
-standardPublishBoilerplate()

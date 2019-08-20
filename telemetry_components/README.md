@@ -1,4 +1,4 @@
-This module contains reference implementations of the required interfaces for the SDK for function.
+This module contains reference implementations of the required interfaces for the SDK to function.
 
 * `MetricGsonGenerator` : Implements the `MetricJsonGenerator` interface, using gson.
 * `OkHttpPoster` : Implements the `HttpPoster` interface, using okhttp.
