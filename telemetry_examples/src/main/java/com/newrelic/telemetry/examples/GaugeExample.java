@@ -7,11 +7,11 @@
 
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Gauge;
 import com.newrelic.telemetry.MetricBatchSender;
 import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.model.Attributes;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;

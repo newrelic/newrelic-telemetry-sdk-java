@@ -7,7 +7,8 @@ private object Versions {
 }
 
 dependencies {
-    "api"("org.slf4j:slf4j-api:${Versions.slf4j}")
+    api(project(":telemetry-core"))
+    api("org.slf4j:slf4j-api:${Versions.slf4j}")
     compileOnly("org.projectlombok:lombok:${Versions.lombok}")
     annotationProcessor("org.projectlombok:lombok:${Versions.lombok}")
 

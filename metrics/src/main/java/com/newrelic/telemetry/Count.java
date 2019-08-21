@@ -7,6 +7,7 @@
 
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.model.Attributes;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Map;
 import lombok.EqualsAndHashCode;

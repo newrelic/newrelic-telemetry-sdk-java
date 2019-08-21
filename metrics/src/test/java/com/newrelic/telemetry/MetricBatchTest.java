@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
+import com.newrelic.telemetry.model.Attributes;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

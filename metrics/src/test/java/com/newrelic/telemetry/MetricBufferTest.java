@@ -9,6 +9,7 @@ package com.newrelic.telemetry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.newrelic.telemetry.model.Attributes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

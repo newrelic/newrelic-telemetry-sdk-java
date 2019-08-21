@@ -5,7 +5,7 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.model;
 
 import static java.util.Collections.unmodifiableMap;
 

@@ -21,6 +21,7 @@ import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.model.Attributes;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;

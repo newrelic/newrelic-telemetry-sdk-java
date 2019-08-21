@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.model.Attributes;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

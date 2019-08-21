@@ -9,6 +9,7 @@ package com.newrelic.telemetry;
 
 import static java.util.stream.Collectors.toList;
 
+import com.newrelic.telemetry.model.Attributes;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Arrays;
 import java.util.Collection;
