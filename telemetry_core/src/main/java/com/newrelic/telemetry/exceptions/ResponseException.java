@@ -7,13 +7,10 @@
 
 package com.newrelic.telemetry.exceptions;
 
-import com.newrelic.telemetry.MetricBatch;
-import com.newrelic.telemetry.MetricBatchSender;
-
 /**
  * This class represents a response that doesn't have a 202 status code. There are 4 concrete
  * implementations of this Exception, each of which has a different recommended reaction by the
- * caller. Thrown by {@link MetricBatchSender#sendBatch(MetricBatch)}
+ * caller.
  *
  * <ul>
  *   <li>{@link RetryWithSplitException} : Thrown when the submitted batch was too large to be

@@ -7,13 +7,9 @@
 
 package com.newrelic.telemetry.exceptions;
 
-import com.newrelic.telemetry.MetricBatch;
-
 /**
  * This exception is thrown when the request was too large and should be split in half and tried
  * again.
- *
- * @see MetricBatch#split()
  */
 public class RetryWithSplitException extends ResponseException {
 
