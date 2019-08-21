@@ -3,6 +3,8 @@ include ':telemetry_examples'
 include ':metrics'
 include ':integration_test'
 include 'telemetry-components'
+include 'telemetry-core'
 
 // remap the name of the module so that we get a more standard library name at publish time.
 project(":telemetry-components").projectDir = file("telemetry_components")
+project(":telemetry-core").projectDir = file("telemetry_core")
