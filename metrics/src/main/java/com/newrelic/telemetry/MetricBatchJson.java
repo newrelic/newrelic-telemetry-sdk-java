@@ -1,20 +1,21 @@
 package com.newrelic.telemetry;
 
-import static java.lang.Double.isFinite;
-
 import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.TelemetryBatchJson.JsonCommonBlockWriter;
 import com.newrelic.telemetry.TelemetryBatchJson.JsonTelemetryBlockWriter;
+
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.lang.Double.isFinite;
 
 public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBlockWriter {
 
   private final AttributesJson attributesJson;
   private final MetricJsonGenerator metricJsonGenerator;
 
-  private MetricBatchJson(MetricJsonGenerator metricJsonGenerator, AttributesJson attributesJson) {
+    MetricBatchJson(MetricJsonGenerator metricJsonGenerator, AttributesJson attributesJson) {
     this.attributesJson = attributesJson;
     this.metricJsonGenerator = metricJsonGenerator;
   }
