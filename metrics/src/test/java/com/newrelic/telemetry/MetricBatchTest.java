@@ -7,6 +7,7 @@
 
 package com.newrelic.telemetry;
 
+import static com.newrelic.telemetry.Telemetry.Type.METRIC;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,10 +37,10 @@ class MetricBatchTest {
 
     assertTrue(
         splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric1), commonAttributes)));
+            new TelemetryBatch<Metric>(METRIC, singletonList(metric1), commonAttributes)));
     assertTrue(
         splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric2), commonAttributes)));
+            new TelemetryBatch<Metric>(METRIC, singletonList(metric2), commonAttributes)));
   }
 
   @Test
@@ -55,8 +56,9 @@ class MetricBatchTest {
 
     assertTrue(
         splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric1), commonAttributes)));
-    assertTrue(splitBatches.contains(new TelemetryBatch<Metric>(emptyList(), commonAttributes)));
+            new TelemetryBatch<Metric>(METRIC, singletonList(metric1), commonAttributes)));
+    assertTrue(
+        splitBatches.contains(new TelemetryBatch<Metric>(METRIC, emptyList(), commonAttributes)));
   }
 
   @Test
@@ -74,10 +76,10 @@ class MetricBatchTest {
     assertEquals(2, splitBatches.size());
     assertTrue(
         splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric1), commonAttributes)));
+            new TelemetryBatch<Metric>(METRIC, singletonList(metric1), commonAttributes)));
     assertTrue(
         splitBatches.contains(
-            new TelemetryBatch<Metric>(Arrays.asList(metric2, metric3), commonAttributes)));
+            new TelemetryBatch<Metric>(METRIC, Arrays.asList(metric2, metric3), commonAttributes)));
   }
 
   @Test

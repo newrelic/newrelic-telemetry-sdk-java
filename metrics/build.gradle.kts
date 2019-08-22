@@ -4,6 +4,7 @@ private object Versions {
     const val guava = "27.1-jre"
     const val mockito = "2.23.0"
     const val slf4j = "1.7.26"
+    const val jsonassert = "1.5.0"
 }
 
 dependencies {
@@ -18,4 +19,6 @@ dependencies {
     testImplementation("org.mockito:mockito-core:${Versions.mockito}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
     testImplementation("com.google.guava:guava:${Versions.guava}")
+    testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
+
 }

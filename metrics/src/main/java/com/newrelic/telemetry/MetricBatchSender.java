@@ -38,7 +38,7 @@ public class MetricBatchSender {
   private static final String metricsPath = "/metric/v1";
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
-  private final MetricBatchJsonGenerator metricJsonGenerator;
+  private final TelemetryBatchJson metricJsonGenerator;
   private final HttpPoster client;
 
   private final URL metricsUrl;
@@ -54,8 +54,7 @@ public class MetricBatchSender {
   }
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
-    metricJsonGenerator =
-        new MetricBatchJsonGenerator(builder.jsonGenerator, builder.attributesJson);
+    metricJsonGenerator = MetricBatchJson.build(builder.jsonGenerator, builder.attributesJson);
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
@@ -261,7 +260,7 @@ public class MetricBatchSender {
   }
 
   private byte[] generateCompressedPayload(MetricBatch batch) throws IOException {
-    String result = metricJsonGenerator.generateJson(batch);
+    String result = metricJsonGenerator.toJson(batch);
     ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
     gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));
