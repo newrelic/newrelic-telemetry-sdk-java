@@ -44,7 +44,7 @@ public class MetricBatchJsonGenerator {
 
   private void addMetrics(MetricBatch metricBatch, StringBuilder builder) {
     builder.append("\"metrics\":").append("[");
-    Collection<Metric> metrics = metricBatch.getMetrics();
+    Collection<Metric> metrics = metricBatch.getTelemetry();
 
     builder.append(
         metrics

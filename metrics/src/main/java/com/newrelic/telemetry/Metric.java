@@ -19,4 +19,10 @@ package com.newrelic.telemetry;
  * @see Count
  * @see Summary
  */
-public interface Metric {}
+public interface Metric extends Telemetry {
+
+  @Override
+  default Type getType() {
+    return Type.METRIC;
+  };
+}
