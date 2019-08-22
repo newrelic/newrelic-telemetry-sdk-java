@@ -96,12 +96,9 @@ public class MetricBatchJsonGenerator {
           .append("\"common\":")
           .append("{")
           .append("\"attributes\":")
-          .append(writeAttributes(metricBatch))
+          .append(attributesJson.toJson(metricBatch.getCommonAttributes().asMap()))
           .append("},");
     }
   }
 
-  private String writeAttributes(MetricBatch metricBatch) {
-    return attributesJson.toJson(metricBatch.getCommonAttributes().asMap());
-  }
 }
