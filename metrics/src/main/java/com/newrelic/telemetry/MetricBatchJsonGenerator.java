@@ -20,9 +20,12 @@ public class MetricBatchJsonGenerator {
   private static final Logger logger = LoggerFactory.getLogger(MetricJsonGenerator.class);
 
   private final MetricJsonGenerator metricJsonGenerator;
+  private final AttributesJson attributesJson;
 
-  public MetricBatchJsonGenerator(MetricJsonGenerator metricJsonGenerator) {
+  public MetricBatchJsonGenerator(
+      MetricJsonGenerator metricJsonGenerator, AttributesJson attributesJson) {
     this.metricJsonGenerator = metricJsonGenerator;
+    this.attributesJson = attributesJson;
   }
 
   public String generateJson(MetricBatch metricBatch) {
@@ -93,7 +96,7 @@ public class MetricBatchJsonGenerator {
           .append("\"common\":")
           .append("{")
           .append("\"attributes\":")
-          .append(metricJsonGenerator.writeAttributes(metricBatch.getCommonAttributes().asMap()))
+          .append(attributesJson.toJson(metricBatch.getCommonAttributes().asMap()))
           .append("},");
     }
   }
