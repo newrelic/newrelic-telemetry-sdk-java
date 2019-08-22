@@ -7,6 +7,7 @@
 
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.Telemetry.Type;
 import java.util.Collection;
 import lombok.Value;
 
@@ -15,6 +16,6 @@ import lombok.Value;
 public class MetricBatch extends TelemetryBatch<Metric> {
 
   public MetricBatch(Collection<Metric> metrics, Attributes commonAttributes) {
-    super(metrics, commonAttributes);
+    super(Type.METRIC, metrics, commonAttributes);
   }
 }
