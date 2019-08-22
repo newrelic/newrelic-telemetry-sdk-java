@@ -29,8 +29,7 @@ class MetricJsonGeneratorTest {
   void setup() {
     gson = new GsonBuilder().create();
     jsonGenerator =
-        new MetricBatchJsonGenerator(
-            MetricGsonGenerator.build(gson), new AttributesGson(gson));
+        new MetricBatchJsonGenerator(MetricGsonGenerator.build(gson), new AttributesGson(gson));
   }
 
   @Test
