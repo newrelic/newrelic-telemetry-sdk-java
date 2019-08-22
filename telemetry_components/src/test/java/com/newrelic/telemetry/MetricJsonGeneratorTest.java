@@ -7,23 +7,35 @@
 
 package com.newrelic.telemetry;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 class MetricJsonGeneratorTest {
+
+  Gson gson;
+  MetricBatchJsonGenerator jsonGenerator;
+
+  @BeforeEach
+  void setup() {
+    gson = new GsonBuilder().create();
+    jsonGenerator =
+        new MetricBatchJsonGenerator(
+            MetricGsonGenerator.build(gson), new AttributesGson(gson));
+  }
+
   @Test
   @DisplayName("Formatting with common attributes is structured correctly")
   void testCommonAttributeJson() throws Exception {
-    MetricBatchJsonGenerator jsonGenerator =
-        new MetricBatchJsonGenerator(new MetricGsonGenerator());
 
     Attributes commonAttributes = new Attributes().put("key", "val");
 
@@ -42,8 +54,6 @@ class MetricJsonGeneratorTest {
   @Test
   @DisplayName("All supported attribute types are structured correctly")
   void testAttributeTypesJson() throws Exception {
-    MetricBatchJsonGenerator jsonGenerator =
-        new MetricBatchJsonGenerator(new MetricGsonGenerator());
 
     Attributes commonAttributes = new Attributes();
     commonAttributes.put("string", "val");
@@ -80,8 +90,6 @@ class MetricJsonGeneratorTest {
 
   @Test
   void testSummaryMetricJson() throws Exception {
-    MetricBatchJsonGenerator jsonGenerator =
-        new MetricBatchJsonGenerator(new MetricGsonGenerator());
 
     Attributes commonAttributes = new Attributes().put("key", "val");
 
@@ -100,8 +108,6 @@ class MetricJsonGeneratorTest {
   @Test
   @DisplayName("Common attribute formatting handles values that cause the JSON serializer to fail")
   void testAttributeValuesThatCannotBeRepresented() throws Exception {
-    MetricBatchJsonGenerator jsonGenerator =
-        new MetricBatchJsonGenerator(new MetricGsonGenerator());
 
     Attributes commonAttributes = new Attributes();
     // filtered items
@@ -127,8 +133,6 @@ class MetricJsonGeneratorTest {
   @Test
   @DisplayName("Metric formatting handles values that cause the JSON serializer to fail")
   void testMetricValuesThatCannotBeRepresented() throws Exception {
-    MetricBatchJsonGenerator jsonGenerator =
-        new MetricBatchJsonGenerator(new MetricGsonGenerator());
 
     Attributes commonAttributes = new Attributes();
 
@@ -158,8 +162,6 @@ class MetricJsonGeneratorTest {
   @DisplayName(
       "Common attribute formatting handles values that probably cannot be ingested successfully")
   void testStrangeAndUnusualValues() throws Exception {
-    MetricBatchJsonGenerator jsonGenerator =
-        new MetricBatchJsonGenerator(new MetricGsonGenerator());
 
     Attributes commonAttributes = new Attributes();
     // filtered items
@@ -184,16 +186,5 @@ class MetricJsonGeneratorTest {
     assertTrue(
         json.contains(
             "\"key-bigdec-very-small\":1.2312312312312312312312312312312312312312312312312E-34518"));
-  }
-
-  @Test
-  @DisplayName("Attributes is generated correctly with gson [move this test to the gson tester]")
-  void testAttributes() throws Exception {
-    MetricGsonGenerator metricGsonGenerator = new MetricGsonGenerator();
-    assertEquals("{}", metricGsonGenerator.writeAttributes(Collections.emptyMap()));
-    JSONAssert.assertEquals(
-        "{\"foo\":\"bar\"}",
-        metricGsonGenerator.writeAttributes(Collections.singletonMap("foo", "bar")),
-        false);
   }
 }

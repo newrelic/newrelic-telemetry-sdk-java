@@ -54,7 +54,8 @@ public class MetricBatchSender {
   }
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
-    metricJsonGenerator = new MetricBatchJsonGenerator(builder.jsonGenerator);
+    metricJsonGenerator =
+        new MetricBatchJsonGenerator(builder.jsonGenerator, builder.attributesJson);
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
@@ -66,19 +67,24 @@ public class MetricBatchSender {
    * <p>endpoint and call timeout.
    *
    * @param apiKey Your New Relic Insights Insert API key
+   * @param attributeJson
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
   public static Builder builder(
-      String apiKey, HttpPoster httpPoster, MetricJsonGenerator jsonGenerator) {
-    return new Builder(apiKey, httpPoster, jsonGenerator);
+      String apiKey,
+      HttpPoster httpPoster,
+      MetricJsonGenerator jsonGenerator,
+      AttributesJson attributeJson) {
+    return new Builder(apiKey, httpPoster, jsonGenerator, attributeJson);
   }
 
   public static class Builder {
     // Required parameters
     private final String apiKey;
     private final MetricJsonGenerator jsonGenerator;
+    private final AttributesJson attributesJson;
     private HttpPoster httpPoster;
 
     private URL metricsUrl;
@@ -92,13 +98,18 @@ public class MetricBatchSender {
      *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
      *     Relic API Keys</a>
      */
-    public Builder(String apiKey, HttpPoster httpPoster, MetricJsonGenerator jsonGenerator) {
+    public Builder(
+        String apiKey,
+        HttpPoster httpPoster,
+        MetricJsonGenerator jsonGenerator,
+        AttributesJson attributesJson) {
       Utils.verifyNonNull(apiKey, "API key cannot be null");
       Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
       Utils.verifyNonNull(jsonGenerator, "an MetricJsonGenerator implementation is required.");
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
       this.jsonGenerator = jsonGenerator;
+      this.attributesJson = attributesJson;
 
       try {
         metricsUrl = constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));

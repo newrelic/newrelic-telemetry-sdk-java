@@ -7,6 +7,8 @@
 
 package com.newrelic.telemetry;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.newrelic.telemetry.MetricBatchSender.Builder;
 import java.time.Duration;
 
@@ -18,6 +20,11 @@ public class SimpleMetricBatchSender {
 
   public static Builder builder(String apiKey, Duration callTimeout) {
     OkHttpPoster okHttpPoster = new OkHttpPoster(callTimeout);
-    return MetricBatchSender.builder(apiKey, okHttpPoster, new MetricGsonGenerator());
+    Gson gson = new GsonBuilder().create();
+    return MetricBatchSender.builder(
+        apiKey,
+        okHttpPoster,
+        MetricGsonGenerator.build(gson),
+        new AttributesGson(gson));
   }
 }

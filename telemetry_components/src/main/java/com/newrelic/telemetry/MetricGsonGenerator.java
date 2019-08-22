@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Map;
 
 /**
  * This class generates JSON manually instead of serializing via GSON. The advantages of doing this
@@ -21,7 +20,17 @@ import java.util.Map;
  */
 public class MetricGsonGenerator implements MetricJsonGenerator {
 
-  private final Gson gson = new GsonBuilder().create();
+  private final Gson gson;
+  private final AttributesGson attributeJson;
+
+  static MetricGsonGenerator build(Gson gson) {
+    return new MetricGsonGenerator(gson);
+  }
+
+  public MetricGsonGenerator(Gson gson) {
+    this.gson = new GsonBuilder().create();
+    attributeJson = new AttributesGson(gson);
+  }
 
   @Override
   public String writeSummaryJson(Summary summary) {
@@ -42,7 +51,7 @@ public class MetricGsonGenerator implements MetricJsonGenerator {
 
       jsonWriter.name("timestamp").value(summary.getStartTimeMs());
       jsonWriter.name("interval.ms").value(summary.getEndTimeMs() - summary.getStartTimeMs());
-      String attributes = writeAttributes(summary.getAttributes());
+      String attributes = attributeJson.toJson(summary.getAttributes());
       if (!attributes.isEmpty()) {
         jsonWriter.name("attributes").jsonValue(attributes);
       }
@@ -63,7 +72,7 @@ public class MetricGsonGenerator implements MetricJsonGenerator {
       jsonWriter.name("type").value("gauge");
       jsonWriter.name("value").value(gauge.getValue());
       jsonWriter.name("timestamp").value(gauge.getTimestamp());
-      String attributes = writeAttributes(gauge.getAttributes());
+      String attributes = attributeJson.toJson(gauge.getAttributes());
       if (!attributes.isEmpty()) {
         jsonWriter.name("attributes").jsonValue(attributes);
       }
@@ -86,7 +95,7 @@ public class MetricGsonGenerator implements MetricJsonGenerator {
       jsonWriter.name("timestamp").value(count.getStartTimeMs());
       jsonWriter.name("interval.ms").value(count.getEndTimeMs() - count.getStartTimeMs());
 
-      String attributes = writeAttributes(count.getAttributes());
+      String attributes = attributeJson.toJson(count.getAttributes());
       if (!attributes.isEmpty()) {
         jsonWriter.name("attributes").jsonValue(attributes);
       }
@@ -95,36 +104,5 @@ public class MetricGsonGenerator implements MetricJsonGenerator {
     } catch (IOException e) {
       throw new RuntimeException("Failed to generate count json");
     }
-  }
-
-  @Override
-  public String writeAttributes(Map<String, Object> attributes) {
-    StringWriter out = new StringWriter();
-    Map<String, Object> filteredAttributes = filterIllegalValues(attributes);
-    filterIllegalValues(filteredAttributes);
-    if (filteredAttributes.isEmpty()) {
-      return "{}";
-    }
-    try {
-      JsonWriter jsonWriter = gson.newJsonWriter(out);
-      jsonWriter.beginObject();
-
-      for (Map.Entry<String, Object> attribute : filteredAttributes.entrySet()) {
-        Object value = attribute.getValue();
-
-        if (value instanceof Boolean) {
-          jsonWriter.name(attribute.getKey()).value((boolean) value);
-        } else if (value instanceof Number) {
-          Number num = (Number) value;
-          jsonWriter.name(attribute.getKey()).value(num);
-        } else {
-          jsonWriter.name(attribute.getKey()).value(String.valueOf(value));
-        }
-      }
-      jsonWriter.endObject();
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to generate attributes json");
-    }
-    return out.toString();
   }
 }
