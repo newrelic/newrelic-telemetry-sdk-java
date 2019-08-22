@@ -69,10 +69,13 @@ public class TelemetryClient {
 
   private void splitAndSend(MetricBatch batch, TimeUnit timeUnit, RetryWithSplitException e) {
     LOG.info("Metric batch size too large, splitting and retrying.", e);
-    List<MetricBatch> splitBatches = batch.split();
-    for (MetricBatch splitBatch : splitBatches) {
-      scheduleBatchSend(splitBatch, 0, timeUnit);
-    }
+    List<TelemetryBatch<Metric>> splitBatches = batch.split();
+    splitBatches
+        .stream()
+        .map(
+            splitBatch ->
+                new MetricBatch(splitBatch.getTelemetry(), splitBatch.getCommonAttributes()))
+        .forEach(metricBatch -> scheduleBatchSend(metricBatch, 0, timeUnit));
   }
 
   private void retry(MetricBatch batch, RetryWithRequestedWaitException e) {

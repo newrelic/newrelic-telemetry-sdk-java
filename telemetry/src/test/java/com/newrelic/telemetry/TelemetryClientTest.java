@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
@@ -95,22 +96,34 @@ class TelemetryClientTest {
     MetricBatch batch = makeBatchOf3Metrics();
     // 1 for initial failure, then 1 for each part of the split
     CountDownLatch sendLatch = new CountDownLatch(3);
+    AtomicBoolean batch1Seen = new AtomicBoolean(false);
+    AtomicBoolean batch2Seen = new AtomicBoolean(false);
+
     when(batchSender.sendBatch(batch))
         .thenAnswer(
             invocation -> {
+              MetricBatch batchParam = invocation.getArgument(0);
+              if (batchParam.size() == 3) {
+                sendLatch.countDown();
+                throw new RetryWithSplitException();
+              }
+              if (batchParam.size() == 1) { // first part of split batch
+                batch1Seen.set(true);
+              }
+              if (batchParam.size() == 2) { // second part of split batch
+                batch2Seen.set(true);
+              }
               sendLatch.countDown();
-              throw new RetryWithSplitException();
+              return null;
             });
-    List<MetricBatch> splitBatch = batch.split();
-
-    when(batchSender.sendBatch(splitBatch.get(0))).thenAnswer(countDown(sendLatch));
-    when(batchSender.sendBatch(splitBatch.get(1))).thenAnswer(countDown(sendLatch));
 
     TelemetryClient testClass = new TelemetryClient(batchSender);
 
     testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
+    assertTrue(batch1Seen.get());
+    assertTrue(batch2Seen.get());
   }
 
   private Answer<Object> countDown(CountDownLatch latch) {
