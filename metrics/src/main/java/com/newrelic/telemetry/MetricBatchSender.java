@@ -43,6 +43,7 @@ public class MetricBatchSender {
 
   private final URL metricsUrl;
   private final String apiKey;
+  private final boolean isAuditLogging;
 
   private static final String USER_AGENT_VALUE;
 
@@ -59,6 +60,7 @@ public class MetricBatchSender {
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
+    isAuditLogging = builder.isAuditLogging;
   }
 
   /**
@@ -88,6 +90,7 @@ public class MetricBatchSender {
     private HttpPoster httpPoster;
 
     private URL metricsUrl;
+    private boolean isAuditLogging = false;
 
     /**
      * Create a new MetricBatchSender with the New Relic API key and the default values for the
@@ -132,6 +135,18 @@ public class MetricBatchSender {
     }
 
     /**
+     * Turns on audit logging. Payloads sent will be logged at the DEBUG level. Please note that if
+     * your payloads contain sensitive information, that information will be logged wherever your
+     * logs are configured.
+     *
+     * @return Builder
+     */
+    public Builder setAuditLoggingTrue() {
+      this.isAuditLogging = true;
+      return this;
+    }
+
+    /**
      * Build the final {@link MetricBatchSender}.
      *
      * @return the fully configured MetricBatchSender object
@@ -163,6 +178,9 @@ public class MetricBatchSender {
         metricsUrl);
     byte[] payload;
     try {
+      if (isAuditLogging) {
+        logger.debug(metricJsonGenerator.generateJson(batch));
+      }
       payload = generateCompressedPayload(batch);
     } catch (IOException e) {
       logger.error("Failed to serialize the metric batch for sending to the ingest API", e);
