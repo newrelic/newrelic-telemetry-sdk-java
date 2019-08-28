@@ -138,8 +138,6 @@ public class MetricBatchSender {
      * Turns on audit logging. Payloads sent will be logged at the DEBUG level. Please note that if
      * your payloads contain sensitive information, that information will be logged wherever your
      * logs are configured.
-     *
-     * @return Builder
      */
     public Builder enableAuditLogging() {
       this.isAuditLogging = true;
