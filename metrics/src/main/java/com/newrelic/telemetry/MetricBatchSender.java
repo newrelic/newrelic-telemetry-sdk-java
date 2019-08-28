@@ -43,7 +43,7 @@ public class MetricBatchSender {
 
   private final URL metricsUrl;
   private final String apiKey;
-  private final boolean isAuditLogging;
+  private final boolean auditLoggingEnabled;
 
   private static final String USER_AGENT_VALUE;
 
@@ -60,7 +60,7 @@ public class MetricBatchSender {
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
-    isAuditLogging = builder.isAuditLogging;
+    auditLoggingEnabled = builder.auditLoggingEnabled;
   }
 
   /**
@@ -90,7 +90,7 @@ public class MetricBatchSender {
     private HttpPoster httpPoster;
 
     private URL metricsUrl;
-    private boolean isAuditLogging = false;
+    private boolean auditLoggingEnabled = false;
 
     /**
      * Create a new MetricBatchSender with the New Relic API key and the default values for the
@@ -140,7 +140,7 @@ public class MetricBatchSender {
      * logs are configured.
      */
     public Builder enableAuditLogging() {
-      this.isAuditLogging = true;
+      this.auditLoggingEnabled = true;
       return this;
     }
 
@@ -176,7 +176,7 @@ public class MetricBatchSender {
         metricsUrl);
     byte[] payload;
     try {
-      if (isAuditLogging) {
+      if (auditLoggingEnabled) {
         logger.debug(metricJsonGenerator.generateJson(batch));
       }
       payload = generateCompressedPayload(batch);
