@@ -141,7 +141,7 @@ public class MetricBatchSender {
      *
      * @return Builder
      */
-    public Builder setAuditLoggingTrue() {
+    public Builder enableAuditLogging() {
       this.isAuditLogging = true;
       return this;
     }
