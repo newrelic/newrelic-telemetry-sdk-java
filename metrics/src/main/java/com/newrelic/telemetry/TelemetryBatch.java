@@ -38,6 +38,10 @@ public class TelemetryBatch<T extends Telemetry> {
     this.commonAttributes = Utils.verifyNonNull(commonAttributes);
   }
 
+  public static TelemetryBatch<Metric> batchMetrics(Collection<Metric> metrics, Attributes commonAttributes) {
+    return new TelemetryBatch<>(Type.METRIC, metrics, commonAttributes);
+  }
+
   /**
    * Split this batch into 2 roughly equal pieces. If the initial batch contains no telemetry, this
    * will simply return an empty list of batches.
