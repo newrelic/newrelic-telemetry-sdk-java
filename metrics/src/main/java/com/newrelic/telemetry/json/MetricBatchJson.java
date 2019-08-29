@@ -39,7 +39,7 @@ public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBloc
   @Override
   public <T extends Telemetry> void appendCommonJson(
       TelemetryBatch<T> batch, StringBuilder builder) {
-    if (!batch.getCommonAttributes().asMap().isEmpty()) {
+    if (batch.hasCommonAttributes()) {
       builder
           .append("\"common\":")
           .append("{")

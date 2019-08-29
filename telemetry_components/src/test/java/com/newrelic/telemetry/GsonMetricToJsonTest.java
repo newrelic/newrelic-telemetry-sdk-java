@@ -7,7 +7,7 @@
 
 package com.newrelic.telemetry;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,17 +35,32 @@ class GsonMetricToJsonTest {
     String json = metricGson.writeSummaryJson(summary);
 
     String expected =
-        "[{\"common\":{\"attributes\":{\"key\":\"val\"}},\"metrics\":[{\"name\":\"summary\",\"type\":\"summary\",\"value\":{\"count\":3,\"sum\":33.0,\"min\":55.0,\"max\":66.0},\"timestamp\":555,\"interval.ms\":111,\"attributes\":{}}]}]";
+        "{\"name\":\"summary\",\"type\":\"summary\",\"value\":{\"count\":3,\"sum\":33.0,\"min\":55.0,\"max\":66.0},\"timestamp\":555,\"interval.ms\":111,\"attributes\":{\"key\":\"val\"}}";
     JSONAssert.assertEquals(expected, json, false);
   }
 
   @Test
   public void testGauge() throws Exception {
-    fail("build me");
+    long now = System.currentTimeMillis();
+    Gauge gauge = new Gauge("trev", 99.91, now, new Attributes().put("a", "b"));
+    String json = metricGson.writeGaugeJson(gauge);
+    String expected =
+        "{\"name\":\"trev\",\"type\":\"gauge\",\"value\":99.91,\"timestamp\":"
+            + now
+            + ",\"attributes\":{\"a\":\"b\"}}";
+    assertEquals(expected, json);
   }
 
   @Test
   public void testCount() throws Exception {
-    fail("build me");
+    long now = System.currentTimeMillis();
+    long later = now + 1250;
+    Count count = new Count("saw", 387.1, now, later, new Attributes().put("b", "c"));
+    String json = metricGson.writeCountJson(count);
+    String expected =
+        "{\"name\":\"saw\",\"type\":\"count\",\"value\":387.1,\"timestamp\":"
+            + now
+            + ",\"interval.ms\":1250,\"attributes\":{\"b\":\"c\"}}";
+    assertEquals(expected, json);
   }
 }

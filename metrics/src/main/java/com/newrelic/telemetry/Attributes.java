@@ -63,4 +63,9 @@ public class Attributes {
   public Map<String, Object> asMap() {
     return unmodifiableMap(new HashMap<>(rawAttributes));
   }
+
+  /** @return true if there are no attributes in this Attributes instance */
+  public boolean isEmpty() {
+    return rawAttributes.isEmpty();
+  }
 }

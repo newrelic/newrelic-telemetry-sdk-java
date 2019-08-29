@@ -70,4 +70,9 @@ public class TelemetryBatch<T extends Telemetry> {
   public int size() {
     return telemetry.size();
   }
+
+  /** @return true if the common attributes are not empty */
+  public boolean hasCommonAttributes() {
+    return !commonAttributes.isEmpty();
+  }
 }

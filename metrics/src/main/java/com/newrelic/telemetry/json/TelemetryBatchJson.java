@@ -31,8 +31,11 @@ public class TelemetryBatchJson {
 
     builder.append("[").append("{");
 
+    int lengthBefore = builder.length();
     commonBlockWriter.appendCommonJson(batch, builder);
-    builder.append(",");
+    if (builder.length() > lengthBefore) {
+      builder.append(",");
+    }
     mainBodyWriter.appendTelemetry(batch, builder);
 
     builder.append("}").append("]");
@@ -40,10 +43,12 @@ public class TelemetryBatchJson {
   }
 
   public interface JsonCommonBlockWriter {
+
     <T extends Telemetry> void appendCommonJson(TelemetryBatch<T> batch, StringBuilder builder);
   }
 
   public interface JsonTelemetryBlockWriter {
+
     <T extends Telemetry> void appendTelemetry(TelemetryBatch<T> batch, StringBuilder builder);
   }
 }
