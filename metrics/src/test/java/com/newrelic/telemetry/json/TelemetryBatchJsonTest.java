@@ -1,6 +1,6 @@
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.json;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 

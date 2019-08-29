@@ -1,4 +1,4 @@
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.json;
 
 import java.util.Map;
 import java.util.Map.Entry;

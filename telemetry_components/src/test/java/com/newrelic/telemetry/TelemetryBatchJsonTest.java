@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.newrelic.telemetry.json.MetricBatchJson;
+import com.newrelic.telemetry.json.TelemetryBatchJson;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;

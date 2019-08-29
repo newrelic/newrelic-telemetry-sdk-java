@@ -1,14 +1,19 @@
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.json;
 
+import static java.lang.Double.isFinite;
+
+import com.newrelic.telemetry.Count;
+import com.newrelic.telemetry.Gauge;
+import com.newrelic.telemetry.Metric;
+import com.newrelic.telemetry.Summary;
+import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.Telemetry.Type;
-import com.newrelic.telemetry.TelemetryBatchJson.JsonCommonBlockWriter;
-import com.newrelic.telemetry.TelemetryBatchJson.JsonTelemetryBlockWriter;
-
+import com.newrelic.telemetry.TelemetryBatch;
+import com.newrelic.telemetry.json.TelemetryBatchJson.JsonCommonBlockWriter;
+import com.newrelic.telemetry.json.TelemetryBatchJson.JsonTelemetryBlockWriter;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.lang.Double.isFinite;
 
 public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBlockWriter {
 

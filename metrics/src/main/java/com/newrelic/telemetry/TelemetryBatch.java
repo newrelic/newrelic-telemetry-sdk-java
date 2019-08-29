@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -27,10 +26,10 @@ public class TelemetryBatch<T extends Telemetry> {
 
   private final Type type;
 
-  @Getter(AccessLevel.PACKAGE)
+  @Getter
   Collection<T> telemetry;
 
-  @Getter(AccessLevel.PACKAGE)
+  @Getter
   Attributes commonAttributes;
 
   public TelemetryBatch(Telemetry.Type type, Collection<T> telemetry, Attributes commonAttributes) {
