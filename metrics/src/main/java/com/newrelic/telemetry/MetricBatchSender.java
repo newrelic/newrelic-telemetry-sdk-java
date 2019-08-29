@@ -18,6 +18,8 @@ import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.json.MetricBatchJson;
 import com.newrelic.telemetry.json.MetricToJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
+import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
+import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.util.Utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +37,9 @@ import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Manages the sending of {@link MetricBatch} instances to the New Relic Metrics API. */
+/**
+ * Manages the sending of {@link MetricBatch} instances to the New Relic Metrics API.
+ */
 public class MetricBatchSender {
 
   private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
@@ -60,7 +64,12 @@ public class MetricBatchSender {
   }
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
-    telemetryBatchJson = MetricBatchJson.build(builder.metricToJson, builder.attributesJson);
+    telemetryBatchJson = new TelemetryBatchJson(
+        new TypeDispatchingJsonCommonBlockWriter(new MetricBatchJson(builder.metricToJson,
+            builder.attributesJson), null),
+        new TypeDispatchingJsonTelemetryBlockWriter(
+            new MetricBatchJson(builder.metricToJson, builder.attributesJson), null)
+    );
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
@@ -68,14 +77,14 @@ public class MetricBatchSender {
   }
 
   /**
-   * Create a new MetricBatchSender with the New Relic API key and the default values for the ingest
+   * Create a new MetricBatchSender with the New Relic API key and the default values for the
+   * ingest
    *
    * <p>endpoint and call timeout.
    *
    * @param apiKey Your New Relic Insights Insert API key
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
+   * @see <a href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
+   * Relic API Keys</a>
    */
   public static Builder builder(
       String apiKey,
@@ -101,9 +110,8 @@ public class MetricBatchSender {
      * ingest endpoint and call timeout.
      *
      * @param apiKey Your New Relic Insights Insert API key
-     * @see <a
-     *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-     *     Relic API Keys</a>
+     * @see <a href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
+     * Relic API Keys</a>
      */
     public Builder(
         String apiKey,
@@ -129,7 +137,7 @@ public class MetricBatchSender {
      * Set a URI to override the default ingest endpoint.
      *
      * @param uriOverride The scheme, host, and port that should be used for the Metrics API
-     *     endpoint. The path component of this parameter is unused.
+     * endpoint. The path component of this parameter is unused.
      * @return the Builder
      * @throws MalformedURLException This is thrown when the provided URI is malformed.
      */
@@ -163,11 +171,11 @@ public class MetricBatchSender {
    * Send a batch of metrics to New Relic.
    *
    * @param batch The batch to send. This batch will be drained of accumulated metrics as a part of
-   *     this process.
+   * this process.
    * @return The response from the ingest API.
    * @throws ResponseException In cases where the batch is unable to be successfully sent, one of
-   *     the subclasses of {@link ResponseException} will be thrown. See the documentation on that
-   *     hierarchy for details on the recommended ways to respond to those exceptions.
+   * the subclasses of {@link ResponseException} will be thrown. See the documentation on that
+   * hierarchy for details on the recommended ways to respond to those exceptions.
    */
   public Response sendBatch(MetricBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {

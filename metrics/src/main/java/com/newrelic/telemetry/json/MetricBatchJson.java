@@ -15,8 +15,6 @@ import com.newrelic.telemetry.Summary;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.TelemetryBatch;
-import com.newrelic.telemetry.json.TelemetryBatchJson.JsonCommonBlockWriter;
-import com.newrelic.telemetry.json.TelemetryBatchJson.JsonTelemetryBlockWriter;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,14 +24,9 @@ public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBloc
   private final AttributesJson attributesJson;
   private final MetricToJson metricToJson;
 
-  MetricBatchJson(MetricToJson metricToJson, AttributesJson attributesJson) {
+  public MetricBatchJson(MetricToJson metricToJson, AttributesJson attributesJson) {
     this.attributesJson = attributesJson;
     this.metricToJson = metricToJson;
-  }
-
-  public static TelemetryBatchJson build(MetricToJson metricToJson, AttributesJson attributesJson) {
-    MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributesJson);
-    return new TelemetryBatchJson(metricBatchJson, metricBatchJson);
   }
 
   @Override

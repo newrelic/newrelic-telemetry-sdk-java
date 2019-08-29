@@ -7,8 +7,6 @@ import com.newrelic.telemetry.Count;
 import com.newrelic.telemetry.Metric;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
-import com.newrelic.telemetry.json.TelemetryBatchJson.JsonCommonBlockWriter;
-import com.newrelic.telemetry.json.TelemetryBatchJson.JsonTelemetryBlockWriter;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
@@ -47,7 +45,8 @@ class TelemetryBatchJsonTest {
         };
     String expectedJson = "[{" + commonBit + "," + telemetryBit + "}]";
 
-    TelemetryBatchJson testClass = new TelemetryBatchJson(commonWriter, mainBodyWriter);
+    TelemetryBatchJson testClass = new TelemetryBatchJson(commonWriter, mainBodyWriter,
+        commonBlockSpanWriter, mainBodySpanWriter);
 
     String result = testClass.toJson(batch);
     assertEquals(expectedJson, result);
