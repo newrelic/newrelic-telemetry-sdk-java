@@ -252,7 +252,7 @@ public class MetricBatchSender {
   private int getRetryAfterValue(
       HttpResponse response, String responseBody, Optional<List<String>> retryAfter)
       throws RetryWithBackoffException {
-    if (retryAfter.isEmpty()) {
+    if (!retryAfter.isPresent()) {
       logger.warn("429 received from the backend with no retry-after header. Using 10s");
       return 10;
     }
