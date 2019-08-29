@@ -14,9 +14,7 @@ import com.newrelic.telemetry.json.MetricToJson;
 import java.io.IOException;
 import java.io.StringWriter;
 
-/**
- * This class turns Metrics into JSON via GSON.
- */
+/** This class turns Metrics into JSON via GSON. */
 public class MetricToGson implements MetricToJson {
 
   private final Gson gson;
