@@ -15,20 +15,18 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 /**
- * This class generates JSON manually instead of serializing via GSON. The advantages of doing this
- * manually are to decouple the SDK types (e.g., Count, Gauge, Summary) from the API structure, and
- * to avoid excess object creation and allocation.
+ * This class turns Metrics into JSON via GSON.
  */
-public class GsonMetricToJson implements MetricToJson {
+public class MetricToGson implements MetricToJson {
 
   private final Gson gson;
   private final AttributesGson attributeJson;
 
-  static GsonMetricToJson build(Gson gson) {
-    return new GsonMetricToJson(gson);
+  static MetricToGson build(Gson gson) {
+    return new MetricToGson(gson);
   }
 
-  public GsonMetricToJson(Gson gson) {
+  public MetricToGson(Gson gson) {
     this.gson = new GsonBuilder().create();
     attributeJson = new AttributesGson(gson);
   }

@@ -15,15 +15,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-class GsonMetricToJsonTest {
+class MetricToGsonTest {
 
   Gson gson;
-  GsonMetricToJson metricGson;
+  MetricToGson metricGson;
 
   @BeforeEach
   void setup() {
     gson = new GsonBuilder().create();
-    metricGson = new GsonMetricToJson(gson);
+    metricGson = new MetricToGson(gson);
   }
 
   @Test
