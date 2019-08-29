@@ -26,11 +26,9 @@ public class TelemetryBatch<T extends Telemetry> {
 
   private final Type type;
 
-  @Getter
-  Collection<T> telemetry;
+  @Getter Collection<T> telemetry;
 
-  @Getter
-  Attributes commonAttributes;
+  @Getter Attributes commonAttributes;
 
   public TelemetryBatch(Telemetry.Type type, Collection<T> telemetry, Attributes commonAttributes) {
     this.type = type;
@@ -38,7 +36,8 @@ public class TelemetryBatch<T extends Telemetry> {
     this.commonAttributes = Utils.verifyNonNull(commonAttributes);
   }
 
-  public static TelemetryBatch<Metric> batchMetrics(Collection<Metric> metrics, Attributes commonAttributes) {
+  public static TelemetryBatch<Metric> batchMetrics(
+      Collection<Metric> metrics, Attributes commonAttributes) {
     return new TelemetryBatch<>(Type.METRIC, metrics, commonAttributes);
   }
 

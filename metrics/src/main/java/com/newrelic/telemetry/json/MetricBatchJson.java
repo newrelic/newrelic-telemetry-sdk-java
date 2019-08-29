@@ -20,13 +20,12 @@ public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBloc
   private final AttributesJson attributesJson;
   private final MetricToJson metricToJson;
 
-    MetricBatchJson(MetricToJson metricToJson, AttributesJson attributesJson) {
+  MetricBatchJson(MetricToJson metricToJson, AttributesJson attributesJson) {
     this.attributesJson = attributesJson;
     this.metricToJson = metricToJson;
   }
 
-  public static TelemetryBatchJson build(
-      MetricToJson metricToJson, AttributesJson attributesJson) {
+  public static TelemetryBatchJson build(MetricToJson metricToJson, AttributesJson attributesJson) {
     MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributesJson);
     return new TelemetryBatchJson(metricBatchJson, metricBatchJson);
   }
