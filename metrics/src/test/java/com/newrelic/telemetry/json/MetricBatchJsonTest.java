@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 class MetricBatchJsonTest {
-    private MetricJsonGenerator metricJsonGenerator;
+    private MetricToJson metricToJson;
     private AttributesJson attributeJson;
     private Gauge gauge;
     private Attributes commonAttributes;
@@ -24,7 +24,7 @@ class MetricBatchJsonTest {
         commonAttributes = new Attributes().put("key", "val");
         gauge = new Gauge("gauge", 3d, 555, new Attributes());
         metricBatch = new MetricBatch(Collections.singletonList(gauge), commonAttributes);
-        metricJsonGenerator = mock(MetricJsonGenerator.class);
+        metricToJson = mock(MetricToJson.class);
         attributeJson = mock(AttributesJson.class);
     }
 
@@ -35,7 +35,7 @@ class MetricBatchJsonTest {
       when(attributeJson.toJson(commonAttributes.asMap())).thenReturn("{\"key\":\"val\"}");
 
       StringBuilder stringBuilder = new StringBuilder();
-      MetricBatchJson metricBatchJson = new MetricBatchJson(metricJsonGenerator, attributeJson);
+      MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributeJson);
       metricBatchJson.appendCommonJson(metricBatch, stringBuilder);
 
       JSONAssert.assertEquals(expectedCommonJsonBlock, stringBuilder.toString(), false);
@@ -45,10 +45,10 @@ class MetricBatchJsonTest {
   @DisplayName("Formatting with telemetry attributes is structured correctly")
   void testTelemetryJsonBlock() throws Exception {
       String expectedTelemetryJsonBlock = "\"metrics\":[{\"name\":\"gauge\",\"type\":\"gauge\",\"value\":3.0,\"timestamp\":555}]";
-      when(metricJsonGenerator.writeGaugeJson(gauge)).thenReturn("{\"name\":\"gauge\",\"type\":\"gauge\",\"value\":3.0,\"timestamp\":555}");
+      when(metricToJson.writeGaugeJson(gauge)).thenReturn("{\"name\":\"gauge\",\"type\":\"gauge\",\"value\":3.0,\"timestamp\":555}");
 
       StringBuilder stringBuilder = new StringBuilder();
-      MetricBatchJson metricBatchJson = new MetricBatchJson(metricJsonGenerator, attributeJson);
+      MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributeJson);
       metricBatchJson.appendTelemetry(metricBatch, stringBuilder);
 
       JSONAssert.assertEquals(expectedTelemetryJsonBlock, stringBuilder.toString(), false);

@@ -16,7 +16,7 @@ import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.json.MetricBatchJson;
-import com.newrelic.telemetry.json.MetricJsonGenerator;
+import com.newrelic.telemetry.json.MetricToJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.util.Utils;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +42,7 @@ public class MetricBatchSender {
   private static final String metricsPath = "/metric/v1";
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
-  private final TelemetryBatchJson metricJsonGenerator;
+  private final TelemetryBatchJson telemetryBatchJson;
   private final HttpPoster client;
 
   private final URL metricsUrl;
@@ -59,7 +59,7 @@ public class MetricBatchSender {
   }
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
-    metricJsonGenerator = MetricBatchJson.build(builder.jsonGenerator, builder.attributesJson);
+    telemetryBatchJson = MetricBatchJson.build(builder.metricToJson, builder.attributesJson);
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
@@ -80,15 +80,15 @@ public class MetricBatchSender {
   public static Builder builder(
       String apiKey,
       HttpPoster httpPoster,
-      MetricJsonGenerator jsonGenerator,
+      MetricToJson metricToJson,
       AttributesJson attributeJson) {
-    return new Builder(apiKey, httpPoster, jsonGenerator, attributeJson);
+    return new Builder(apiKey, httpPoster, metricToJson, attributeJson);
   }
 
   public static class Builder {
     // Required parameters
     private final String apiKey;
-    private final MetricJsonGenerator jsonGenerator;
+    private final MetricToJson metricToJson;
     private final AttributesJson attributesJson;
     private HttpPoster httpPoster;
 
@@ -107,14 +107,14 @@ public class MetricBatchSender {
     public Builder(
         String apiKey,
         HttpPoster httpPoster,
-        MetricJsonGenerator jsonGenerator,
+        MetricToJson metricToJson,
         AttributesJson attributesJson) {
       Utils.verifyNonNull(apiKey, "API key cannot be null");
       Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-      Utils.verifyNonNull(jsonGenerator, "an MetricJsonGenerator implementation is required.");
+      Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
-      this.jsonGenerator = jsonGenerator;
+      this.metricToJson = metricToJson;
       this.attributesJson = attributesJson;
 
       try {
@@ -280,7 +280,7 @@ public class MetricBatchSender {
   }
 
   private byte[] generateCompressedPayload(MetricBatch batch) throws IOException {
-    String result = metricJsonGenerator.toJson(batch);
+    String result = telemetryBatchJson.toJson(batch);
     ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
     gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));

@@ -8,7 +8,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-class AttributesGsonGeneratorTest {
+class AttributesGsonTest {
 
   @Test
   void testEmpty() throws Exception {

@@ -15,15 +15,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-class MetricGsonGeneratorTest {
+class GsonMetricToJsonTest {
 
   Gson gson;
-  MetricGsonGenerator metricGsonGenerator;
+  GsonMetricToJson metricGson;
 
   @BeforeEach
   void setup() {
     gson = new GsonBuilder().create();
-    metricGsonGenerator = new MetricGsonGenerator(gson);
+    metricGson = new GsonMetricToJson(gson);
   }
 
   @Test
@@ -32,7 +32,7 @@ class MetricGsonGeneratorTest {
     Attributes attributes = new Attributes().put("key", "val");
 
     Summary summary = new Summary("summary", 3, 33d, 55d, 66d, 555, 666, attributes);
-    String json = metricGsonGenerator.writeSummaryJson(summary);
+    String json = metricGson.writeSummaryJson(summary);
 
     String expected =
         "[{\"common\":{\"attributes\":{\"key\":\"val\"}},\"metrics\":[{\"name\":\"summary\",\"type\":\"summary\",\"value\":{\"count\":3,\"sum\":33.0,\"min\":55.0,\"max\":66.0},\"timestamp\":555,\"interval.ms\":111,\"attributes\":{}}]}]";

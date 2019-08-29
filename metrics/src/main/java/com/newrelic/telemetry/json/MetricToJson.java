@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
  *
  * <p>TODO: add links to external documentation of the json format and APIs.
  */
-public interface MetricJsonGenerator {
-  Logger logger = LoggerFactory.getLogger(MetricJsonGenerator.class);
+public interface MetricToJson {
+  Logger logger = LoggerFactory.getLogger(MetricToJson.class);
 
   /**
    * Summary json must be structured this to be accepted by the New Relic backend.

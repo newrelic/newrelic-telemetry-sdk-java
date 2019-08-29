@@ -22,6 +22,6 @@ public class SimpleMetricBatchSender {
     OkHttpPoster okHttpPoster = new OkHttpPoster(callTimeout);
     Gson gson = new GsonBuilder().create();
     return MetricBatchSender.builder(
-        apiKey, okHttpPoster, MetricGsonGenerator.build(gson), new AttributesGson(gson));
+        apiKey, okHttpPoster, GsonMetricToJson.build(gson), new AttributesGson(gson));
   }
 }

@@ -10,4 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.1] - 2019-08-26
 ### Initial public release of the SDK
 - Support for sending dimensional metrics to New Relic.
-- Reference implementations of the `HttpPoster` and `MetricJsonGenerator` using `okhttp` and `gson` respectively.
+- Reference implementations of the `HttpPoster` and `MetricToJson` using `okhttp` and `gson` respectively.
+
+## [0.3.0] - tbd
+### Support for traces via spans

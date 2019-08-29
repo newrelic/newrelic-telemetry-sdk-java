@@ -25,7 +25,7 @@ public class TelemetryBatchJsonTest {
   void setup() {
     Gson gson = new GsonBuilder().create();
     telemetryBatchJson =
-        MetricBatchJson.build(new MetricGsonGenerator(gson), new AttributesGson(gson));
+        MetricBatchJson.build(new GsonMetricToJson(gson), new AttributesGson(gson));
   }
 
   @Test

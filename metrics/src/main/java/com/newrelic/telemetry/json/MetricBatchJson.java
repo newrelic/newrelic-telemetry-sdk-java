@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBlockWriter {
 
   private final AttributesJson attributesJson;
-  private final MetricJsonGenerator metricJsonGenerator;
+  private final MetricToJson metricToJson;
 
-    MetricBatchJson(MetricJsonGenerator metricJsonGenerator, AttributesJson attributesJson) {
+    MetricBatchJson(MetricToJson metricToJson, AttributesJson attributesJson) {
     this.attributesJson = attributesJson;
-    this.metricJsonGenerator = metricJsonGenerator;
+    this.metricToJson = metricToJson;
   }
 
   public static TelemetryBatchJson build(
-      MetricJsonGenerator metricJsonGenerator, AttributesJson attributesJson) {
-    MetricBatchJson metricBatchJson = new MetricBatchJson(metricJsonGenerator, attributesJson);
+      MetricToJson metricToJson, AttributesJson attributesJson) {
+    MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributesJson);
     return new TelemetryBatchJson(metricBatchJson, metricBatchJson);
   }
 
@@ -78,9 +78,9 @@ public class MetricBatchJson implements JsonCommonBlockWriter, JsonTelemetryBloc
   private String toJsonString(Metric metric) {
     return typeDispatch(
         metric,
-        metricJsonGenerator::writeCountJson,
-        metricJsonGenerator::writeGaugeJson,
-        metricJsonGenerator::writeSummaryJson);
+        metricToJson::writeCountJson,
+        metricToJson::writeGaugeJson,
+        metricToJson::writeSummaryJson);
   }
 
   private <T> T typeDispatch(
