@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /** Class that convert any type of telemetry batch into the appropriate API json */
 public class TelemetryBatchJson {
 
-  private static final Logger logger = LoggerFactory.getLogger(MetricToJson.class);
+  private static final Logger logger = LoggerFactory.getLogger(TelemetryBatchJson.class);
   private final JsonCommonBlockWriter commonBlockWriter;
   private final JsonTelemetryBlockWriter mainBodyWriter;
 
