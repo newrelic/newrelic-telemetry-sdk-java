@@ -10,24 +10,21 @@ package com.newrelic.telemetry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import com.newrelic.telemetry.json.MetricToJson;
 import java.io.IOException;
 import java.io.StringWriter;
 
-/**
- * This class generates JSON manually instead of serializing via GSON. The advantages of doing this
- * manually are to decouple the SDK types (e.g., Count, Gauge, Summary) from the API structure, and
- * to avoid excess object creation and allocation.
- */
-public class MetricGsonGenerator implements MetricJsonGenerator {
+/** This class turns Metrics into JSON via GSON. */
+public class MetricToGson implements MetricToJson {
 
   private final Gson gson;
   private final AttributesGson attributeJson;
 
-  static MetricGsonGenerator build(Gson gson) {
-    return new MetricGsonGenerator(gson);
+  static MetricToGson build(Gson gson) {
+    return new MetricToGson(gson);
   }
 
-  public MetricGsonGenerator(Gson gson) {
+  public MetricToGson(Gson gson) {
     this.gson = new GsonBuilder().create();
     attributeJson = new AttributesGson(gson);
   }

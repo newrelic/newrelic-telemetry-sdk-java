@@ -9,30 +9,36 @@ package com.newrelic.telemetry;
 
 import static java.util.stream.Collectors.toList;
 
+import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
-/** Represents a collection of {@link Telemetry} instances. */
+/** Represents a collection of {@link Telemetry} instances and some common attributes */
 @Value
 @NonFinal
 public class TelemetryBatch<T extends Telemetry> {
 
-  @Getter(AccessLevel.PACKAGE)
-  Collection<T> telemetry;
+  private final Type type;
 
-  @Getter(AccessLevel.PACKAGE)
-  Attributes commonAttributes;
+  @Getter Collection<T> telemetry;
 
-  public TelemetryBatch(Collection<T> telemetry, Attributes commonAttributes) {
+  @Getter Attributes commonAttributes;
+
+  public TelemetryBatch(Telemetry.Type type, Collection<T> telemetry, Attributes commonAttributes) {
+    this.type = type;
     this.telemetry = Utils.verifyNonNull(telemetry);
     this.commonAttributes = Utils.verifyNonNull(commonAttributes);
+  }
+
+  public static TelemetryBatch<Metric> batchMetrics(
+      Collection<Metric> metrics, Attributes commonAttributes) {
+    return new TelemetryBatch<>(Type.METRIC, metrics, commonAttributes);
   }
 
   /**
@@ -50,9 +56,9 @@ public class TelemetryBatch<T extends Telemetry> {
 
     return Arrays.asList(
         new TelemetryBatch<>(
-            telemetry.stream().limit(halfSize).collect(toList()), commonAttributes),
+            type, telemetry.stream().limit(halfSize).collect(toList()), commonAttributes),
         new TelemetryBatch<>(
-            telemetry.stream().skip(halfSize).collect(toList()), commonAttributes));
+            type, telemetry.stream().skip(halfSize).collect(toList()), commonAttributes));
   }
 
   /**
@@ -63,5 +69,10 @@ public class TelemetryBatch<T extends Telemetry> {
    */
   public int size() {
     return telemetry.size();
+  }
+
+  /** @return true if the common attributes are not empty */
+  public boolean hasCommonAttributes() {
+    return !commonAttributes.isEmpty();
   }
 }

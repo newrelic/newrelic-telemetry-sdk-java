@@ -14,6 +14,10 @@ import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
+import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.MetricBatchJson;
+import com.newrelic.telemetry.json.MetricToJson;
+import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.util.Utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,12 +37,13 @@ import org.slf4j.LoggerFactory;
 
 /** Manages the sending of {@link MetricBatch} instances to the New Relic Metrics API. */
 public class MetricBatchSender {
+
   private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
 
   private static final String metricsPath = "/metric/v1";
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
-  private final MetricBatchJsonGenerator metricJsonGenerator;
+  private final TelemetryBatchJson telemetryBatchJson;
   private final HttpPoster client;
 
   private final URL metricsUrl;
@@ -55,8 +60,7 @@ public class MetricBatchSender {
   }
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
-    metricJsonGenerator =
-        new MetricBatchJsonGenerator(builder.jsonGenerator, builder.attributesJson);
+    telemetryBatchJson = MetricBatchJson.build(builder.metricToJson, builder.attributesJson);
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
     client = httpPoster;
@@ -69,7 +73,6 @@ public class MetricBatchSender {
    * <p>endpoint and call timeout.
    *
    * @param apiKey Your New Relic Insights Insert API key
-   * @param attributeJson
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
@@ -77,15 +80,16 @@ public class MetricBatchSender {
   public static Builder builder(
       String apiKey,
       HttpPoster httpPoster,
-      MetricJsonGenerator jsonGenerator,
+      MetricToJson metricToJson,
       AttributesJson attributeJson) {
-    return new Builder(apiKey, httpPoster, jsonGenerator, attributeJson);
+    return new Builder(apiKey, httpPoster, metricToJson, attributeJson);
   }
 
   public static class Builder {
+
     // Required parameters
     private final String apiKey;
-    private final MetricJsonGenerator jsonGenerator;
+    private final MetricToJson metricToJson;
     private final AttributesJson attributesJson;
     private HttpPoster httpPoster;
 
@@ -104,14 +108,14 @@ public class MetricBatchSender {
     public Builder(
         String apiKey,
         HttpPoster httpPoster,
-        MetricJsonGenerator jsonGenerator,
+        MetricToJson metricToJson,
         AttributesJson attributesJson) {
       Utils.verifyNonNull(apiKey, "API key cannot be null");
       Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-      Utils.verifyNonNull(jsonGenerator, "an MetricJsonGenerator implementation is required.");
+      Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
-      this.jsonGenerator = jsonGenerator;
+      this.metricToJson = metricToJson;
       this.attributesJson = attributesJson;
 
       try {
@@ -177,7 +181,7 @@ public class MetricBatchSender {
     byte[] payload;
     try {
       if (auditLoggingEnabled) {
-        logger.debug(metricJsonGenerator.generateJson(batch));
+        logger.debug(telemetryBatchJson.toJson(batch));
       }
       payload = generateCompressedPayload(batch);
     } catch (IOException e) {
@@ -277,7 +281,7 @@ public class MetricBatchSender {
   }
 
   private byte[] generateCompressedPayload(MetricBatch batch) throws IOException {
-    String result = metricJsonGenerator.generateJson(batch);
+    String result = telemetryBatchJson.toJson(batch);
     ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
     gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));

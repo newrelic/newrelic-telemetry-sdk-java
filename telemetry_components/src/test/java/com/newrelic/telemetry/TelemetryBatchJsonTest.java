@@ -1,16 +1,11 @@
-/*
- * ---------------------------------------------------------------------------------------------
- *  Copyright (c) 2019 New Relic Corporation. All rights reserved.
- *  Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
- * --------------------------------------------------------------------------------------------
- */
-
 package com.newrelic.telemetry;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.newrelic.telemetry.json.MetricBatchJson;
+import com.newrelic.telemetry.json.TelemetryBatchJson;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -20,34 +15,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-class MetricJsonGeneratorTest {
+// NOTE: These tests leverage a real gson-based implementations, which is why they live in this
+// module
+public class TelemetryBatchJsonTest {
 
-  Gson gson;
-  MetricBatchJsonGenerator jsonGenerator;
+  TelemetryBatchJson telemetryBatchJson;
 
   @BeforeEach
   void setup() {
-    gson = new GsonBuilder().create();
-    jsonGenerator =
-        new MetricBatchJsonGenerator(MetricGsonGenerator.build(gson), new AttributesGson(gson));
-  }
-
-  @Test
-  @DisplayName("Formatting with common attributes is structured correctly")
-  void testCommonAttributeJson() throws Exception {
-
-    Attributes commonAttributes = new Attributes().put("key", "val");
-
-    MetricBatch metricBatch =
-        new MetricBatch(
-            Collections.singletonList(new Gauge("gauge", 3d, 555, new Attributes())),
-            commonAttributes);
-    String json = jsonGenerator.generateJson(metricBatch);
-
-    String expected =
-        "[{\"common\":{\"attributes\":{\"key\":\"val\"}},\"metrics\":"
-            + "[{\"name\":\"gauge\",\"type\":\"gauge\",\"value\":3.0,\"timestamp\":555}]}]";
-    JSONAssert.assertEquals(expected, json, false);
+    Gson gson = new GsonBuilder().create();
+    telemetryBatchJson = MetricBatchJson.build(new MetricToGson(gson), new AttributesGson(gson));
   }
 
   @Test
@@ -78,29 +55,12 @@ class MetricJsonGeneratorTest {
         new MetricBatch(
             Collections.singletonList(new Count("count", 3, 555, 666, metricAttributes)),
             commonAttributes);
-    String json = jsonGenerator.generateJson(metricBatch);
+    String json = telemetryBatchJson.toJson(metricBatch);
 
     String expected =
         "[{\"common\":{\"attributes\":{\"string\":\"val\",\"double\":4.4,\"float\":4.32,\"int\":5,\"long\":384949494949499999,\"boolean\":true,\"number\":55.555}}"
             + ",\"metrics\":[{\"name\":\"count\",\"type\":\"count\",\"value\":3.0,\"timestamp\":555,\"interval.ms\":111,"
             + "\"attributes\":{\"string\":\"other\",\"double\":1.1,\"float\":7.554,\"int\":99,\"long\":980980980980808098,\"boolean\":false,\"number\":-0.555}}]}]";
-    JSONAssert.assertEquals(expected, json, false);
-  }
-
-  @Test
-  void testSummaryMetricJson() throws Exception {
-
-    Attributes commonAttributes = new Attributes().put("key", "val");
-
-    MetricBatch metricBatch =
-        new MetricBatch(
-            Collections.singletonList(
-                new Summary("summary", 3, 33d, 55d, 66d, 555, 666, new Attributes())),
-            commonAttributes);
-    String json = jsonGenerator.generateJson(metricBatch);
-
-    String expected =
-        "[{\"common\":{\"attributes\":{\"key\":\"val\"}},\"metrics\":[{\"name\":\"summary\",\"type\":\"summary\",\"value\":{\"count\":3,\"sum\":33.0,\"min\":55.0,\"max\":66.0},\"timestamp\":555,\"interval.ms\":111,\"attributes\":{}}]}]";
     JSONAssert.assertEquals(expected, json, false);
   }
 
@@ -122,7 +82,7 @@ class MetricJsonGeneratorTest {
         new MetricBatch(
             Collections.singletonList(new Count("count", 3, 555, 666, new Attributes())),
             commonAttributes);
-    String json = jsonGenerator.generateJson(metricBatch);
+    String json = telemetryBatchJson.toJson(metricBatch);
 
     String expected =
         "[{\"common\":{\"attributes\":{}},\"metrics\":[{\"name\":\"count\",\"type\":\"count\",\"value\":3.0,\"timestamp\":555,\"interval.ms\":111,\"attributes\":{}}]}]";
@@ -151,7 +111,7 @@ class MetricJsonGeneratorTest {
                 new Summary(
                     "summaryMaxBad", 100, 1000d, 1000d, Double.NaN, 555, 666, new Attributes())),
             commonAttributes);
-    String json = jsonGenerator.generateJson(metricBatch);
+    String json = telemetryBatchJson.toJson(metricBatch);
 
     String expected = "[{\"metrics\":[]}]";
     JSONAssert.assertEquals(expected, json, false);
@@ -177,7 +137,7 @@ class MetricJsonGeneratorTest {
         new MetricBatch(
             Collections.singletonList(new Count("count", 3, 555, 666, new Attributes())),
             commonAttributes);
-    String json = jsonGenerator.generateJson(metricBatch);
+    String json = telemetryBatchJson.toJson(metricBatch);
 
     assertTrue(
         json.contains("\"key-bigint-weird\":12312312312312312312312312312312312312312312312312"));
