@@ -26,7 +26,7 @@ public class TypeDispatchingJsonTelemetryBlockWriter implements JsonTelemetryBlo
       case METRIC: return mainBodyMetricsWriter;
       case SPAN: return mainBodySpanWriter;
     }
-    throw new UnsupportedOperationException("We don't do spans yet sorry");
+    throw new UnsupportedOperationException("Unhandled metric batch type: " + batch.getType());
   }
 
 }
