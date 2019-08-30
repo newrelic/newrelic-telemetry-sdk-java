@@ -15,7 +15,8 @@ import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.MetricBatchJson;
+import com.newrelic.telemetry.json.MetricBatchJsonCommonBlockWriter;
+import com.newrelic.telemetry.json.MetricBatchJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.json.MetricToJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
@@ -65,10 +66,8 @@ public class MetricBatchSender {
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson = new TelemetryBatchJson(
-        new TypeDispatchingJsonCommonBlockWriter(new MetricBatchJson(builder.metricToJson,
-            builder.attributesJson), null),
-        new TypeDispatchingJsonTelemetryBlockWriter(
-            new MetricBatchJson(builder.metricToJson, builder.attributesJson), null)
+        new TypeDispatchingJsonCommonBlockWriter(new MetricBatchJsonCommonBlockWriter(builder.attributesJson), null),
+        new TypeDispatchingJsonTelemetryBlockWriter(new MetricBatchJsonTelemetryBlockWriter(builder.metricToJson), null)
     );
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
