@@ -36,7 +36,7 @@ configure<JavaPluginConvention> {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-listOf(":metrics", ":telemetry", ":telemetry-components").forEach {
+listOf(":telemetry-core", ":telemetry", ":telemetry-components").forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
