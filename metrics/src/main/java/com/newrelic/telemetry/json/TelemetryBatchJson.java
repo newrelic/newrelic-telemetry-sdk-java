@@ -17,13 +17,13 @@ public class TelemetryBatchJson {
 
   private static final Logger logger = LoggerFactory.getLogger(TelemetryBatchJson.class);
   private final TypeDispatchingJsonCommonBlockWriter commonBlockWriter;
-  private final TypeDispatchingJsonTelemetryBlockWriter mainBodyWriter;
+  private final TypeDispatchingJsonTelemetryBlockWriter telemetryBlockWriter;
 
   public TelemetryBatchJson(
       TypeDispatchingJsonCommonBlockWriter commonBlockWriter,
-      TypeDispatchingJsonTelemetryBlockWriter mainBodyWriter) {
+      TypeDispatchingJsonTelemetryBlockWriter telemetryBlockWriter) {
     this.commonBlockWriter = commonBlockWriter;
-    this.mainBodyWriter = mainBodyWriter;
+    this.telemetryBlockWriter = telemetryBlockWriter;
   }
 
   public <T extends Telemetry> String toJson(TelemetryBatch<T> batch) {
@@ -37,7 +37,7 @@ public class TelemetryBatchJson {
     if (builder.length() > lengthBefore) {
       builder.append(",");
     }
-    mainBodyWriter.appendTelemetryJson(batch, builder);
+    telemetryBlockWriter.appendTelemetryJson(batch, builder);
 
     builder.append("}").append("]");
     return builder.toString();
