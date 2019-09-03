@@ -9,7 +9,8 @@ package com.newrelic.telemetry;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.newrelic.telemetry.MetricBatchSender.Builder;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBatchSender.Builder;
 import java.time.Duration;
 
 public class SimpleMetricBatchSender {

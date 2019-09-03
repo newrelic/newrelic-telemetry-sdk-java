@@ -8,12 +8,12 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Count;
-import com.newrelic.telemetry.MetricBatchSender;
-import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.exceptions.ResponseException;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBuffer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.logging.Logger;

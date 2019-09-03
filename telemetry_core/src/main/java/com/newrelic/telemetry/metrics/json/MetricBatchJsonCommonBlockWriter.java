@@ -1,7 +1,9 @@
-package com.newrelic.telemetry.json;
+package com.newrelic.telemetry.metrics.json;
 
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
+import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonCommonBlockWriter;
 
 public class MetricBatchJsonCommonBlockWriter implements JsonCommonBlockWriter {
 

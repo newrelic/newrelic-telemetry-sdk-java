@@ -10,6 +10,7 @@ package com.newrelic.telemetry;
 import static java.util.stream.Collectors.toList;
 
 import com.newrelic.telemetry.Telemetry.Type;
+import com.newrelic.telemetry.metrics.Metric;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Arrays;
 import java.util.Collection;

@@ -8,14 +8,14 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Count;
-import com.newrelic.telemetry.Gauge;
-import com.newrelic.telemetry.MetricBatch;
-import com.newrelic.telemetry.MetricBatchSender;
-import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
-import com.newrelic.telemetry.Summary;
 import com.newrelic.telemetry.TelemetryClient;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.Summary;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

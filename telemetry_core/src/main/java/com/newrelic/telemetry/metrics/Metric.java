@@ -5,7 +5,9 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
+
+import com.newrelic.telemetry.Telemetry;
 
 /**
  * A Metric is a very low-level data structure, recorded in the New Relic Metric API.

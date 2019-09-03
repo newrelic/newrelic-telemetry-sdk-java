@@ -8,10 +8,10 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Gauge;
-import com.newrelic.telemetry.MetricBatchSender;
-import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>A gauge represents a numeric value measured at a point in time.
  *
- * <p>Additionally, this provides an example of using a {@code com.newrelic.telemetry.MetricBuffer}
- * to hold on to metrics and send them as a batch.
+ * <p>Additionally, this provides an example of using a {@code
+ * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
  * <p>To run this example, provide a command line argument for your Insights Insert key.
  */

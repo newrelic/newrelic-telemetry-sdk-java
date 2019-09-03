@@ -8,10 +8,10 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Count;
-import com.newrelic.telemetry.MetricBatchSender;
-import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>2) They must include the time range over which the delta has accumulated.
  *
- * <p>Additionally, this provides an example of using a {@code com.newrelic.telemetry.MetricBuffer}
- * to hold on to metrics and send them as a batch.
+ * <p>Additionally, this provides an example of using a {@code
+ * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
  * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
  * endpoint, and the 2nd is the Insights Insert key.

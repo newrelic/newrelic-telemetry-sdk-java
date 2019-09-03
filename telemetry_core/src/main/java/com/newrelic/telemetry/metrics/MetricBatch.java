@@ -5,9 +5,11 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
+import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry.Type;
+import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Collection;
 import lombok.Value;
 

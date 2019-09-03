@@ -5,8 +5,9 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
+import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.DiscardBatchException;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
@@ -15,12 +16,12 @@ import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.MetricBatchJsonCommonBlockWriter;
-import com.newrelic.telemetry.json.MetricBatchJsonTelemetryBlockWriter;
-import com.newrelic.telemetry.json.MetricToJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
 import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricToJson;
 import com.newrelic.telemetry.util.Utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
