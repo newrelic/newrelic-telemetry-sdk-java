@@ -6,7 +6,7 @@ private object Versions {
 }
 
 dependencies {
-    "api"(project(":metrics"))
+    "api"(project(":telemetry-core"))
 
     testImplementation("org.slf4j:slf4j-simple:${Versions.slf4j}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")

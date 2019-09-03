@@ -6,7 +6,7 @@ private object Versions {
 }
 
 dependencies {
-    "api"(project(":metrics"))
+    "api"(project(":telemetry-core"))
     "api"("com.google.code.gson:gson:${Versions.gson}")
     "api"("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
 
