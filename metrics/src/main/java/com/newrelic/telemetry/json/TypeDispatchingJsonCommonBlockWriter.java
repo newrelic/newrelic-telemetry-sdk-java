@@ -27,6 +27,6 @@ public class TypeDispatchingJsonCommonBlockWriter implements JsonCommonBlockWrit
       case SPAN:
         return commonBlockSpanWriter;
     }
-    throw new UnsupportedOperationException("Unhandled metric batch type: " + batch.getType());
+    throw new UnsupportedOperationException("Unhandled telemetry batch type: " + batch.getType());
   }
 }
