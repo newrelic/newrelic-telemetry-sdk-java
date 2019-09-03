@@ -5,9 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.TelemetryBatch;
 import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.Metric;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
 import java.util.Collections;
@@ -18,7 +16,7 @@ class MetricBatchJsonCommonBlockWriterTest {
 
   private AttributesJson attributesJson;
   private Attributes commonAttributes;
-  private TelemetryBatch<Metric> metricBatch;
+  private MetricBatch metricBatch;
   private Gauge gauge;
 
   @BeforeEach

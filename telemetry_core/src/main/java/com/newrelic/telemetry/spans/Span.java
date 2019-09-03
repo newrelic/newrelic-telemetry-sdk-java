@@ -2,7 +2,7 @@ package com.newrelic.telemetry.spans;
 
 import com.newrelic.telemetry.Telemetry;
 
-/** Tag interface to identify spans. */
+/** TODO: Document me */
 public class Span implements Telemetry {
 
   @Override

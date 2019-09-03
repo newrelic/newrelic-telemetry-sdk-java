@@ -11,13 +11,20 @@ import org.junit.jupiter.api.Test;
 class SpanBatchTest {
   @Test
   void testType() {
-    SpanBatch testClass = new SpanBatch(Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"), "456");
+    SpanBatch testClass =
+        new SpanBatch(
+            Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"));
     Type result = testClass.getType();
     assertEquals(SPAN, result);
   }
 
   @Test
-  void testNullTraceId() {
-    assertThrows(IllegalArgumentException.class, () -> {new SpanBatch(Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"), null);});
+  void testWithTraceId() {
+    fail("build me");
+  }
+
+  @Test
+  void testWithoutTraceId() {
+    fail("build me");
   }
 }
