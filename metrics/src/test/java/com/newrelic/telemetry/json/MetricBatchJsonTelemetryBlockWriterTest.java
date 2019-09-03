@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-class MetricBatchJsonTest {
+class MetricBatchJsonTelemetryBlockWriterTest {
+
   private MetricToJson metricToJson;
-  private AttributesJson attributeJson;
   private Gauge gauge;
   private Attributes commonAttributes;
   private MetricBatch metricBatch;
@@ -25,20 +25,6 @@ class MetricBatchJsonTest {
     gauge = new Gauge("gauge", 3d, 555, new Attributes());
     metricBatch = new MetricBatch(Collections.singletonList(gauge), commonAttributes);
     metricToJson = mock(MetricToJson.class);
-    attributeJson = mock(AttributesJson.class);
-  }
-
-  @Test
-  @DisplayName("Formatting with common attributes is structured correctly")
-  void testCommonJsonBlock() throws Exception {
-    String expectedCommonJsonBlock = "\"common\":{\"attributes\":{\"key\":\"val\"}}";
-    when(attributeJson.toJson(commonAttributes.asMap())).thenReturn("{\"key\":\"val\"}");
-
-    StringBuilder stringBuilder = new StringBuilder();
-    MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributeJson);
-    metricBatchJson.appendCommonJson(metricBatch, stringBuilder);
-
-    JSONAssert.assertEquals(expectedCommonJsonBlock, stringBuilder.toString(), false);
   }
 
   @Test
@@ -50,8 +36,9 @@ class MetricBatchJsonTest {
         .thenReturn("{\"name\":\"gauge\",\"type\":\"gauge\",\"value\":3.0,\"timestamp\":555}");
 
     StringBuilder stringBuilder = new StringBuilder();
-    MetricBatchJson metricBatchJson = new MetricBatchJson(metricToJson, attributeJson);
-    metricBatchJson.appendTelemetry(metricBatch, stringBuilder);
+    MetricBatchJsonTelemetryBlockWriter testClass =
+        new MetricBatchJsonTelemetryBlockWriter(metricToJson);
+    testClass.appendTelemetryJson(metricBatch, stringBuilder);
 
     JSONAssert.assertEquals(expectedTelemetryJsonBlock, stringBuilder.toString(), false);
   }

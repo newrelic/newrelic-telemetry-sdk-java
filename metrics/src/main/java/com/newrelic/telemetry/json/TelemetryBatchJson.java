@@ -12,17 +12,18 @@ import com.newrelic.telemetry.TelemetryBatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Class that convert any type of telemetry batch into the appropriate API json */
+/** Class that converts any type of telemetry batch into the appropriate API json */
 public class TelemetryBatchJson {
 
   private static final Logger logger = LoggerFactory.getLogger(TelemetryBatchJson.class);
-  private final JsonCommonBlockWriter commonBlockWriter;
-  private final JsonTelemetryBlockWriter mainBodyWriter;
+  private final TypeDispatchingJsonCommonBlockWriter commonBlockWriter;
+  private final TypeDispatchingJsonTelemetryBlockWriter telemetryBlockWriter;
 
   public TelemetryBatchJson(
-      JsonCommonBlockWriter commonBlockWriter, JsonTelemetryBlockWriter mainBodyWriter) {
+      TypeDispatchingJsonCommonBlockWriter commonBlockWriter,
+      TypeDispatchingJsonTelemetryBlockWriter telemetryBlockWriter) {
     this.commonBlockWriter = commonBlockWriter;
-    this.mainBodyWriter = mainBodyWriter;
+    this.telemetryBlockWriter = telemetryBlockWriter;
   }
 
   public <T extends Telemetry> String toJson(TelemetryBatch<T> batch) {
@@ -36,19 +37,9 @@ public class TelemetryBatchJson {
     if (builder.length() > lengthBefore) {
       builder.append(",");
     }
-    mainBodyWriter.appendTelemetry(batch, builder);
+    telemetryBlockWriter.appendTelemetryJson(batch, builder);
 
     builder.append("}").append("]");
     return builder.toString();
-  }
-
-  public interface JsonCommonBlockWriter {
-
-    <T extends Telemetry> void appendCommonJson(TelemetryBatch<T> batch, StringBuilder builder);
-  }
-
-  public interface JsonTelemetryBlockWriter {
-
-    <T extends Telemetry> void appendTelemetry(TelemetryBatch<T> batch, StringBuilder builder);
   }
 }
