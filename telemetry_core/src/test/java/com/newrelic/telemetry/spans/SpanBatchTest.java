@@ -18,6 +18,6 @@ class SpanBatchTest {
 
   @Test
   void testNullTraceId() {
-    assertThrows(NullPointerException.class, () -> {SpanBatch testClass = new SpanBatch(Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"), null);});
+    assertThrows(IllegalArgumentException.class, () -> {new SpanBatch(Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"), null);});
   }
 }
