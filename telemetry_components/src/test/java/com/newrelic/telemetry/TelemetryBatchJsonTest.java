@@ -4,10 +4,7 @@ package com.newrelic.telemetry;
 // module
 public class TelemetryBatchJsonTest {
 
-
-
-
-  //TODO: FIX ME OR DEL ME
+  // TODO: FIX ME OR DEL ME
 
   /*TelemetryBatchJson telemetryBatchJson;
 

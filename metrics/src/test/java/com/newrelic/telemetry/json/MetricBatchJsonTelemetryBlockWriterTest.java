@@ -36,8 +36,8 @@ class MetricBatchJsonTelemetryBlockWriterTest {
         .thenReturn("{\"name\":\"gauge\",\"type\":\"gauge\",\"value\":3.0,\"timestamp\":555}");
 
     StringBuilder stringBuilder = new StringBuilder();
-    MetricBatchJsonTelemetryBlockWriter testClass = new MetricBatchJsonTelemetryBlockWriter(
-        metricToJson);
+    MetricBatchJsonTelemetryBlockWriter testClass =
+        new MetricBatchJsonTelemetryBlockWriter(metricToJson);
     testClass.appendTelemetry(metricBatch, stringBuilder);
 
     JSONAssert.assertEquals(expectedTelemetryJsonBlock, stringBuilder.toString(), false);

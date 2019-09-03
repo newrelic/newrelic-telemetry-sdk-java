@@ -20,8 +20,8 @@ class TypeDispatchingJsonTelemetryBlockWriterTest {
 
     when(batch.getType()).thenReturn(Type.METRIC);
 
-    TypeDispatchingJsonTelemetryBlockWriter testClass = new TypeDispatchingJsonTelemetryBlockWriter(
-        metricsWriter, null);
+    TypeDispatchingJsonTelemetryBlockWriter testClass =
+        new TypeDispatchingJsonTelemetryBlockWriter(metricsWriter, null);
 
     testClass.appendTelemetry(batch, sb);
     verify(metricsWriter).appendTelemetry(batch, sb);
@@ -35,11 +35,10 @@ class TypeDispatchingJsonTelemetryBlockWriterTest {
 
     when(batch.getType()).thenReturn(Type.SPAN);
 
-    TypeDispatchingJsonTelemetryBlockWriter testClass = new TypeDispatchingJsonTelemetryBlockWriter(
-        null, spansWriter);
+    TypeDispatchingJsonTelemetryBlockWriter testClass =
+        new TypeDispatchingJsonTelemetryBlockWriter(null, spansWriter);
 
     testClass.appendTelemetry(batch, sb);
     verify(spansWriter).appendTelemetry(batch, sb);
   }
-
 }

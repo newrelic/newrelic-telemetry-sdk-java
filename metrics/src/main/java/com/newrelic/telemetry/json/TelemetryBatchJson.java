@@ -42,6 +42,4 @@ public class TelemetryBatchJson {
     builder.append("}").append("]");
     return builder.toString();
   }
-
-
 }

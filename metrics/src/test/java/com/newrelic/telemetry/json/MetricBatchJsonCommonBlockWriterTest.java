@@ -31,8 +31,8 @@ class MetricBatchJsonCommonBlockWriterTest {
   @Test
   void testNoCommonAttributes() throws Exception {
     StringBuilder sb = new StringBuilder();
-    MetricBatchJsonCommonBlockWriter testClass = new MetricBatchJsonCommonBlockWriter(
-        attributesJson);
+    MetricBatchJsonCommonBlockWriter testClass =
+        new MetricBatchJsonCommonBlockWriter(attributesJson);
     metricBatch = new MetricBatch(Collections.singletonList(gauge), new Attributes());
     testClass.appendCommonJson(metricBatch, sb);
     assertEquals("", sb.toString());
@@ -44,8 +44,8 @@ class MetricBatchJsonCommonBlockWriterTest {
     when(attributesJson.toJson(commonAttributes.asMap())).thenReturn("{\"key\":\"val\"}");
 
     StringBuilder sb = new StringBuilder();
-    MetricBatchJsonCommonBlockWriter testClass = new MetricBatchJsonCommonBlockWriter(
-        attributesJson);
+    MetricBatchJsonCommonBlockWriter testClass =
+        new MetricBatchJsonCommonBlockWriter(attributesJson);
     testClass.appendCommonJson(metricBatch, sb);
 
     assertEquals(expectedCommonJsonBlock, sb.toString());

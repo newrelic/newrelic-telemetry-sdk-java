@@ -45,9 +45,10 @@ class TelemetryBatchJsonTest {
         };
     String expectedJson = "[{" + commonBit + "," + telemetryBit + "}]";
 
-    TelemetryBatchJson testClass = new TelemetryBatchJson(
-        new TypeDispatchingJsonCommonBlockWriter(commonWriter, null),
-        new TypeDispatchingJsonTelemetryBlockWriter(mainBodyWriter, null));
+    TelemetryBatchJson testClass =
+        new TelemetryBatchJson(
+            new TypeDispatchingJsonCommonBlockWriter(commonWriter, null),
+            new TypeDispatchingJsonTelemetryBlockWriter(mainBodyWriter, null));
 
     String result = testClass.toJson(batch);
     assertEquals(expectedJson, result);

@@ -20,8 +20,8 @@ class TypeDispatchingJsonCommonBlockWriterTest {
 
     when(batch.getType()).thenReturn(Type.METRIC);
 
-    TypeDispatchingJsonCommonBlockWriter testClass = new TypeDispatchingJsonCommonBlockWriter(
-        metricsWriter, null);
+    TypeDispatchingJsonCommonBlockWriter testClass =
+        new TypeDispatchingJsonCommonBlockWriter(metricsWriter, null);
 
     testClass.appendCommonJson(batch, sb);
     verify(metricsWriter).appendCommonJson(batch, sb);
@@ -35,12 +35,10 @@ class TypeDispatchingJsonCommonBlockWriterTest {
 
     when(batch.getType()).thenReturn(Type.SPAN);
 
-    TypeDispatchingJsonCommonBlockWriter testClass = new TypeDispatchingJsonCommonBlockWriter(
-        null, spansWriter);
+    TypeDispatchingJsonCommonBlockWriter testClass =
+        new TypeDispatchingJsonCommonBlockWriter(null, spansWriter);
 
     testClass.appendCommonJson(batch, sb);
     verify(spansWriter).appendCommonJson(batch, sb);
-
   }
-
 }

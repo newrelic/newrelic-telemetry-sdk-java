@@ -9,24 +9,25 @@ public class TypeDispatchingJsonTelemetryBlockWriter implements JsonTelemetryBlo
   private final JsonTelemetryBlockWriter mainBodySpanWriter;
 
   public TypeDispatchingJsonTelemetryBlockWriter(
-      JsonTelemetryBlockWriter mainBodyMetricsWriter,
-      JsonTelemetryBlockWriter mainBodySpanWriter) {
+      JsonTelemetryBlockWriter mainBodyMetricsWriter, JsonTelemetryBlockWriter mainBodySpanWriter) {
     this.mainBodyMetricsWriter = mainBodyMetricsWriter;
     this.mainBodySpanWriter = mainBodySpanWriter;
   }
 
   @Override
-  public <T extends Telemetry> void appendTelemetry(TelemetryBatch<T> batch,
-      StringBuilder builder) {
+  public <T extends Telemetry> void appendTelemetry(
+      TelemetryBatch<T> batch, StringBuilder builder) {
     chooseMainBodyWrite(batch).appendTelemetry(batch, builder);
   }
 
-  private <T extends Telemetry> JsonTelemetryBlockWriter chooseMainBodyWrite(TelemetryBatch<T> batch) {
-    switch(batch.getType()){
-      case METRIC: return mainBodyMetricsWriter;
-      case SPAN: return mainBodySpanWriter;
+  private <T extends Telemetry> JsonTelemetryBlockWriter chooseMainBodyWrite(
+      TelemetryBatch<T> batch) {
+    switch (batch.getType()) {
+      case METRIC:
+        return mainBodyMetricsWriter;
+      case SPAN:
+        return mainBodySpanWriter;
     }
     throw new UnsupportedOperationException("Unhandled metric batch type: " + batch.getType());
   }
-
 }
