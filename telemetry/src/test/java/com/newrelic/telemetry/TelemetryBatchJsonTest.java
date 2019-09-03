@@ -38,7 +38,7 @@ class TelemetryBatchJsonTest {
     JsonTelemetryBlockWriter mainBodyWriter =
         new JsonTelemetryBlockWriter() {
           @Override
-          public <T extends Telemetry> void appendTelemetry(
+          public <T extends Telemetry> void appendTelemetryJson(
               TelemetryBatch<T> batch, StringBuilder builder) {
             builder.append(telemetryBit);
           }

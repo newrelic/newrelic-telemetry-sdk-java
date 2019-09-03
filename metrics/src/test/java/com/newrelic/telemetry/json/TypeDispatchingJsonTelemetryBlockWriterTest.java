@@ -23,8 +23,8 @@ class TypeDispatchingJsonTelemetryBlockWriterTest {
     TypeDispatchingJsonTelemetryBlockWriter testClass =
         new TypeDispatchingJsonTelemetryBlockWriter(metricsWriter, null);
 
-    testClass.appendTelemetry(batch, sb);
-    verify(metricsWriter).appendTelemetry(batch, sb);
+    testClass.appendTelemetryJson(batch, sb);
+    verify(metricsWriter).appendTelemetryJson(batch, sb);
   }
 
   @Test
@@ -38,7 +38,7 @@ class TypeDispatchingJsonTelemetryBlockWriterTest {
     TypeDispatchingJsonTelemetryBlockWriter testClass =
         new TypeDispatchingJsonTelemetryBlockWriter(null, spansWriter);
 
-    testClass.appendTelemetry(batch, sb);
-    verify(spansWriter).appendTelemetry(batch, sb);
+    testClass.appendTelemetryJson(batch, sb);
+    verify(spansWriter).appendTelemetryJson(batch, sb);
   }
 }

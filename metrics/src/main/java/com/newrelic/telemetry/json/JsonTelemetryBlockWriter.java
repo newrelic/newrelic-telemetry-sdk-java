@@ -10,5 +10,5 @@ import com.newrelic.telemetry.TelemetryBatch;
  */
 public interface JsonTelemetryBlockWriter {
 
-  <T extends Telemetry> void appendTelemetry(TelemetryBatch<T> batch, StringBuilder builder);
+  <T extends Telemetry> void appendTelemetryJson(TelemetryBatch<T> batch, StringBuilder builder);
 }

@@ -15,9 +15,9 @@ public class TypeDispatchingJsonTelemetryBlockWriter implements JsonTelemetryBlo
   }
 
   @Override
-  public <T extends Telemetry> void appendTelemetry(
+  public <T extends Telemetry> void appendTelemetryJson(
       TelemetryBatch<T> batch, StringBuilder builder) {
-    chooseMainBodyWrite(batch).appendTelemetry(batch, builder);
+    chooseMainBodyWrite(batch).appendTelemetryJson(batch, builder);
   }
 
   private <T extends Telemetry> JsonTelemetryBlockWriter chooseMainBodyWrite(

@@ -22,7 +22,7 @@ public class MetricBatchJsonTelemetryBlockWriter implements JsonTelemetryBlockWr
   }
 
   @Override
-  public <T extends Telemetry> void appendTelemetry(
+  public <T extends Telemetry> void appendTelemetryJson(
       TelemetryBatch<T> batch, StringBuilder builder) {
 
     if (!Type.METRIC.equals(batch.getType())) {

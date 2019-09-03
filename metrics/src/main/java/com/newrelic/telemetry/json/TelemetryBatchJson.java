@@ -37,7 +37,7 @@ public class TelemetryBatchJson {
     if (builder.length() > lengthBefore) {
       builder.append(",");
     }
-    mainBodyWriter.appendTelemetry(batch, builder);
+    mainBodyWriter.appendTelemetryJson(batch, builder);
 
     builder.append("}").append("]");
     return builder.toString();

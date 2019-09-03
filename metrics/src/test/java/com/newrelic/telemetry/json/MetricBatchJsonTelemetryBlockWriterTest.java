@@ -38,7 +38,7 @@ class MetricBatchJsonTelemetryBlockWriterTest {
     StringBuilder stringBuilder = new StringBuilder();
     MetricBatchJsonTelemetryBlockWriter testClass =
         new MetricBatchJsonTelemetryBlockWriter(metricToJson);
-    testClass.appendTelemetry(metricBatch, stringBuilder);
+    testClass.appendTelemetryJson(metricBatch, stringBuilder);
 
     JSONAssert.assertEquals(expectedTelemetryJsonBlock, stringBuilder.toString(), false);
   }
