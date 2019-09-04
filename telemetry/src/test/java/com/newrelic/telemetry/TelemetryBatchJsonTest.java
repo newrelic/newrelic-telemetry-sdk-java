@@ -9,6 +9,7 @@ import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
 import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
@@ -29,22 +30,10 @@ class TelemetryBatchJsonTest {
     String commonBit = "{\"common\": \"wad\"}";
     String telemetryBit = "{\"bunchOf\": \"telemetry\"}";
 
-    JsonCommonBlockWriter commonWriter =
-        new JsonCommonBlockWriter() {
-          @Override
-          public <T extends Telemetry> void appendCommonJson(
-              TelemetryBatch<T> batch, StringBuilder builder) {
-            builder.append(commonBit);
-          }
-        };
-    JsonTelemetryBlockWriter mainBodyWriter =
-        new JsonTelemetryBlockWriter() {
-          @Override
-          public <T extends Telemetry> void appendTelemetryJson(
-              TelemetryBatch<T> batch, StringBuilder builder) {
-            builder.append(telemetryBit);
-          }
-        };
+    JsonCommonBlockWriter<Metric, MetricBatch> commonWriter =
+        (batch1, builder) -> builder.append(commonBit);
+    JsonTelemetryBlockWriter<Metric, MetricBatch> mainBodyWriter =
+        (batch12, builder) -> builder.append(telemetryBit);
     String expectedJson = "[{" + commonBit + "," + telemetryBit + "}]";
 
     TelemetryBatchJson testClass =
