@@ -21,12 +21,12 @@ public class TypeDispatchingJsonTelemetryBlockWriter {
 
   public <S extends Telemetry, T extends TelemetryBatch<S>> void appendTelemetryJson(
       T batch, StringBuilder builder) {
-    chooseMainBodyWrite(batch).appendTelemetryJson(batch, builder);
+    chooseTelemetryBlockWriter(batch).appendTelemetryJson(batch, builder);
   }
 
   @SuppressWarnings("unchecked")
   private <S extends Telemetry, T extends TelemetryBatch<S>>
-      JsonTelemetryBlockWriter<S, T> chooseMainBodyWrite(T batch) {
+      JsonTelemetryBlockWriter<S, T> chooseTelemetryBlockWriter(T batch) {
     switch (batch.getType()) {
       case METRIC:
         return (JsonTelemetryBlockWriter<S, T>) mainBodyMetricsWriter;
