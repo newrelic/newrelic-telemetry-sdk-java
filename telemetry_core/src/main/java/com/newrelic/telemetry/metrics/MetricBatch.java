@@ -12,11 +12,11 @@ import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Collection;
 import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.ToString;
 
 /** Represents a set of {@link Metric} instances, to be sent up to the New Relic Metrics API. */
-@Value
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class MetricBatch extends TelemetryBatch<Metric> {
 
   public MetricBatch(Collection<Metric> metrics, Attributes commonAttributes) {
