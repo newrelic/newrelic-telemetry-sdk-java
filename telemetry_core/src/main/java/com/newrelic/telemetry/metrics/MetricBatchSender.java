@@ -10,11 +10,7 @@ package com.newrelic.telemetry.metrics;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.DiscardBatchException;
 import com.newrelic.telemetry.exceptions.ResponseException;
-import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
-import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
-import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
-import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
@@ -22,20 +18,12 @@ import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricToJson;
+import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,38 +36,26 @@ public class MetricBatchSender {
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
   private final TelemetryBatchJson telemetryBatchJson;
-  private final HttpPoster client;
 
-  private final URL metricsUrl;
-  private final String apiKey;
   private final boolean auditLoggingEnabled;
 
-  private static final String USER_AGENT_VALUE;
-
-  static {
-    Package thisPackage = MetricBatchSender.class.getPackage();
-    String implementationVersion =
-        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("Unknown Version");
-    USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
-  }
+  private final BatchDataSender batchDataSender;
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson =
         new TelemetryBatchJson(
-            new TypeDispatchingJsonCommonBlockWriter(
+            new TypeDispatchingJsonCommonBlockWriter<>(
                 new MetricBatchJsonCommonBlockWriter(builder.attributesJson), null),
-            new TypeDispatchingJsonTelemetryBlockWriter(
+            new TypeDispatchingJsonTelemetryBlockWriter<>(
                 new MetricBatchJsonTelemetryBlockWriter(builder.metricToJson), null));
-    apiKey = builder.apiKey;
-    metricsUrl = builder.metricsUrl;
-    client = httpPoster;
+
     auditLoggingEnabled = builder.auditLoggingEnabled;
+    batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.metricsUrl);
   }
 
   /**
    * Create a new MetricBatchSender with the New Relic API key and the default values for the ingest
-   *
-   * <p>endpoint and call timeout.
+   * endpoint and call timeout.
    *
    * @param apiKey Your New Relic Insights Insert API key
    * @see <a
@@ -119,9 +95,6 @@ public class MetricBatchSender {
         HttpPoster httpPoster,
         MetricToJson metricToJson,
         AttributesJson attributesJson) {
-      Utils.verifyNonNull(apiKey, "API key cannot be null");
-      Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-      Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
       this.metricToJson = metricToJson;
@@ -164,6 +137,10 @@ public class MetricBatchSender {
      */
     public MetricBatchSender build() {
       Utils.verifyNonNull(metricsUrl, "You must specify a base URL for the New Relic metric API.");
+      Utils.verifyNonNull(apiKey, "API key cannot be null");
+      Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
+      Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
+
       return new MetricBatchSender(this, httpPoster);
     }
   }
@@ -184,119 +161,18 @@ public class MetricBatchSender {
       return new Response(202, "Ignored", "Empty batch");
     }
     logger.debug(
-        "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest API (endpoint: {})",
-        batch.size(),
-        metricsUrl);
-    byte[] payload;
-    try {
-      String json = telemetryBatchJson.toJson(batch);
-      if (auditLoggingEnabled) {
-        logger.debug(json);
-      }
-      payload = generateCompressedPayload(json);
-    } catch (IOException e) {
-      logger.error("Failed to serialize the metric batch for sending to the ingest API", e);
-      throw new DiscardBatchException();
-    }
-
-    Map<String, String> headers = new HashMap<>();
-    headers.put("Api-Key", apiKey);
-    headers.put("Content-Encoding", "gzip");
-    headers.put("User-Agent", USER_AGENT_VALUE);
-    try {
-      HttpResponse response = client.post(metricsUrl, headers, payload, MEDIA_TYPE);
-      String responseBody = response.getBody();
-      logger.debug(
-          "Response from New Relic metric ingest API: code: {}, body: {}",
-          response.getCode(),
-          response.getBody());
-      if (response.getCode() == 202) {
-        return new Response(response.getCode(), response.getMessage(), responseBody);
-      }
-      switch (response.getCode()) {
-        case 400:
-        case 403:
-        case 404:
-        case 405:
-        case 411:
-          logger.warn(
-              "Response from New Relic metric ingest API: code: {}, body: {}",
-              response.getCode(),
-              responseBody);
-          throw new DiscardBatchException();
-        case 413:
-          logger.warn(
-              "Response from New Relic metric ingest API: code: {}, body: {}",
-              response.getCode(),
-              responseBody);
-          throw new RetryWithSplitException();
-        case 429:
-          return handle429(response, responseBody);
-        default:
-          logger.error(
-              "Response from New Relic metric ingest API: code: {}, body: {}",
-              response.getCode(),
-              responseBody);
-          throw new RetryWithBackoffException();
-      }
-    } catch (IOException e) {
-      logger.error("IOException while trying to send metric data to New Relic", e);
-      throw new RetryWithBackoffException();
-    }
+        "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest endpoint)",
+        batch.size());
+    String json = generateJsonPayload(batch);
+    return batchDataSender.send(json);
   }
 
-  private Response handle429(HttpResponse response, String responseBody)
-      throws RetryWithBackoffException, RetryWithRequestedWaitException {
-    Map<String, List<String>> responseHeaders = response.getHeaders();
-
-    Optional<List<String>> retryAfter = findHeader(responseHeaders, "retry-after");
-    int retryAfterSeconds = getRetryAfterValue(response, responseBody, retryAfter);
-    logger.warn(
-        "Response from New Relic metric ingest API: code: {}, body: {}, retry-after: {}",
-        response.getCode(),
-        responseBody,
-        retryAfterSeconds);
-    throw new RetryWithRequestedWaitException(retryAfterSeconds, TimeUnit.SECONDS);
-  }
-
-  private int getRetryAfterValue(
-      HttpResponse response, String responseBody, Optional<List<String>> retryAfter)
-      throws RetryWithBackoffException {
-    if (!retryAfter.isPresent()) {
-      logger.warn("429 received from the backend with no retry-after header. Using 10s");
-      return 10;
+  private String generateJsonPayload(MetricBatch batch) throws DiscardBatchException {
+    String json = telemetryBatchJson.toJson(batch);
+    if (auditLoggingEnabled) {
+      logger.debug(json);
     }
-
-    try {
-      return Integer.parseInt(retryAfter.get().get(0));
-    } catch (NumberFormatException e) {
-      logger.warn(
-          "Unparseable retry-after header from New Relic metric ingest API: code: {}, body: {}, retry-after: {}",
-          response.getCode(),
-          responseBody,
-          response.getHeaders().get("retry-after"));
-      throw new RetryWithBackoffException();
-    }
-  }
-
-  private Optional<List<String>> findHeader(
-      Map<String, List<String>> responseHeaders, String headerName) {
-    return responseHeaders
-        .keySet()
-        .stream()
-        .filter(headerName::equalsIgnoreCase)
-        .findAny()
-        .map(responseHeaders::get)
-        .filter(values -> !values.isEmpty());
-  }
-
-  private byte[] generateCompressedPayload(String json) throws IOException {
-    ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
-    GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
-    gzipOutputStream.write(json.getBytes(StandardCharsets.UTF_8));
-    gzipOutputStream.close();
-
-    return compressedOutput.toByteArray();
+    return json;
   }
 
   private static URL constructMetricsUrlWithHost(URI hostUri) throws MalformedURLException {
