@@ -17,8 +17,8 @@ class SpanJsonTelemetryBlockWriterTest {
   @Test
   void testHappyPath() {
     StringBuilder sb = new StringBuilder();
-    Span span1 = new Span("123", new Attributes().put("a", "b"));
-    Span span2 = new Span("456", new Attributes().put("c", "d"));
+    Span span1 = Span.builder().id("123").attributes(new Attributes().put("a", "b")).build();
+    Span span2 = Span.builder().id("456").attributes(new Attributes().put("c", "d")).build();
     Collection<Span> telemetry = Arrays.asList(span1, span2);
     Attributes commonAttributes = new Attributes().put("come", "on");
     SpanBatch batch = new SpanBatch(telemetry, commonAttributes);
@@ -26,18 +26,19 @@ class SpanJsonTelemetryBlockWriterTest {
     String span2Expected = "{\"id\":\"456\",\"attributes\":{\"c\":\"d\"}}";
     String expected = "\"spans\":[" + span1Expected + "," + span2Expected + "]";
 
-    AttributesJson attributesJson = new AttributesJson() {
-      @Override
-      public String toJson(Map<String, Object> attributes) {
-        if(attributes.containsKey("a")){
-          return "\"attributes\":{\"a\":\"b\"}";
-        }
-        if(attributes.containsKey("c")){
-          return "\"attributes\":{\"c\":\"d\"}";
-        }
-        return "IDK";
-      }
-    };
+    AttributesJson attributesJson =
+        new AttributesJson() {
+          @Override
+          public String toJson(Map<String, Object> attributes) {
+            if (attributes.containsKey("a")) {
+              return "\"attributes\":{\"a\":\"b\"}";
+            }
+            if (attributes.containsKey("c")) {
+              return "\"attributes\":{\"c\":\"d\"}";
+            }
+            return "IDK";
+          }
+        };
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributesJson);
 
     testClass.appendTelemetryJson(batch, sb);
@@ -50,5 +51,4 @@ class SpanJsonTelemetryBlockWriterTest {
   void testOtherImportantCases() {
     fail("build me");
   }
-
 }

@@ -3,23 +3,24 @@ package com.newrelic.telemetry.json;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
 
-public class TypeDispatchingJsonCommonBlockWriter {
+public class TypeDispatchingJsonCommonBlockWriter<
+    S extends Telemetry, T extends TelemetryBatch<S>> {
 
-  private final JsonCommonBlockWriter commonBlockMetricsWriter;
-  private final JsonCommonBlockWriter commonBlockSpanWriter;
+  private final JsonCommonBlockWriter<S, T> commonBlockMetricsWriter;
+  private final JsonCommonBlockWriter<S, T> commonBlockSpanWriter;
 
   public TypeDispatchingJsonCommonBlockWriter(
-      JsonCommonBlockWriter commonBlockMetricsWriter, JsonCommonBlockWriter commonBlockSpanWriter) {
+      JsonCommonBlockWriter<S, T> commonBlockMetricsWriter,
+      JsonCommonBlockWriter<S, T> commonBlockSpanWriter) {
     this.commonBlockMetricsWriter = commonBlockMetricsWriter;
     this.commonBlockSpanWriter = commonBlockSpanWriter;
   }
 
-  public <T extends Telemetry> void appendCommonJson(
-      TelemetryBatch<T> batch, StringBuilder builder) {
+  public void appendCommonJson(T batch, StringBuilder builder) {
     chooseCommonWriter(batch).appendCommonJson(batch, builder);
   }
 
-  private <T extends Telemetry> JsonCommonBlockWriter chooseCommonWriter(TelemetryBatch<T> batch) {
+  private JsonCommonBlockWriter<S, T> chooseCommonWriter(T batch) {
     switch (batch.getType()) {
       case METRIC:
         return commonBlockMetricsWriter;

@@ -24,8 +24,7 @@ class TelemetryBatchJsonTest {
     Collection<Metric> metrics =
         Collections.singletonList(
             new Count("mmm", 12.1, now, later, new Attributes().put("f1", "b1")));
-    TelemetryBatch<Metric> batch =
-        TelemetryBatch.batchMetrics(metrics, new Attributes().put("c1", "d1"));
+    MetricBatch batch = TelemetryBatch.batchMetrics(metrics, new Attributes().put("c1", "d1"));
 
     String commonBit = "{\"common\": \"wad\"}";
     String telemetryBit = "{\"bunchOf\": \"telemetry\"}";
@@ -38,8 +37,8 @@ class TelemetryBatchJsonTest {
 
     TelemetryBatchJson testClass =
         new TelemetryBatchJson(
-            new TypeDispatchingJsonCommonBlockWriter(commonWriter, null),
-            new TypeDispatchingJsonTelemetryBlockWriter(mainBodyWriter, null));
+            new TypeDispatchingJsonCommonBlockWriter<Metric, MetricBatch>(commonWriter, null),
+            new TypeDispatchingJsonTelemetryBlockWriter<Metric, MetricBatch>(mainBodyWriter, null));
 
     String result = testClass.toJson(batch);
     assertEquals(expectedJson, result);

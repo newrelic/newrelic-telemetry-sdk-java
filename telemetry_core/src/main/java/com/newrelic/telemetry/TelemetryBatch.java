@@ -11,6 +11,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,9 +38,8 @@ public class TelemetryBatch<T extends Telemetry> {
     this.commonAttributes = Utils.verifyNonNull(commonAttributes);
   }
 
-  public static TelemetryBatch<Metric> batchMetrics(
-      Collection<Metric> metrics, Attributes commonAttributes) {
-    return new TelemetryBatch<>(Type.METRIC, metrics, commonAttributes);
+  public static MetricBatch batchMetrics(Collection<Metric> metrics, Attributes commonAttributes) {
+    return new MetricBatch(metrics, commonAttributes);
   }
 
   /**

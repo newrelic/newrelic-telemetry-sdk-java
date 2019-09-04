@@ -16,17 +16,20 @@ public class SpanJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Sp
   public void appendTelemetryJson(SpanBatch batch, StringBuilder sb) {
     AtomicBoolean isFirst = new AtomicBoolean(true);
     sb.append("\"spans\":[");
-    batch.getTelemetry().forEach(span -> {
-      if(!isFirst.getAndSet(false)){
-        sb.append(",");
-      }
-      sb.append("{")
-          .append("\"id\":\"")
-          .append(span.getId())
-          .append("\",")
-          .append(attributesJson.toJson(span.getAttributes().asMap()))
-          .append("}");
-    });
+    batch
+        .getTelemetry()
+        .forEach(
+            span -> {
+              if (!isFirst.getAndSet(false)) {
+                sb.append(",");
+              }
+              sb.append("{")
+                  .append("\"id\":\"")
+                  .append(span.getId())
+                  .append("\",")
+                  .append(attributesJson.toJson(span.getAttributes().asMap()))
+                  .append("}");
+            });
     sb.append("]");
   }
 }

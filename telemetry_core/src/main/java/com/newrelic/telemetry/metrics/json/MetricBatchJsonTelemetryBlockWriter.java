@@ -13,7 +13,8 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MetricBatchJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Metric,MetricBatch> {
+public class MetricBatchJsonTelemetryBlockWriter
+    implements JsonTelemetryBlockWriter<Metric, MetricBatch> {
 
   private final MetricToJson metricToJson;
 

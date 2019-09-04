@@ -12,21 +12,23 @@ import org.junit.jupiter.api.Test;
 class SpanBatchTest {
   @Test
   void testType() {
-    SpanBatch testClass = new SpanBatch(Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"));
+    SpanBatch testClass =
+        new SpanBatch(
+            Collections.emptyList(), new Attributes().put("superAwesomeKey", "megaAwesomeValue"));
     Type result = testClass.getType();
     assertEquals(SPAN, result);
   }
 
   @Test
   void testWithTraceId() {
-    SpanBatch testClass = new SpanBatch(Collections.emptyList(), new Attributes().put("a", "b"),
-        "magic");
+    SpanBatch testClass =
+        new SpanBatch(Collections.emptyList(), new Attributes().put("a", "b"), "magic");
     assertEquals("magic", testClass.getTraceId().get());
   }
 
   @Test
   void testWithoutTraceId() {
     SpanBatch testClass = new SpanBatch(Collections.emptyList(), new Attributes().put("a", "b"));
-    assertTrue(testClass.getTraceId().isEmpty());
+    assertTrue(testClass.getTraceId().isPresent());
   }
 }
