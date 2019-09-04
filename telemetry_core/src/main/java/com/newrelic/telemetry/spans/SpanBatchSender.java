@@ -1,11 +1,11 @@
 /*
- * ---------------------------------------------------------------------------------------------
- *  Copyright (c) 2019 New Relic Corporation. All rights reserved.
- *  Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
  * --------------------------------------------------------------------------------------------
+ *   Copyright (c) 2019 New Relic Corporation. All rights reserved.
+ *   Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
+ *  --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry.metrics;
+package com.newrelic.telemetry.spans;
 
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.ResponseException;
@@ -14,9 +14,8 @@ import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
 import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
-import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
-import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
-import com.newrelic.telemetry.metrics.json.MetricToJson;
+import com.newrelic.telemetry.spans.json.SpanJsonCommonBlockWriter;
+import com.newrelic.telemetry.spans.json.SpanJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.io.UncheckedIOException;
@@ -26,10 +25,10 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Manages the sending of {@link MetricBatch} instances to the New Relic Metrics API. */
-public class MetricBatchSender {
+/** Manages the sending of {@link SpanBatch} instances to the New Relic Spans API. */
+public class SpanBatchSender {
 
-  private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
+  private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
   private static final String metricsPath = "/metric/v1";
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
@@ -40,20 +39,20 @@ public class MetricBatchSender {
 
   private final BatchDataSender batchDataSender;
 
-  private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
+  private SpanBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson =
         new TelemetryBatchJson(
             new TypeDispatchingJsonCommonBlockWriter(
-                new MetricBatchJsonCommonBlockWriter(builder.attributesJson), null),
+                null, new SpanJsonCommonBlockWriter(builder.attributesJson)),
             new TypeDispatchingJsonTelemetryBlockWriter(
-                new MetricBatchJsonTelemetryBlockWriter(builder.metricToJson), null));
+                null, new SpanJsonTelemetryBlockWriter(builder.attributesJson)));
 
     auditLoggingEnabled = builder.auditLoggingEnabled;
     batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.metricsUrl);
   }
 
   /**
-   * Create a new MetricBatchSender with the New Relic API key and the default values for the ingest
+   * Create a new SpanBatchSender with the New Relic API key and the default values for the ingest
    * endpoint and call timeout.
    *
    * @param apiKey Your New Relic Insights Insert API key
@@ -62,18 +61,15 @@ public class MetricBatchSender {
    *     Relic API Keys</a>
    */
   public static Builder builder(
-      String apiKey,
-      HttpPoster httpPoster,
-      MetricToJson metricToJson,
-      AttributesJson attributeJson) {
-    return new Builder(apiKey, httpPoster, metricToJson, attributeJson);
+      String apiKey, HttpPoster httpPoster, SpanToJson spanToJson, AttributesJson attributeJson) {
+    return new Builder(apiKey, httpPoster, spanToJson, attributeJson);
   }
 
   public static class Builder {
 
     // Required parameters
     private final String apiKey;
-    private final MetricToJson metricToJson;
+    private final SpanToJson spanToJson;
     private final AttributesJson attributesJson;
     private HttpPoster httpPoster;
 
@@ -81,8 +77,8 @@ public class MetricBatchSender {
     private boolean auditLoggingEnabled = false;
 
     /**
-     * Create a new MetricBatchSender with the New Relic API key and the default values for the
-     * ingest endpoint and call timeout.
+     * Create a new SpanBatchSender with the New Relic API key and the default values for the ingest
+     * endpoint and call timeout.
      *
      * @param apiKey Your New Relic Insights Insert API key
      * @see <a
@@ -92,15 +88,15 @@ public class MetricBatchSender {
     public Builder(
         String apiKey,
         HttpPoster httpPoster,
-        MetricToJson metricToJson,
+        SpanToJson spanToJson,
         AttributesJson attributesJson) {
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
-      this.metricToJson = metricToJson;
+      this.spanToJson = spanToJson;
       this.attributesJson = attributesJson;
 
       try {
-        metricsUrl = constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+        metricsUrl = constructSpansUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
       } catch (MalformedURLException e) {
         throw new UncheckedIOException("Bad hardcoded URL", e);
       }
@@ -109,13 +105,13 @@ public class MetricBatchSender {
     /**
      * Set a URI to override the default ingest endpoint.
      *
-     * @param uriOverride The scheme, host, and port that should be used for the Metrics API
-     *     endpoint. The path component of this parameter is unused.
+     * @param uriOverride The scheme, host, and port that should be used for the Spans API endpoint.
+     *     The path component of this parameter is unused.
      * @return the Builder
      * @throws MalformedURLException This is thrown when the provided URI is malformed.
      */
     public Builder uriOverride(URI uriOverride) throws MalformedURLException {
-      this.metricsUrl = constructMetricsUrlWithHost(uriOverride);
+      this.metricsUrl = constructSpansUrlWithHost(uriOverride);
       return this;
     }
 
@@ -130,17 +126,17 @@ public class MetricBatchSender {
     }
 
     /**
-     * Build the final {@link MetricBatchSender}.
+     * Build the final {@link SpanBatchSender}.
      *
-     * @return the fully configured MetricBatchSender object
+     * @return the fully configured SpanBatchSender object
      */
-    public MetricBatchSender build() {
+    public SpanBatchSender build() {
       Utils.verifyNonNull(metricsUrl, "You must specify a base URL for the New Relic metric API.");
       Utils.verifyNonNull(apiKey, "API key cannot be null");
       Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-      Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
+      Utils.verifyNonNull(spanToJson, "an SpanToJson implementation is required.");
 
-      return new MetricBatchSender(this, httpPoster);
+      return new SpanBatchSender(this, httpPoster);
     }
   }
 
@@ -154,7 +150,7 @@ public class MetricBatchSender {
    *     the subclasses of {@link ResponseException} will be thrown. See the documentation on that
    *     hierarchy for details on the recommended ways to respond to those exceptions.
    */
-  public Response sendBatch(MetricBatch batch) throws ResponseException {
+  public Response sendBatch(SpanBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {
       logger.debug("Tried to send a null or empty metric batch");
       return new Response(202, "Ignored", "Empty batch");
@@ -166,7 +162,7 @@ public class MetricBatchSender {
     return batchDataSender.send(json);
   }
 
-  private String generateJsonPayload(MetricBatch batch) {
+  private String generateJsonPayload(SpanBatch batch) {
     String json = telemetryBatchJson.toJson(batch);
     if (auditLoggingEnabled) {
       logger.debug(json);
@@ -174,7 +170,7 @@ public class MetricBatchSender {
     return json;
   }
 
-  private static URL constructMetricsUrlWithHost(URI hostUri) throws MalformedURLException {
+  private static URL constructSpansUrlWithHost(URI hostUri) throws MalformedURLException {
     return hostUri.resolve(metricsPath).toURL();
   }
 }
