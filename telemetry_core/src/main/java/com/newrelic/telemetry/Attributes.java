@@ -25,6 +25,16 @@ import lombok.ToString;
 public class Attributes {
   private final Map<String, Object> rawAttributes = new HashMap<>();
 
+  public Attributes() {}
+
+  public Attributes(Attributes other) {
+    other.rawAttributes.forEach(rawAttributes::put);
+  }
+
+  public Attributes copy() {
+    return new Attributes(this);
+  }
+
   /**
    * Add a string-valued attribute.
    *
