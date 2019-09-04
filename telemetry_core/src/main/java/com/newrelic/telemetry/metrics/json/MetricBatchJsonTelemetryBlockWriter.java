@@ -2,19 +2,18 @@ package com.newrelic.telemetry.metrics.json;
 
 import static java.lang.Double.isFinite;
 
-import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.Telemetry.Type;
-import com.newrelic.telemetry.TelemetryBatch;
 import com.newrelic.telemetry.json.JsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.Summary;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MetricBatchJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter {
+public class MetricBatchJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Metric,MetricBatch> {
 
   private final MetricToJson metricToJson;
 
@@ -23,8 +22,7 @@ public class MetricBatchJsonTelemetryBlockWriter implements JsonTelemetryBlockWr
   }
 
   @Override
-  public <T extends Telemetry> void appendTelemetryJson(
-      TelemetryBatch<T> batch, StringBuilder builder) {
+  public void appendTelemetryJson(MetricBatch batch, StringBuilder builder) {
 
     if (!Type.METRIC.equals(batch.getType())) {
       throw new UnsupportedOperationException(

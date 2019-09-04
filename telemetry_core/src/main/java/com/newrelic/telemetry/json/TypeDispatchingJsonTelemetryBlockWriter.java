@@ -3,7 +3,7 @@ package com.newrelic.telemetry.json;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
 
-public class TypeDispatchingJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter {
+public class TypeDispatchingJsonTelemetryBlockWriter {
 
   private final JsonTelemetryBlockWriter mainBodyMetricsWriter;
   private final JsonTelemetryBlockWriter mainBodySpanWriter;
@@ -14,7 +14,6 @@ public class TypeDispatchingJsonTelemetryBlockWriter implements JsonTelemetryBlo
     this.mainBodySpanWriter = mainBodySpanWriter;
   }
 
-  @Override
   public <T extends Telemetry> void appendTelemetryJson(
       TelemetryBatch<T> batch, StringBuilder builder) {
     chooseMainBodyWrite(batch).appendTelemetryJson(batch, builder);
