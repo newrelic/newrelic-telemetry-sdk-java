@@ -11,16 +11,23 @@ public final class Span implements Telemetry {
   private final String id;
   private final Attributes attributes;
 
-  private final String traceId;      // trace.id <- top level
-  private final long timestamp;      // in epoch ms
+  private final String traceId; // trace.id <- top level
+  private final long timestamp; // in epoch ms
 
-  private final String serviceName;  // service.name <- goes in attributes
-  private final double durationMs;   // duration.ms <- goes in attributes
-  private final String name;         // goes in attributes
-  private final String parentId;     // parent.id <- goes in attributes
+  private final String serviceName; // service.name <- goes in attributes
+  private final double durationMs; // duration.ms <- goes in attributes
+  private final String name; // goes in attributes
+  private final String parentId; // parent.id <- goes in attributes
 
-  private Span(String id, Attributes attributes, String traceId, long timestamp, String serviceName,
-      double durationMs, String name, String parentId) {
+  private Span(
+      String id,
+      Attributes attributes,
+      String traceId,
+      long timestamp,
+      String serviceName,
+      double durationMs,
+      String name,
+      String parentId) {
     this.id = id;
     this.attributes = attributes;
     this.traceId = traceId;
@@ -39,7 +46,6 @@ public final class Span implements Telemetry {
   public Type getType() {
     return Type.SPAN;
   }
-
 
   public static class SpanBuilder {
 
@@ -96,9 +102,21 @@ public final class Span implements Telemetry {
     }
 
     public String toString() {
-      return "Span.SpanBuilder(id=" + this.id + ", attributes=" + this.attributes + ", traceId="
-          + this.traceId + ", timestamp=" + this.timestamp + ", serviceName=" + this.serviceName
-          + ", durationMs=" + this.durationMs + ", name=" + this.name + ", parentId="
+      return "Span.SpanBuilder(id="
+          + this.id
+          + ", attributes="
+          + this.attributes
+          + ", traceId="
+          + this.traceId
+          + ", timestamp="
+          + this.timestamp
+          + ", serviceName="
+          + this.serviceName
+          + ", durationMs="
+          + this.durationMs
+          + ", name="
+          + this.name
+          + ", parentId="
           + this.parentId
           + ")";
     }
