@@ -8,7 +8,7 @@ import com.newrelic.telemetry.TelemetryBatch;
  * fragments. This particular writer is responsible for writing the "common" block for a single
  * batch.
  */
-public interface JsonCommonBlockWriter {
+public interface JsonCommonBlockWriter<S extends Telemetry, T extends TelemetryBatch<S>> {
 
-  <T extends Telemetry> void appendCommonJson(TelemetryBatch<T> batch, StringBuilder builder);
+  void appendCommonJson(T batch, StringBuilder builder);
 }

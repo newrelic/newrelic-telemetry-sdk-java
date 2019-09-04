@@ -5,8 +5,9 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
+import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Map;
 import lombok.EqualsAndHashCode;

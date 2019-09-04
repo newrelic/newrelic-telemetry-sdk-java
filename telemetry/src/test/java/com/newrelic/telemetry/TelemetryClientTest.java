@@ -9,12 +9,17 @@ package com.newrelic.telemetry;
 
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -99,7 +104,7 @@ class TelemetryClientTest {
     AtomicBoolean batch1Seen = new AtomicBoolean(false);
     AtomicBoolean batch2Seen = new AtomicBoolean(false);
 
-    when(batchSender.sendBatch(batch))
+    when(batchSender.sendBatch(isA(MetricBatch.class)))
         .thenAnswer(
             invocation -> {
               MetricBatch batchParam = invocation.getArgument(0);

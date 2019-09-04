@@ -2,31 +2,36 @@ package com.newrelic.telemetry.json;
 
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
+import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.spans.Span;
+import com.newrelic.telemetry.spans.SpanBatch;
 
-public class TypeDispatchingJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter {
+public class TypeDispatchingJsonTelemetryBlockWriter {
 
-  private final JsonTelemetryBlockWriter mainBodyMetricsWriter;
-  private final JsonTelemetryBlockWriter mainBodySpanWriter;
+  private final JsonTelemetryBlockWriter<Metric, MetricBatch> mainBodyMetricsWriter;
+  private final JsonTelemetryBlockWriter<Span, SpanBatch> mainBodySpanWriter;
 
   public TypeDispatchingJsonTelemetryBlockWriter(
-      JsonTelemetryBlockWriter mainBodyMetricsWriter, JsonTelemetryBlockWriter mainBodySpanWriter) {
+      JsonTelemetryBlockWriter<Metric, MetricBatch> mainBodyMetricsWriter,
+      JsonTelemetryBlockWriter<Span, SpanBatch> mainBodySpanWriter) {
     this.mainBodyMetricsWriter = mainBodyMetricsWriter;
     this.mainBodySpanWriter = mainBodySpanWriter;
   }
 
-  @Override
-  public <T extends Telemetry> void appendTelemetryJson(
-      TelemetryBatch<T> batch, StringBuilder builder) {
-    chooseMainBodyWrite(batch).appendTelemetryJson(batch, builder);
+  public <S extends Telemetry, T extends TelemetryBatch<S>> void appendTelemetryJson(
+      T batch, StringBuilder builder) {
+    chooseTelemetryBlockWriter(batch).appendTelemetryJson(batch, builder);
   }
 
-  private <T extends Telemetry> JsonTelemetryBlockWriter chooseMainBodyWrite(
-      TelemetryBatch<T> batch) {
+  @SuppressWarnings("unchecked")
+  private <S extends Telemetry, T extends TelemetryBatch<S>>
+      JsonTelemetryBlockWriter<S, T> chooseTelemetryBlockWriter(T batch) {
     switch (batch.getType()) {
       case METRIC:
-        return mainBodyMetricsWriter;
+        return (JsonTelemetryBlockWriter<S, T>) mainBodyMetricsWriter;
       case SPAN:
-        return mainBodySpanWriter;
+        return (JsonTelemetryBlockWriter<S, T>) mainBodySpanWriter;
     }
     throw new UnsupportedOperationException("Unhandled telemetry batch type: " + batch.getType());
   }

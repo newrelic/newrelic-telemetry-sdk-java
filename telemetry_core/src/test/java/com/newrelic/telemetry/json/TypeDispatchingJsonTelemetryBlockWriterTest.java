@@ -4,10 +4,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.newrelic.telemetry.Metric;
-import com.newrelic.telemetry.Span;
 import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.TelemetryBatch;
+import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.spans.Span;
 import org.junit.jupiter.api.Test;
 
 class TypeDispatchingJsonTelemetryBlockWriterTest {

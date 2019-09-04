@@ -4,8 +4,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Gauge;
-import com.newrelic.telemetry.MetricBatch;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricToJson;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -10,7 +10,10 @@ package com.newrelic.telemetry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
-import com.newrelic.telemetry.json.MetricToJson;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.Summary;
+import com.newrelic.telemetry.metrics.json.MetricToJson;
 import java.io.IOException;
 import java.io.StringWriter;
 

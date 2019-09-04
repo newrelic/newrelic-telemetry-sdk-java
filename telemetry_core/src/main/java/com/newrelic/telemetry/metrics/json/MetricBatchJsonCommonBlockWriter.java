@@ -1,9 +1,12 @@
-package com.newrelic.telemetry.json;
+package com.newrelic.telemetry.metrics.json;
 
-import com.newrelic.telemetry.Telemetry;
-import com.newrelic.telemetry.TelemetryBatch;
+import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonCommonBlockWriter;
+import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
 
-public class MetricBatchJsonCommonBlockWriter implements JsonCommonBlockWriter {
+public class MetricBatchJsonCommonBlockWriter
+    implements JsonCommonBlockWriter<Metric, MetricBatch> {
 
   private final AttributesJson attributesJson;
 
@@ -12,8 +15,7 @@ public class MetricBatchJsonCommonBlockWriter implements JsonCommonBlockWriter {
   }
 
   @Override
-  public <T extends Telemetry> void appendCommonJson(
-      TelemetryBatch<T> batch, StringBuilder builder) {
+  public void appendCommonJson(MetricBatch batch, StringBuilder builder) {
     if (batch.hasCommonAttributes()) {
       builder
           .append("\"common\":")

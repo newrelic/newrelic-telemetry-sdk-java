@@ -7,8 +7,8 @@
 
 package com.newrelic.telemetry.exceptions;
 
-import com.newrelic.telemetry.MetricBatch;
-import com.newrelic.telemetry.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
 
 /**
  * This class represents a response that doesn't have a 202 status code. There are 4 concrete

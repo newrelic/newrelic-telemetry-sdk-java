@@ -5,11 +5,11 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry.json;
+package com.newrelic.telemetry.metrics.json;
 
-import com.newrelic.telemetry.Count;
-import com.newrelic.telemetry.Gauge;
-import com.newrelic.telemetry.Summary;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.Summary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

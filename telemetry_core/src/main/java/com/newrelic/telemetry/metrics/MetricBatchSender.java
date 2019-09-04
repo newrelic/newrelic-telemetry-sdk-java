@@ -5,8 +5,9 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
+import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.DiscardBatchException;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
@@ -15,12 +16,12 @@ import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.MetricBatchJsonCommonBlockWriter;
-import com.newrelic.telemetry.json.MetricBatchJsonTelemetryBlockWriter;
-import com.newrelic.telemetry.json.MetricToJson;
 import com.newrelic.telemetry.json.TelemetryBatchJson;
 import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
 import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricToJson;
 import com.newrelic.telemetry.util.Utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -188,10 +189,11 @@ public class MetricBatchSender {
         metricsUrl);
     byte[] payload;
     try {
+      String json = telemetryBatchJson.toJson(batch);
       if (auditLoggingEnabled) {
-        logger.debug(telemetryBatchJson.toJson(batch));
+        logger.debug(json);
       }
-      payload = generateCompressedPayload(batch);
+      payload = generateCompressedPayload(json);
     } catch (IOException e) {
       logger.error("Failed to serialize the metric batch for sending to the ingest API", e);
       throw new DiscardBatchException();
@@ -288,11 +290,10 @@ public class MetricBatchSender {
         .filter(values -> !values.isEmpty());
   }
 
-  private byte[] generateCompressedPayload(MetricBatch batch) throws IOException {
-    String result = telemetryBatchJson.toJson(batch);
+  private byte[] generateCompressedPayload(String json) throws IOException {
     ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
-    gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));
+    gzipOutputStream.write(json.getBytes(StandardCharsets.UTF_8));
     gzipOutputStream.close();
 
     return compressedOutput.toByteArray();

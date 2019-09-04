@@ -8,7 +8,7 @@ import com.newrelic.telemetry.TelemetryBatch;
  * fragments. This particular writer is responsible for writing the block of a batch that contains
  * telemetry.
  */
-public interface JsonTelemetryBlockWriter {
+public interface JsonTelemetryBlockWriter<S extends Telemetry, T extends TelemetryBatch<S>> {
 
-  <T extends Telemetry> void appendTelemetryJson(TelemetryBatch<T> batch, StringBuilder builder);
+  void appendTelemetryJson(T batch, StringBuilder builder);
 }

@@ -5,7 +5,7 @@
  * --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
 import static com.newrelic.telemetry.Telemetry.Type.METRIC;
 import static java.util.Collections.emptyList;
@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
+import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

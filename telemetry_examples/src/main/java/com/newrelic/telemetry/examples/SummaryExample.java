@@ -8,10 +8,10 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.MetricBatchSender;
-import com.newrelic.telemetry.MetricBuffer;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
-import com.newrelic.telemetry.Summary;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.Summary;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Summary metrics represent a summarization of some kind of activity over a time window.
  *
- * <p>Additionally, this provides an example of using a {@code com.newrelic.telemetry.MetricBuffer}
- * to hold on to metrics and send them as a batch.
+ * <p>Additionally, this provides an example of using a {@code
+ * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
  * <p>To run this example, provide a command line argument for your Insights Insert key.
  */
