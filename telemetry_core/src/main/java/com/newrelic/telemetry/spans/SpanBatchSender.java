@@ -31,7 +31,6 @@ public class SpanBatchSender {
   private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
   private static final String metricsPath = "/metric/v1";
-  private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
   private final TelemetryBatchJson telemetryBatchJson;
 
@@ -61,15 +60,14 @@ public class SpanBatchSender {
    *     Relic API Keys</a>
    */
   public static Builder builder(
-      String apiKey, HttpPoster httpPoster, SpanToJson spanToJson, AttributesJson attributeJson) {
-    return new Builder(apiKey, httpPoster, spanToJson, attributeJson);
+      String apiKey, HttpPoster httpPoster, AttributesJson attributeJson) {
+    return new Builder(apiKey, httpPoster, attributeJson);
   }
 
   public static class Builder {
 
     // Required parameters
     private final String apiKey;
-    private final SpanToJson spanToJson;
     private final AttributesJson attributesJson;
     private HttpPoster httpPoster;
 
@@ -85,14 +83,9 @@ public class SpanBatchSender {
      *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
      *     Relic API Keys</a>
      */
-    public Builder(
-        String apiKey,
-        HttpPoster httpPoster,
-        SpanToJson spanToJson,
-        AttributesJson attributesJson) {
+    public Builder(String apiKey, HttpPoster httpPoster, AttributesJson attributesJson) {
       this.httpPoster = httpPoster;
       this.apiKey = apiKey;
-      this.spanToJson = spanToJson;
       this.attributesJson = attributesJson;
 
       try {
@@ -134,7 +127,6 @@ public class SpanBatchSender {
       Utils.verifyNonNull(metricsUrl, "You must specify a base URL for the New Relic metric API.");
       Utils.verifyNonNull(apiKey, "API key cannot be null");
       Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-      Utils.verifyNonNull(spanToJson, "an SpanToJson implementation is required.");
 
       return new SpanBatchSender(this, httpPoster);
     }
