@@ -17,8 +17,8 @@ class SpanJsonTelemetryBlockWriterTest {
   @Test
   void testHappyPath() {
     StringBuilder sb = new StringBuilder();
-    Span span1 = Span.builder().id("123").attributes(new Attributes().put("a", "b")).build();
-    Span span2 = Span.builder().id("456").attributes(new Attributes().put("c", "d")).build();
+    Span span1 = Span.builder("123").attributes(new Attributes().put("a", "b")).build();
+    Span span2 = Span.builder("456").attributes(new Attributes().put("c", "d")).build();
     Collection<Span> telemetry = Arrays.asList(span1, span2);
     Attributes commonAttributes = new Attributes().put("come", "on");
     SpanBatch batch = new SpanBatch(telemetry, commonAttributes);
