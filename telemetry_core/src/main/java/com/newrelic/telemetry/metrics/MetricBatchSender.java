@@ -66,9 +66,9 @@ public class MetricBatchSender {
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson =
         new TelemetryBatchJson(
-            new TypeDispatchingJsonCommonBlockWriter(
+            new TypeDispatchingJsonCommonBlockWriter<>(
                 new MetricBatchJsonCommonBlockWriter(builder.attributesJson), null),
-            new TypeDispatchingJsonTelemetryBlockWriter(
+            new TypeDispatchingJsonTelemetryBlockWriter<>(
                 new MetricBatchJsonTelemetryBlockWriter(builder.metricToJson), null));
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
