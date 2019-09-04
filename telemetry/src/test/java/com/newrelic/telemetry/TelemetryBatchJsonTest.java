@@ -37,8 +37,8 @@ class TelemetryBatchJsonTest {
 
     TelemetryBatchJson testClass =
         new TelemetryBatchJson(
-            new TypeDispatchingJsonCommonBlockWriter<Metric, MetricBatch>(commonWriter, null),
-            new TypeDispatchingJsonTelemetryBlockWriter<Metric, MetricBatch>(mainBodyWriter, null));
+            new TypeDispatchingJsonCommonBlockWriter(commonWriter, null),
+            new TypeDispatchingJsonTelemetryBlockWriter(mainBodyWriter, null));
 
     String result = testClass.toJson(batch);
     assertEquals(expectedJson, result);

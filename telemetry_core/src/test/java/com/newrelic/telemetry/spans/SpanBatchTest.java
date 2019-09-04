@@ -2,7 +2,7 @@ package com.newrelic.telemetry.spans;
 
 import static com.newrelic.telemetry.Telemetry.Type.SPAN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry.Type;
@@ -29,6 +29,6 @@ class SpanBatchTest {
   @Test
   void testWithoutTraceId() {
     SpanBatch testClass = new SpanBatch(Collections.emptyList(), new Attributes().put("a", "b"));
-    assertTrue(testClass.getTraceId().isPresent());
+    assertFalse(testClass.getTraceId().isPresent());
   }
 }

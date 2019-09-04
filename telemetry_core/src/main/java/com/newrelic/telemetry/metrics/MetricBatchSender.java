@@ -66,9 +66,9 @@ public class MetricBatchSender {
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson =
         new TelemetryBatchJson(
-            new TypeDispatchingJsonCommonBlockWriter<>(
+            new TypeDispatchingJsonCommonBlockWriter(
                 new MetricBatchJsonCommonBlockWriter(builder.attributesJson), null),
-            new TypeDispatchingJsonTelemetryBlockWriter<>(
+            new TypeDispatchingJsonTelemetryBlockWriter(
                 new MetricBatchJsonTelemetryBlockWriter(builder.metricToJson), null));
     apiKey = builder.apiKey;
     metricsUrl = builder.metricsUrl;
@@ -189,10 +189,11 @@ public class MetricBatchSender {
         metricsUrl);
     byte[] payload;
     try {
+      String json = telemetryBatchJson.toJson(batch);
       if (auditLoggingEnabled) {
-        logger.debug(telemetryBatchJson.toJson(batch));
+        logger.debug(json);
       }
-      payload = generateCompressedPayload(batch);
+      payload = generateCompressedPayload(json);
     } catch (IOException e) {
       logger.error("Failed to serialize the metric batch for sending to the ingest API", e);
       throw new DiscardBatchException();
@@ -289,11 +290,10 @@ public class MetricBatchSender {
         .filter(values -> !values.isEmpty());
   }
 
-  private byte[] generateCompressedPayload(MetricBatch batch) throws IOException {
-    String result = telemetryBatchJson.toJson(batch);
+  private byte[] generateCompressedPayload(String json) throws IOException {
     ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
-    gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));
+    gzipOutputStream.write(json.getBytes(StandardCharsets.UTF_8));
     gzipOutputStream.close();
 
     return compressedOutput.toByteArray();

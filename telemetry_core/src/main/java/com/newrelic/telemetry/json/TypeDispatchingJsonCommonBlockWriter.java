@@ -2,30 +2,36 @@ package com.newrelic.telemetry.json;
 
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
+import com.newrelic.telemetry.metrics.Metric;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.spans.Span;
+import com.newrelic.telemetry.spans.SpanBatch;
 
-public class TypeDispatchingJsonCommonBlockWriter<
-    S extends Telemetry, T extends TelemetryBatch<S>> {
+public class TypeDispatchingJsonCommonBlockWriter {
 
-  private final JsonCommonBlockWriter<S, T> commonBlockMetricsWriter;
-  private final JsonCommonBlockWriter<S, T> commonBlockSpanWriter;
+  private final JsonCommonBlockWriter<Metric, MetricBatch> commonBlockMetricsWriter;
+  private final JsonCommonBlockWriter<Span, SpanBatch> commonBlockSpanWriter;
 
   public TypeDispatchingJsonCommonBlockWriter(
-      JsonCommonBlockWriter<S, T> commonBlockMetricsWriter,
-      JsonCommonBlockWriter<S, T> commonBlockSpanWriter) {
+      JsonCommonBlockWriter<Metric, MetricBatch> commonBlockMetricsWriter,
+      JsonCommonBlockWriter<Span, SpanBatch> commonBlockSpanWriter) {
     this.commonBlockMetricsWriter = commonBlockMetricsWriter;
     this.commonBlockSpanWriter = commonBlockSpanWriter;
   }
 
-  public void appendCommonJson(T batch, StringBuilder builder) {
+  public <S extends Telemetry, T extends TelemetryBatch<S>> void appendCommonJson(
+      T batch, StringBuilder builder) {
     chooseCommonWriter(batch).appendCommonJson(batch, builder);
   }
 
-  private JsonCommonBlockWriter<S, T> chooseCommonWriter(T batch) {
+  @SuppressWarnings("unchecked")
+  private <S extends Telemetry, T extends TelemetryBatch<S>>
+      JsonCommonBlockWriter<S, T> chooseCommonWriter(T batch) {
     switch (batch.getType()) {
       case METRIC:
-        return commonBlockMetricsWriter;
+        return (JsonCommonBlockWriter<S, T>) commonBlockMetricsWriter;
       case SPAN:
-        return commonBlockSpanWriter;
+        return (JsonCommonBlockWriter<S, T>) commonBlockSpanWriter;
     }
     throw new UnsupportedOperationException("Unhandled telemetry batch type: " + batch.getType());
   }

@@ -41,7 +41,7 @@ public class SpanJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Sp
     sb.append("]");
   }
 
-  private Map<String, Object> enhanceAttributes(Span span){
+  private Map<String, Object> enhanceAttributes(Span span) {
     Map<String, Object> result = new HashMap<>(span.getAttributes().asMap());
     result.put("name", span.getName());
     result.put("parent.id", span.getParentId());
