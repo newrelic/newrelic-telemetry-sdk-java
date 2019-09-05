@@ -23,7 +23,15 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class Attributes {
-  private final Map<String, Object> rawAttributes = new HashMap<>();
+  private final Map<String, Object> rawAttributes;
+
+  public Attributes() {
+    this(new HashMap<>());
+  }
+
+  private Attributes(Map<String, Object> rawAttributes) {
+    this.rawAttributes = rawAttributes;
+  }
 
   /**
    * Add a string-valued attribute.
@@ -67,5 +75,14 @@ public class Attributes {
   /** @return true if there are no attributes in this Attributes instance */
   public boolean isEmpty() {
     return rawAttributes.isEmpty();
+  }
+
+  /**
+   * Creates a new Attributes instance that is cloned/copied from this instance.
+   * The underlying map is not shared between this instance and the new instance.
+   * @return - A new copy of this Attributes
+   */
+  public Attributes copy(){
+    return new Attributes(new HashMap<>(rawAttributes));
   }
 }
