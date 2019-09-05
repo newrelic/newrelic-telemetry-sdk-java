@@ -57,17 +57,26 @@ public class SpanExample {
 
     List<Span> spans = new ArrayList<>();
     String traceId = UUID.randomUUID().toString();
+    long spanStartTime = System.currentTimeMillis();
+    String parentId = null;
     for (String item : items) {
+      int durationMs = random.nextInt(1000);
+
+      String spanId = UUID.randomUUID().toString();
       spans.add(
-          Span.builder(UUID.randomUUID().toString())
+          Span.builder(spanId)
               .traceId(traceId)
               .name(item)
-              .durationMs(random.nextInt(1000))
-              .timestamp(System.currentTimeMillis())
+              .parentId(parentId)
+              .durationMs(durationMs)
+              .timestamp(spanStartTime)
+              .serviceName("Telemetry SDK Span Example (" + item + ")")
               .build());
+      spanStartTime += durationMs;
+      parentId = spanId;
     }
 
-    sender.sendBatch(new SpanBatch(spans, getCommonAttributes()));
+    sender.sendBatch(new SpanBatch(spans, getCommonAttributes(), traceId));
   }
 
   /** These attributes are shared across all metrics submitted in the batch. */
