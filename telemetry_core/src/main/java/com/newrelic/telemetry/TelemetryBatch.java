@@ -9,9 +9,6 @@ package com.newrelic.telemetry;
 
 import static java.util.stream.Collectors.toList;
 
-import com.newrelic.telemetry.Telemetry.Type;
-import com.newrelic.telemetry.metrics.Metric;
-import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,20 +23,13 @@ import lombok.experimental.NonFinal;
 @NonFinal
 public class TelemetryBatch<T extends Telemetry> {
 
-  private final Type type;
-
   @Getter Collection<T> telemetry;
 
   @Getter Attributes commonAttributes;
 
-  public TelemetryBatch(Telemetry.Type type, Collection<T> telemetry, Attributes commonAttributes) {
-    this.type = type;
+  public TelemetryBatch(Collection<T> telemetry, Attributes commonAttributes) {
     this.telemetry = Utils.verifyNonNull(telemetry);
     this.commonAttributes = Utils.verifyNonNull(commonAttributes);
-  }
-
-  public static MetricBatch batchMetrics(Collection<Metric> metrics, Attributes commonAttributes) {
-    return new MetricBatch(metrics, commonAttributes);
   }
 
   /**
@@ -57,9 +47,9 @@ public class TelemetryBatch<T extends Telemetry> {
 
     return Arrays.asList(
         new TelemetryBatch<>(
-            type, telemetry.stream().limit(halfSize).collect(toList()), commonAttributes),
+            telemetry.stream().limit(halfSize).collect(toList()), commonAttributes),
         new TelemetryBatch<>(
-            type, telemetry.stream().skip(halfSize).collect(toList()), commonAttributes));
+            telemetry.stream().skip(halfSize).collect(toList()), commonAttributes));
   }
 
   /**
@@ -75,5 +65,9 @@ public class TelemetryBatch<T extends Telemetry> {
   /** @return true if the common attributes are not empty */
   public boolean hasCommonAttributes() {
     return !commonAttributes.isEmpty();
+  }
+
+  public boolean isEmpty() {
+    return telemetry.isEmpty();
   }
 }

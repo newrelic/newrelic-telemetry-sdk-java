@@ -8,7 +8,6 @@
 package com.newrelic.telemetry.metrics;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Collection;
 import lombok.EqualsAndHashCode;
@@ -20,6 +19,6 @@ import lombok.ToString;
 public class MetricBatch extends TelemetryBatch<Metric> {
 
   public MetricBatch(Collection<Metric> metrics, Attributes commonAttributes) {
-    super(Type.METRIC, metrics, commonAttributes);
+    super(metrics, commonAttributes);
   }
 }

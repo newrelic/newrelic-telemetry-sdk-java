@@ -8,7 +8,6 @@
 package com.newrelic.telemetry;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
@@ -23,12 +22,8 @@ public class MetricToGson implements MetricToJson {
   private final Gson gson;
   private final AttributesGson attributeJson;
 
-  static MetricToGson build(Gson gson) {
-    return new MetricToGson(gson);
-  }
-
   public MetricToGson(Gson gson) {
-    this.gson = new GsonBuilder().create();
+    this.gson = gson;
     attributeJson = new AttributesGson(gson);
   }
 

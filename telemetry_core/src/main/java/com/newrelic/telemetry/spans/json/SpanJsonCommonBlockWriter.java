@@ -8,17 +8,14 @@
 package com.newrelic.telemetry.spans.json;
 
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.JsonCommonBlockWriter;
-import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class SpanJsonCommonBlockWriter implements JsonCommonBlockWriter<Span, SpanBatch> {
+public class SpanJsonCommonBlockWriter {
 
   private AttributesJson attributesJson;
 
-  @Override
   public void appendCommonJson(SpanBatch batch, StringBuilder builder) {
     if (!batch.hasCommonAttributes() && !batch.getTraceId().isPresent()) {
       return;

@@ -21,10 +21,4 @@ import com.newrelic.telemetry.Telemetry;
  * @see Count
  * @see Summary
  */
-public interface Metric extends Telemetry {
-
-  @Override
-  default Type getType() {
-    return Type.METRIC;
-  };
-}
+public interface Metric extends Telemetry {}

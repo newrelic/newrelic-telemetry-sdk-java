@@ -44,10 +44,10 @@ public class SpanExample {
     String insightsInsertKey = args[0];
 
     SpanBatchSender sender =
-        SpanBatchSender.builder(
-                insightsInsertKey,
-                new OkHttpPoster(Duration.ofSeconds(5)),
-                new AttributesGson(new Gson()))
+        SpanBatchSender.builder()
+            .apiKey(insightsInsertKey)
+            .httpPoster(new OkHttpPoster(Duration.ofSeconds(5)))
+            .attributesJson(new AttributesGson(new Gson()))
             .enableAuditLogging()
             .build();
 

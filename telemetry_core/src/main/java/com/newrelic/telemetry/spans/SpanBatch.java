@@ -8,7 +8,6 @@
 package com.newrelic.telemetry.spans;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.Telemetry.Type;
 import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Collection;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class SpanBatch extends TelemetryBatch<Span> {
   }
 
   public SpanBatch(Collection<Span> telemetry, Attributes commonAttributes, String traceId) {
-    super(Type.SPAN, telemetry, commonAttributes);
+    super(telemetry, commonAttributes);
     this.traceId = traceId;
   }
 

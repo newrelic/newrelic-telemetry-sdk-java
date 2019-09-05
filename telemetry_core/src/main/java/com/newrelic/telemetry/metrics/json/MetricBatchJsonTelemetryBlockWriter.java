@@ -9,8 +9,6 @@ package com.newrelic.telemetry.metrics.json;
 
 import static java.lang.Double.isFinite;
 
-import com.newrelic.telemetry.Telemetry.Type;
-import com.newrelic.telemetry.json.JsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.Metric;
@@ -20,8 +18,7 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MetricBatchJsonTelemetryBlockWriter
-    implements JsonTelemetryBlockWriter<Metric, MetricBatch> {
+public class MetricBatchJsonTelemetryBlockWriter {
 
   private final MetricToJson metricToJson;
 
@@ -29,16 +26,9 @@ public class MetricBatchJsonTelemetryBlockWriter
     this.metricToJson = metricToJson;
   }
 
-  @Override
   public void appendTelemetryJson(MetricBatch batch, StringBuilder builder) {
-
-    if (!Type.METRIC.equals(batch.getType())) {
-      throw new UnsupportedOperationException(
-          "Invalid batch type. Expected " + Type.METRIC + " but got " + batch.getType());
-    }
-
     builder.append("\"metrics\":").append("[");
-    Collection<Metric> metrics = (Collection<Metric>) batch.getTelemetry();
+    Collection<Metric> metrics = batch.getTelemetry();
 
     builder.append(
         metrics

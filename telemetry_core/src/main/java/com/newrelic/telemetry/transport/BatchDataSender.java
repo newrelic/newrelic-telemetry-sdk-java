@@ -31,11 +31,12 @@ public class BatchDataSender {
   private static final Logger logger = LoggerFactory.getLogger(BatchDataSender.class);
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
+  private static final String USER_AGENT_VALUE;
+
   private final HttpPoster client;
   private final String apiKey;
   private final URL endpointURl;
-
-  private static final String USER_AGENT_VALUE;
+  private final boolean auditLoggingEnabled;
 
   static {
     Package thisPackage = BatchDataSender.class.getPackage();
@@ -44,15 +45,20 @@ public class BatchDataSender {
     USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
   }
 
-  public BatchDataSender(HttpPoster client, String apiKey, URL endpointURl) {
+  public BatchDataSender(
+      HttpPoster client, String apiKey, URL endpointURl, boolean auditLoggingEnabled) {
     this.client = client;
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
+    this.auditLoggingEnabled = auditLoggingEnabled;
   }
 
   public Response send(String json)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
           RetryWithRequestedWaitException {
+    if (auditLoggingEnabled) {
+      logger.debug("Sending json: " + json);
+    }
     byte[] payload = generatePayload(json);
 
     return sendPayload(payload);
