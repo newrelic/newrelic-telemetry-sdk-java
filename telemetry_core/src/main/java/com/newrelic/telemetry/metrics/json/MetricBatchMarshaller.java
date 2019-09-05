@@ -10,7 +10,8 @@ public class MetricBatchMarshaller {
   private final MetricBatchJsonCommonBlockWriter commonBlockWriter;
   private final MetricBatchJsonTelemetryBlockWriter telemetryBlockWriter;
 
-  public MetricBatchMarshaller(MetricBatchJsonCommonBlockWriter commonBlockWriter,
+  public MetricBatchMarshaller(
+      MetricBatchJsonCommonBlockWriter commonBlockWriter,
       MetricBatchJsonTelemetryBlockWriter telemetryBlockWriter) {
     this.commonBlockWriter = commonBlockWriter;
     this.telemetryBlockWriter = telemetryBlockWriter;
@@ -32,5 +33,4 @@ public class MetricBatchMarshaller {
     builder.append("}").append("]");
     return builder.toString();
   }
-
 }

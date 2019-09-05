@@ -45,8 +45,8 @@ public class BatchDataSender {
     USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
   }
 
-  public BatchDataSender(HttpPoster client, String apiKey, URL endpointURl,
-      boolean auditLoggingEnabled) {
+  public BatchDataSender(
+      HttpPoster client, String apiKey, URL endpointURl, boolean auditLoggingEnabled) {
     this.client = client;
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
@@ -55,8 +55,8 @@ public class BatchDataSender {
 
   public Response send(String json)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
-      RetryWithRequestedWaitException {
-    if(auditLoggingEnabled){
+          RetryWithRequestedWaitException {
+    if (auditLoggingEnabled) {
       logger.debug("Sending json: " + json);
     }
     byte[] payload = generatePayload(json);
@@ -86,7 +86,7 @@ public class BatchDataSender {
 
   private Response sendPayload(byte[] payload)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
-      RetryWithRequestedWaitException {
+          RetryWithRequestedWaitException {
     Map<String, String> headers = new HashMap<>();
     headers.put("Api-Key", apiKey);
     headers.put("Content-Encoding", "gzip");

@@ -47,8 +47,8 @@ public class SpanBatchSender {
                 null, new SpanJsonTelemetryBlockWriter(builder.attributesJson)));
 
     auditLoggingEnabled = builder.auditLoggingEnabled;
-    batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.spansUrl,
-        auditLoggingEnabled);
+    batchDataSender =
+        new BatchDataSender(httpPoster, builder.apiKey, builder.spansUrl, auditLoggingEnabled);
   }
 
   /**

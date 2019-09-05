@@ -10,7 +10,8 @@ public class SpanBatchMarshaller {
   private final SpanJsonCommonBlockWriter commonBlockWriter;
   private final SpanJsonTelemetryBlockWriter telemetryBlockWriter;
 
-  public SpanBatchMarshaller(SpanJsonCommonBlockWriter commonBlockWriter,
+  public SpanBatchMarshaller(
+      SpanJsonCommonBlockWriter commonBlockWriter,
       SpanJsonTelemetryBlockWriter telemetryBlockWriter) {
     this.commonBlockWriter = commonBlockWriter;
     this.telemetryBlockWriter = telemetryBlockWriter;
