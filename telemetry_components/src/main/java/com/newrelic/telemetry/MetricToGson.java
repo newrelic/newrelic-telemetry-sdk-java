@@ -23,10 +23,6 @@ public class MetricToGson implements MetricToJson {
   private final Gson gson;
   private final AttributesGson attributeJson;
 
-  static MetricToGson build(Gson gson) {
-    return new MetricToGson(gson);
-  }
-
   public MetricToGson(Gson gson) {
     this.gson = new GsonBuilder().create();
     attributeJson = new AttributesGson(gson);

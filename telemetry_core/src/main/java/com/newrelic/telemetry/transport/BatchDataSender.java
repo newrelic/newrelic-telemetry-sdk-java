@@ -8,17 +8,12 @@
 package com.newrelic.telemetry.transport;
 
 import com.newrelic.telemetry.Response;
-import com.newrelic.telemetry.Telemetry;
-import com.newrelic.telemetry.TelemetryBatch;
 import com.newrelic.telemetry.exceptions.DiscardBatchException;
-import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
-import com.newrelic.telemetry.http.HttpUserAgent;
-import com.newrelic.telemetry.json.TelemetryBatchJson;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -32,49 +27,38 @@ import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchDataSender<T extends Telemetry> {
-
+public class BatchDataSender {
   private static final Logger logger = LoggerFactory.getLogger(BatchDataSender.class);
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
+
+  private static final String USER_AGENT_VALUE;
 
   private final HttpPoster client;
   private final String apiKey;
   private final URL endpointURl;
-  private final TelemetryBatchJson telemetryBatchJson;
   private final boolean auditLoggingEnabled;
 
+  static {
+    Package thisPackage = BatchDataSender.class.getPackage();
+    String implementationVersion =
+        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("Unknown Version");
+    USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
+  }
+
   public BatchDataSender(HttpPoster client, String apiKey, URL endpointURl,
-      TelemetryBatchJson telemetryBatchJson, boolean auditLoggingEnabled) {
+      boolean auditLoggingEnabled) {
     this.client = client;
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
-    this.telemetryBatchJson = telemetryBatchJson;
     this.auditLoggingEnabled = auditLoggingEnabled;
   }
 
-  public Response sendBatch(TelemetryBatch<T> batch) throws ResponseException {
-    if (batch == null || batch.isEmpty()) {
-      logger.debug("Tried to send a null or empty span batch");
-      return new Response(202, "Ignored", "Empty batch");
-    }
-    logger.debug(
-        "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest endpoint)",
-        batch.size());
-    String json = generateJsonPayload(batch);
-    return send(json);
-  }
-
-  private String generateJsonPayload(TelemetryBatch<T> batch) {
-    String json = telemetryBatchJson.toJson(batch);
-    if (auditLoggingEnabled) {
-      logger.debug("Sending JSON: " + json);
-    }
-    return json;
-  }
-
-  private Response send(String json)
+  public Response send(String json)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
       RetryWithRequestedWaitException {
+    if(auditLoggingEnabled){
+      logger.debug("Sending json: " + json);
+    }
     byte[] payload = generatePayload(json);
 
     return sendPayload(payload);
@@ -106,7 +90,7 @@ public class BatchDataSender<T extends Telemetry> {
     Map<String, String> headers = new HashMap<>();
     headers.put("Api-Key", apiKey);
     headers.put("Content-Encoding", "gzip");
-    headers.put("User-Agent", HttpUserAgent.VALUE);
+    headers.put("User-Agent", USER_AGENT_VALUE);
     try {
       HttpResponse response = client.post(endpointURl, headers, payload, MEDIA_TYPE);
       String responseBody = response.getBody();
