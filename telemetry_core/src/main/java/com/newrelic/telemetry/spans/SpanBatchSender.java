@@ -36,7 +36,7 @@ public class SpanBatchSender {
 
   private final boolean auditLoggingEnabled;
 
-  private final BatchDataSender batchDataSender;
+  private final BatchDataSender<Span> batchDataSender;
 
   private SpanBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson =
@@ -47,7 +47,8 @@ public class SpanBatchSender {
                 null, new SpanJsonTelemetryBlockWriter(builder.attributesJson)));
 
     auditLoggingEnabled = builder.auditLoggingEnabled;
-    batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.spansUrl);
+    batchDataSender = new BatchDataSender<>(httpPoster, builder.apiKey, builder.spansUrl,
+        telemetryBatchJson, auditLoggingEnabled);
   }
 
   /**
@@ -143,15 +144,7 @@ public class SpanBatchSender {
    *     hierarchy for details on the recommended ways to respond to those exceptions.
    */
   public Response sendBatch(SpanBatch batch) throws ResponseException {
-    if (batch == null || batch.size() == 0) {
-      logger.debug("Tried to send a null or empty span batch");
-      return new Response(202, "Ignored", "Empty batch");
-    }
-    logger.debug(
-        "Sending a span batch (number of spans: {}) to the New Relic span ingest endpoint)",
-        batch.size());
-    String json = generateJsonPayload(batch);
-    return batchDataSender.send(json);
+    return batchDataSender.sendBatch(batch);
   }
 
   private String generateJsonPayload(SpanBatch batch) {

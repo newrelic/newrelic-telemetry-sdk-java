@@ -32,13 +32,12 @@ public class MetricBatchSender {
   private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
 
   private static final String metricsPath = "/metric/v1";
-  private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
   private final TelemetryBatchJson telemetryBatchJson;
 
   private final boolean auditLoggingEnabled;
 
-  private final BatchDataSender batchDataSender;
+  private final BatchDataSender<Metric> batchDataSender;
 
   private MetricBatchSender(Builder builder, HttpPoster httpPoster) {
     telemetryBatchJson =
@@ -49,7 +48,8 @@ public class MetricBatchSender {
                 new MetricBatchJsonTelemetryBlockWriter(builder.metricToJson), null));
 
     auditLoggingEnabled = builder.auditLoggingEnabled;
-    batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.metricsUrl);
+    batchDataSender = new BatchDataSender<>(httpPoster, builder.apiKey, builder.metricsUrl,
+        telemetryBatchJson, auditLoggingEnabled);
   }
 
   /**
@@ -155,15 +155,7 @@ public class MetricBatchSender {
    *     hierarchy for details on the recommended ways to respond to those exceptions.
    */
   public Response sendBatch(MetricBatch batch) throws ResponseException {
-    if (batch == null || batch.size() == 0) {
-      logger.debug("Tried to send a null or empty metric batch");
-      return new Response(202, "Ignored", "Empty batch");
-    }
-    logger.debug(
-        "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest endpoint)",
-        batch.size());
-    String json = generateJsonPayload(batch);
-    return batchDataSender.send(json);
+    return batchDataSender.sendBatch(batch);
   }
 
   private String generateJsonPayload(MetricBatch batch) {
