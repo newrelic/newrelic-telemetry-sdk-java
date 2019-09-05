@@ -24,17 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This example shows an example of generating a Count metric. Count metrics have two requirements:
+ * This is an example of sending a batch of Spans to New Relic.
  *
- * <p>1) They represent the "delta" in the counted value from the previous report.
+ * <p>A SpanBatchSender is created with the Insights insert key and reference implementations from
+ * Gson and OkHttp. An example batch of 4 spans (apples, oranges, beer, wine) is created and then
+ * sent via sender.sendBatch().
  *
- * <p>2) They must include the time range over which the delta has accumulated.
- *
- * <p>Additionally, this provides an example of using a {@code
- * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
- *
- * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
- * endpoint, and the 2nd is the Insights Insert key.
+ * <p>To run this example, pass the insights api key as a commandline argument.
  */
 public class SpanExample {
   private static final Logger logger = LoggerFactory.getLogger(SpanExample.class);
