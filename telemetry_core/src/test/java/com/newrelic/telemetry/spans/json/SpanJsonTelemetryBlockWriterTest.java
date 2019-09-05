@@ -1,12 +1,12 @@
 package com.newrelic.telemetry.spans.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -82,7 +82,7 @@ class SpanJsonTelemetryBlockWriterTest {
 
   @Test
   void testMinimalData() throws Exception {
-    Span span = Span.builder("123").timestamp(666666).build();
+    Span span = Span.builder("123").timestamp(12345).build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
     StringBuilder stringBuilder = new StringBuilder();
 
@@ -92,7 +92,7 @@ class SpanJsonTelemetryBlockWriterTest {
     String result = stringBuilder.toString();
 
     String expected =
-        "\"spans\":[{\"id\":\"123\",\"timestamp\":666666,\"attributes\":{}}]";
+        "\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
     assertEquals(expected, result);
   }
 }
