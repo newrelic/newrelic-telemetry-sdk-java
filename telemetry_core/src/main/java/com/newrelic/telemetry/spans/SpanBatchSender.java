@@ -157,7 +157,7 @@ public class SpanBatchSender {
   private String generateJsonPayload(SpanBatch batch) {
     String json = telemetryBatchJson.toJson(batch);
     if (auditLoggingEnabled) {
-      logger.debug(json);
+      logger.debug("Sending Span Data: " + json);
     }
     return json;
   }

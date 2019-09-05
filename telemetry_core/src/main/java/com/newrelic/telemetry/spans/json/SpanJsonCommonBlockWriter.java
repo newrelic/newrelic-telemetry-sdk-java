@@ -24,7 +24,7 @@ public class SpanJsonCommonBlockWriter implements JsonCommonBlockWriter<Span, Sp
 
   private void appendTraceId(SpanBatch batch, StringBuilder builder) {
     if (batch.getTraceId().isPresent()) {
-      builder.append("\"traceId\":\"").append(batch.getTraceId().get()).append("\"");
+      builder.append("\"trace.id\":\"").append(batch.getTraceId().get()).append("\"");
     }
   }
 
