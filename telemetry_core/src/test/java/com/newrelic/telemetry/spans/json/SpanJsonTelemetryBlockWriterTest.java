@@ -81,7 +81,7 @@ class SpanJsonTelemetryBlockWriterTest {
   }
 
   @Test
-  void testMinimalData() throws Exception {
+  void testNoTraceId() {
     Span span = Span.builder("123").timestamp(12345).build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
     StringBuilder stringBuilder = new StringBuilder();
