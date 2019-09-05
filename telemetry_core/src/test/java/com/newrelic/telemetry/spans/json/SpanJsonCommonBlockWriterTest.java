@@ -1,3 +1,10 @@
+/*
+ * ---------------------------------------------------------------------------------------------
+ *   Copyright (c) 2019 New Relic Corporation. All rights reserved.
+ *   Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
+ *  --------------------------------------------------------------------------------------------
+ */
+
 package com.newrelic.telemetry.spans.json;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +30,7 @@ class SpanJsonCommonBlockWriterTest {
   @Test
   void testAppendJsonWithCommonAttributesAndTraceId() {
     String expected =
-        "\"common\":{\"traceId\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}";
+        "\"common\":{\"trace.id\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}";
     StringBuilder builder = new StringBuilder();
     SpanBatch batch =
         new SpanBatch(
@@ -39,7 +46,7 @@ class SpanJsonCommonBlockWriterTest {
 
   @Test
   void testAppendJsonWithTraceIdNoCommonAttributes() {
-    String expected = "\"common\":{\"traceId\":\"123\"}";
+    String expected = "\"common\":{\"trace.id\":\"123\"}";
     StringBuilder builder = new StringBuilder();
     SpanBatch batch = new SpanBatch(Collections.emptyList(), new Attributes(), "123");
 

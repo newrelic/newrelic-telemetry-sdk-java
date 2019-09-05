@@ -53,7 +53,7 @@ import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-class LowLevelApiIntegrationTest {
+class MetricApiIntegrationTest {
 
   private static final int SERVICE_PORT = 1080 + new Random().nextInt(900);
   private static String containerIpAddress;

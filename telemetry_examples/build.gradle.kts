@@ -14,7 +14,7 @@ dependencies {
     implementation(project(":telemetry-core"))
     implementation(project(":telemetry"))
     implementation(project(":telemetry-components"))
-    runtimeOnly("org.slf4j:slf4j-jdk14:${Versions.slf4j}")
+    runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
 }
 
 exampleClassTask("com.newrelic.telemetry.count.CountExample")

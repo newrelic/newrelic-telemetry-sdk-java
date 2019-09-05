@@ -1,3 +1,10 @@
+/*
+ * ---------------------------------------------------------------------------------------------
+ *   Copyright (c) 2019 New Relic Corporation. All rights reserved.
+ *   Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
+ *  --------------------------------------------------------------------------------------------
+ */
+
 package com.newrelic.telemetry.spans.json;
 
 import com.newrelic.telemetry.json.AttributesJson;
@@ -35,7 +42,7 @@ public class SpanJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Sp
                   .append("\"timestamp\":")
                   .append(span.getTimestamp())
                   .append(",")
-                  .append(attributesJson.toJson(enhanceAttributes(span)))
+                  .append("\"attributes\":" + attributesJson.toJson(enhanceAttributes(span)))
                   .append("}");
             });
     sb.append("]");
