@@ -53,7 +53,7 @@ public class BatchDataSender<T extends Telemetry> {
   }
 
   public Response sendBatch(TelemetryBatch<T> batch) throws ResponseException {
-    if (batch == null || batch.size() == 0) {
+    if (batch == null || batch.isEmpty()) {
       logger.debug("Tried to send a null or empty span batch");
       return new Response(202, "Ignored", "Empty batch");
     }

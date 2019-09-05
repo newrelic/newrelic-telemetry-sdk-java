@@ -76,4 +76,8 @@ public class TelemetryBatch<T extends Telemetry> {
   public boolean hasCommonAttributes() {
     return !commonAttributes.isEmpty();
   }
+
+  public boolean isEmpty() {
+    return telemetry.isEmpty();
+  }
 }
