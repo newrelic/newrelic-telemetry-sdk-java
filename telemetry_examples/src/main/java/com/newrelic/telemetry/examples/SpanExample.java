@@ -14,6 +14,7 @@ import com.newrelic.telemetry.OkHttpPoster;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,7 @@ public class SpanExample {
             .httpPoster(new OkHttpPoster(Duration.ofSeconds(5)))
             .attributesJson(new AttributesGson(new Gson()))
             .enableAuditLogging()
+            .uriOverride(URI.create("https://staging-trace-api.newrelic.com"))
             .build();
 
     List<Span> spans = new ArrayList<>();
