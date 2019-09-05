@@ -30,7 +30,7 @@ public class SpanBatchSender {
 
   private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
-  private static final String metricsPath = "/metric/v1";
+  private static final String spansPath = "/trace/v1";
 
   private final TelemetryBatchJson telemetryBatchJson;
 
@@ -47,7 +47,7 @@ public class SpanBatchSender {
                 null, new SpanJsonTelemetryBlockWriter(builder.attributesJson)));
 
     auditLoggingEnabled = builder.auditLoggingEnabled;
-    batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.metricsUrl);
+    batchDataSender = new BatchDataSender(httpPoster, builder.apiKey, builder.spansUrl);
   }
 
   /**
@@ -71,7 +71,7 @@ public class SpanBatchSender {
     private final AttributesJson attributesJson;
     private HttpPoster httpPoster;
 
-    private URL metricsUrl;
+    private URL spansUrl;
     private boolean auditLoggingEnabled = false;
 
     /**
@@ -89,7 +89,7 @@ public class SpanBatchSender {
       this.attributesJson = attributesJson;
 
       try {
-        metricsUrl = constructSpansUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+        spansUrl = constructSpansUrlWithHost(URI.create("https://trace-api.newrelic.com/"));
       } catch (MalformedURLException e) {
         throw new UncheckedIOException("Bad hardcoded URL", e);
       }
@@ -104,7 +104,7 @@ public class SpanBatchSender {
      * @throws MalformedURLException This is thrown when the provided URI is malformed.
      */
     public Builder uriOverride(URI uriOverride) throws MalformedURLException {
-      this.metricsUrl = constructSpansUrlWithHost(uriOverride);
+      this.spansUrl = constructSpansUrlWithHost(uriOverride);
       return this;
     }
 
@@ -124,7 +124,7 @@ public class SpanBatchSender {
      * @return the fully configured SpanBatchSender object
      */
     public SpanBatchSender build() {
-      Utils.verifyNonNull(metricsUrl, "You must specify a base URL for the New Relic metric API.");
+      Utils.verifyNonNull(spansUrl, "You must specify a base URL for the New Relic span API.");
       Utils.verifyNonNull(apiKey, "API key cannot be null");
       Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
 
@@ -133,9 +133,9 @@ public class SpanBatchSender {
   }
 
   /**
-   * Send a batch of metrics to New Relic.
+   * Send a batch of spans to New Relic.
    *
-   * @param batch The batch to send. This batch will be drained of accumulated metrics as a part of
+   * @param batch The batch to send. This batch will be drained of accumulated spans as a part of
    *     this process.
    * @return The response from the ingest API.
    * @throws ResponseException In cases where the batch is unable to be successfully sent, one of
@@ -144,11 +144,11 @@ public class SpanBatchSender {
    */
   public Response sendBatch(SpanBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {
-      logger.debug("Tried to send a null or empty metric batch");
+      logger.debug("Tried to send a null or empty span batch");
       return new Response(202, "Ignored", "Empty batch");
     }
     logger.debug(
-        "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest endpoint)",
+        "Sending a span batch (number of spans: {}) to the New Relic span ingest endpoint)",
         batch.size());
     String json = generateJsonPayload(batch);
     return batchDataSender.send(json);
@@ -163,6 +163,6 @@ public class SpanBatchSender {
   }
 
   private static URL constructSpansUrlWithHost(URI hostUri) throws MalformedURLException {
-    return hostUri.resolve(metricsPath).toURL();
+    return hostUri.resolve(spansPath).toURL();
   }
 }
