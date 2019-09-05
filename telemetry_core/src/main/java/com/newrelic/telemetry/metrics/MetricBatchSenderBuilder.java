@@ -54,29 +54,6 @@ public class MetricBatchSenderBuilder {
   }
 
   /**
-   * Create a new MetricBatchSender with the New Relic API key and the default values for the ingest
-   * endpoint and call timeout.
-   *
-   * @param apiKey Your New Relic Insights Insert API key
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
-   */
-  //  public MetricBatchSenderBuilder() {
-  //    this.httpPoster = httpPoster;
-  //    this.apiKey = apiKey;
-  //    this.metricToJson = metricToJson;
-  //    this.attributesJson = attributesJson;
-  //
-  //    try {
-  //      metricsUrl =
-  // MetricBatchSender.constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
-  //    } catch (MalformedURLException e) {
-  //      throw new UncheckedIOException("Bad hardcoded URL", e);
-  //    }
-  //  }
-
-  /**
    * Set a URI to override the default ingest endpoint.
    *
    * @param uriOverride The scheme, host, and port that should be used for the Metrics API endpoint.
