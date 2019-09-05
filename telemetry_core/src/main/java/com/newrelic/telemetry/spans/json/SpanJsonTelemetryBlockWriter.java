@@ -33,10 +33,8 @@ public class SpanJsonTelemetryBlockWriter {
               sb.append("{")
                   .append("\"id\":\"")
                   .append(span.getId())
-                  .append("\",")
-                  .append("\"trace.id\":\"")
-                  .append(span.getTraceId())
-                  .append("\",")
+                  .append("\",");
+                   appendIfTraceIdExists(sb, span)
                   .append("\"timestamp\":")
                   .append(span.getTimestamp())
                   .append(",")
@@ -44,6 +42,15 @@ public class SpanJsonTelemetryBlockWriter {
                   .append("}");
             });
     sb.append("]");
+  }
+
+  private StringBuilder appendIfTraceIdExists(StringBuilder sb, Span span) {
+    if (span.getTraceId() != null) {
+      sb.append("\"trace.id\":\"")
+      .append(span.getTraceId())
+      .append("\",");
+    }
+    return sb;
   }
 
   private Map<String, Object> enhanceAttributes(Span span) {
