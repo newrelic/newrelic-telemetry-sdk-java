@@ -158,14 +158,6 @@ public class MetricBatchSender {
     return batchDataSender.sendBatch(batch);
   }
 
-  private String generateJsonPayload(MetricBatch batch) {
-    String json = telemetryBatchJson.toJson(batch);
-    if (auditLoggingEnabled) {
-      logger.debug(json);
-    }
-    return json;
-  }
-
   private static URL constructMetricsUrlWithHost(URI hostUri) throws MalformedURLException {
     return hostUri.resolve(metricsPath).toURL();
   }

@@ -147,14 +147,6 @@ public class SpanBatchSender {
     return batchDataSender.sendBatch(batch);
   }
 
-  private String generateJsonPayload(SpanBatch batch) {
-    String json = telemetryBatchJson.toJson(batch);
-    if (auditLoggingEnabled) {
-      logger.debug("Sending Span Data: " + json);
-    }
-    return json;
-  }
-
   private static URL constructSpansUrlWithHost(URI hostUri) throws MalformedURLException {
     return hostUri.resolve(spansPath).toURL();
   }
