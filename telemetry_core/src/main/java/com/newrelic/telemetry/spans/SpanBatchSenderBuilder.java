@@ -83,7 +83,6 @@ public class SpanBatchSenderBuilder {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
-   * @return
    */
   public SpanBatchSenderBuilder apiKey(String apiKey) {
     this.apiKey = apiKey;

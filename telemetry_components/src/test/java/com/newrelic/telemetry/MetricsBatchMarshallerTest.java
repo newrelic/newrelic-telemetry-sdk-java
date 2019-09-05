@@ -12,15 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.TelemetryBatchJson;
-import com.newrelic.telemetry.json.TypeDispatchingJsonCommonBlockWriter;
-import com.newrelic.telemetry.json.TypeDispatchingJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.Summary;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
+import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -32,20 +30,18 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 // NOTE: These tests leverage a real gson-based implementations, which is why they live in this
 // module
-public class MetricsBatchJsonTest {
+class MetricsBatchMarshallerTest {
 
-  TelemetryBatchJson telemetryBatchJson;
+  private MetricBatchMarshaller metricBatchMarshaller;
 
   @BeforeEach
   void setup() {
     Gson gson = new GsonBuilder().create();
     AttributesJson attributesJson = new AttributesGson(gson);
-    telemetryBatchJson =
-        new TelemetryBatchJson(
-            new TypeDispatchingJsonCommonBlockWriter(
-                new MetricBatchJsonCommonBlockWriter(attributesJson), null),
-            new TypeDispatchingJsonTelemetryBlockWriter(
-                new MetricBatchJsonTelemetryBlockWriter(new MetricToGson(gson)), null));
+    metricBatchMarshaller =
+        new MetricBatchMarshaller(
+            new MetricBatchJsonCommonBlockWriter(attributesJson),
+            new MetricBatchJsonTelemetryBlockWriter(new MetricToGson(gson)));
   }
 
   @Test
@@ -76,7 +72,7 @@ public class MetricsBatchJsonTest {
         new MetricBatch(
             Collections.singletonList(new Count("count", 3, 555, 666, metricAttributes)),
             commonAttributes);
-    String json = telemetryBatchJson.toJson(metricBatch);
+    String json = metricBatchMarshaller.toJson(metricBatch);
 
     String expected =
         "[{\"common\":{\"attributes\":{\"string\":\"val\",\"double\":4.4,\"float\":4.32,\"int\":5,\"long\":384949494949499999,\"boolean\":true,\"number\":55.555}}"
@@ -103,7 +99,7 @@ public class MetricsBatchJsonTest {
         new MetricBatch(
             Collections.singletonList(new Count("count", 3, 555, 666, new Attributes())),
             commonAttributes);
-    String json = telemetryBatchJson.toJson(metricBatch);
+    String json = metricBatchMarshaller.toJson(metricBatch);
 
     String expected =
         "[{\"common\":{\"attributes\":{}},\"metrics\":[{\"name\":\"count\",\"type\":\"count\",\"value\":3.0,\"timestamp\":555,\"interval.ms\":111,\"attributes\":{}}]}]";
@@ -132,7 +128,7 @@ public class MetricsBatchJsonTest {
                 new Summary(
                     "summaryMaxBad", 100, 1000d, 1000d, Double.NaN, 555, 666, new Attributes())),
             commonAttributes);
-    String json = telemetryBatchJson.toJson(metricBatch);
+    String json = metricBatchMarshaller.toJson(metricBatch);
 
     String expected = "[{\"metrics\":[]}]";
     JSONAssert.assertEquals(expected, json, false);
@@ -158,7 +154,7 @@ public class MetricsBatchJsonTest {
         new MetricBatch(
             Collections.singletonList(new Count("count", 3, 555, 666, new Attributes())),
             commonAttributes);
-    String json = telemetryBatchJson.toJson(metricBatch);
+    String json = metricBatchMarshaller.toJson(metricBatch);
 
     assertTrue(
         json.contains("\"key-bigint-weird\":12312312312312312312312312312312312312312312312312"));

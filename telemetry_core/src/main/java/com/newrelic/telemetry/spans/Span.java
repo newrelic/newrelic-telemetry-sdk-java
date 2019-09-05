@@ -51,11 +51,6 @@ public final class Span implements Telemetry {
     return new SpanBuilder(spanId);
   }
 
-  @Override
-  public Type getType() {
-    return Type.SPAN;
-  }
-
   public static class SpanBuilder {
 
     private String id;

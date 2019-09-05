@@ -24,7 +24,7 @@ public class MetricToGson implements MetricToJson {
   private final AttributesGson attributeJson;
 
   public MetricToGson(Gson gson) {
-    this.gson = new GsonBuilder().create();
+    this.gson = gson;
     attributeJson = new AttributesGson(gson);
   }
 
