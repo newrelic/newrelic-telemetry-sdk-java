@@ -23,7 +23,7 @@ class SpanJsonCommonBlockWriterTest {
   @Test
   void testAppendJsonWithCommonAttributesAndTraceId() {
     String expected =
-        "\"common\":{\"traceId\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}";
+        "\"common\":{\"trace.id\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}";
     StringBuilder builder = new StringBuilder();
     SpanBatch batch =
         new SpanBatch(
@@ -39,7 +39,7 @@ class SpanJsonCommonBlockWriterTest {
 
   @Test
   void testAppendJsonWithTraceIdNoCommonAttributes() {
-    String expected = "\"common\":{\"traceId\":\"123\"}";
+    String expected = "\"common\":{\"trace.id\":\"123\"}";
     StringBuilder builder = new StringBuilder();
     SpanBatch batch = new SpanBatch(Collections.emptyList(), new Attributes(), "123");
 

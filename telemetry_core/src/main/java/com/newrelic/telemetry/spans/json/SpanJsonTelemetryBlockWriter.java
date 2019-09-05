@@ -35,7 +35,7 @@ public class SpanJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Sp
                   .append("\"timestamp\":")
                   .append(span.getTimestamp())
                   .append(",")
-                  .append(attributesJson.toJson(enhanceAttributes(span)))
+                  .append("\"attributes\":" + attributesJson.toJson(enhanceAttributes(span)))
                   .append("}");
             });
     sb.append("]");
