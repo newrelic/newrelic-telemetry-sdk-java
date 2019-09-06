@@ -55,6 +55,12 @@ listOf(":telemetry-core", ":telemetry", ":telemetry-http-okhttp").forEach {
                 archiveClassifier.set("javadoc")
                 from(taskScope.javadoc)
             }
+
+            val jar: Jar by taskScope
+            jar.apply {
+                manifest.attributes["Implementation-Version"] = project.version
+                manifest.attributes["Implementation-Vendor"] = "New Relic, Inc"
+            }
         }
         val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
 
