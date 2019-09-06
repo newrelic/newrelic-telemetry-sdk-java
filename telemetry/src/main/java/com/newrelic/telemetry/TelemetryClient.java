@@ -61,7 +61,10 @@ public class TelemetryClient {
   }
 
   private void scheduleBatchSend(
-      BatchSender sender, TelemetryBatch batch, int waitTime, TimeUnit timeUnit) {
+      BatchSender sender,
+      TelemetryBatch<? extends Telemetry> batch,
+      int waitTime,
+      TimeUnit timeUnit) {
     executor.schedule(
         () -> sendWithErrorHandling(sender, batch, waitTime, timeUnit), waitTime, timeUnit);
   }
@@ -95,7 +98,10 @@ public class TelemetryClient {
     splitBatches.forEach(metricBatch -> scheduleBatchSend(sender, metricBatch, 0, timeUnit));
   }
 
-  private void retry(BatchSender sender, TelemetryBatch batch, RetryWithRequestedWaitException e) {
+  private void retry(
+      BatchSender sender,
+      TelemetryBatch<? extends Telemetry> batch,
+      RetryWithRequestedWaitException e) {
     LOG.info(
         "Metric batch sending failed. Retrying failed batch after {} {}",
         e.getWaitTime(),
@@ -104,7 +110,10 @@ public class TelemetryClient {
   }
 
   private void backoff(
-      BatchSender sender, TelemetryBatch batch, int preWaitTime, TimeUnit timeUnit) {
+      BatchSender sender,
+      TelemetryBatch<? extends Telemetry> batch,
+      int preWaitTime,
+      TimeUnit timeUnit) {
     int newWaitTime;
     if (preWaitTime == 0) {
       newWaitTime = 1;
