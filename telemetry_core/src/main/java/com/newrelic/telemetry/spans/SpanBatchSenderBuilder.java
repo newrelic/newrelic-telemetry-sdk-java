@@ -48,21 +48,14 @@ public class SpanBatchSenderBuilder {
   }
 
   private URL getOrDefaultTraceUrl() {
-    if (traceUrl == null) {
-      try {
-        return constructSpansUrlWithHost(URI.create("https://trace-api.newrelic.com/"));
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
-      }
+    if (traceUrl != null) {
+      return traceUrl;
     }
-
-    SpanBatchMarshaller marshaller =
-        new SpanBatchMarshaller(
-            new SpanJsonCommonBlockWriter(new AttributesJson()),
-            new SpanJsonTelemetryBlockWriter(new AttributesJson()));
-    BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled);
-    return new SpanBatchSender(marshaller, sender);
-    return traceUrl;
+    try {
+      return constructSpansUrlWithHost(URI.create("https://trace-api.newrelic.com/"));
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Bad hardcoded URL", e);
+    }
   }
 
   /**

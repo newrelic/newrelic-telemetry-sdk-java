@@ -43,22 +43,14 @@ public class MetricBatchSenderBuilder {
   }
 
   private URL getOrDefaultMetricsUrl() {
-    if (metricsUrl == null) {
-      try {
-        return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
-      }
+    if (metricsUrl != null) {
+      return metricsUrl;
     }
-
-    MetricBatchMarshaller marshaller =
-        new MetricBatchMarshaller(
-            new MetricBatchJsonCommonBlockWriter(new AttributesJson()),
-            new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
-    BatchDataSender sender =
-        new BatchDataSender(httpPoster, apiKey, metricsUrl, auditLoggingEnabled);
-
-    return new MetricBatchSender(marshaller, sender);
+    try {
+      return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Bad hardcoded URL", e);
+    }
   }
 
   /**
