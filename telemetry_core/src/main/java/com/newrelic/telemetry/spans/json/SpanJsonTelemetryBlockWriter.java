@@ -25,11 +25,8 @@ public class SpanJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Sp
               if (!isFirst.getAndSet(false)) {
                 sb.append(",");
               }
-              sb.append("{")
-                  .append("\"id\":\"")
-                  .append(span.getId())
-                  .append("\",");
-                   appendIfTraceIdExists(sb, span)
+              sb.append("{").append("\"id\":\"").append(span.getId()).append("\",");
+              appendIfTraceIdExists(sb, span)
                   .append("\"timestamp\":")
                   .append(span.getTimestamp())
                   .append(",")
@@ -41,9 +38,7 @@ public class SpanJsonTelemetryBlockWriter implements JsonTelemetryBlockWriter<Sp
 
   private StringBuilder appendIfTraceIdExists(StringBuilder sb, Span span) {
     if (span.getTraceId() != null) {
-      sb.append("\"trace.id\":\"")
-      .append(span.getTraceId())
-      .append("\",");
+      sb.append("\"trace.id\":\"").append(span.getTraceId()).append("\",");
     }
     return sb;
   }
