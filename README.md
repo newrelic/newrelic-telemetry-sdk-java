@@ -1,10 +1,10 @@
 # New Relic Java Telemetry SDK 
 The New Relic Java Telemetry SDK for sending telemetry data to New Relic.
-The current SDK supports sending dimensional metrics to the Metric API. (Traces will be joining the party soon)
+The current SDK supports sending dimensional metrics and spans to the Metric and Trace API, respectively.
 
 Why is this cool?
 
-Dimensional Metrics in New Relic! No agent required. 
+Dimensional Metrics and Spans in New Relic! No agent required. 
 
 The telemetry SDK tries to be helpful, so your job of sending telemetry data to New Relic can be done in the right way, easily. We've covered all of the basics for you so you can focus on writing feature code directly related to your business need or interest.
 
@@ -52,12 +52,12 @@ be applied automatically before commits by moving it into `.git/hooks/pre-commit
 
 ### Module structure:
 
-#### `metrics`
-This is the core module for sending dimensional metrics to New Relic. The library is published under maven coordinates:
+#### `telemetry_core`
+This is the core module for sending dimensional metrics and spans to New Relic. The library is published under maven coordinates:
 
-`com.newrelic.telemetry:metrics`
+`com.newrelic.telemetry:telemetry-core`
 
-In order to send metrics to New Relic, you will also need an Insights Insert API Key. 
+In order to send metrics and spans to New Relic, you will also need an Insights Insert API Key. 
 Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
 for more information.
 
@@ -68,7 +68,6 @@ consider "best practice" implementations of how to interact with the lower-level
 The `telemetry` library is published under the maven coordinates:
 
 `com.newrelic.telemetry:telemetry`
-
 
 #### `telemetry-http-okhttp`
 This is an implementation of the required http client interface using okhttp as the underlying library.
