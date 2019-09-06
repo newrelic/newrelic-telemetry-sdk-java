@@ -38,6 +38,13 @@ public class TelemetryClient {
   private final SpanBatchSender spanBatchSender;
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
+  /**
+   * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
+   * one of the telemetry types, you can pass in a null value for that sender.
+   *
+   * @param metricBatchSender The sender for dimensional metrics.
+   * @param spanBatchSender The sender for distributed tracing spans.
+   */
   public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
@@ -48,14 +55,18 @@ public class TelemetryClient {
   }
 
   /**
-   * Send a batch, with standard retry logic. This happens on a background thread, asynchronously,
-   * so currently there will be no feedback to the caller outside of the logs.
+   * Send a batch of netrics, with standard retry logic. This happens on a background thread,
+   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
    */
   public void sendBatch(MetricBatch batch) {
     scheduleBatchSend(
         (b) -> metricBatchSender.sendBatch((MetricBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
+  /**
+   * Send a batch of spans, with standard retry logic. This happens on a background thread,
+   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
+   */
   public void sendBatch(SpanBatch batch) {
     scheduleBatchSend((b) -> spanBatchSender.sendBatch((SpanBatch) b), batch, 0, TimeUnit.SECONDS);
   }
