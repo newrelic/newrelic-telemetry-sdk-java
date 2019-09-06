@@ -21,6 +21,7 @@ import java.net.URL;
 
 public class SpanBatchSenderBuilder {
   private static final String spansPath = "/trace/v1";
+  private static final String DEFAULT_TRACE_URL = "https://trace-api.newrelic.com/";
 
   private String apiKey;
   private HttpPoster httpPoster;
@@ -52,7 +53,7 @@ public class SpanBatchSenderBuilder {
       return traceUrl;
     }
     try {
-      return constructSpansUrlWithHost(URI.create("https://trace-api.newrelic.com/"));
+      return constructSpansUrlWithHost(URI.create(DEFAULT_TRACE_URL));
     } catch (MalformedURLException e) {
       throw new UncheckedIOException("Bad hardcoded URL", e);
     }
@@ -93,11 +94,18 @@ public class SpanBatchSenderBuilder {
     return this;
   }
 
+  /**
+   * Provide an implementation for HTTP POST. {@link #build()} will throw if an implementation is
+   * not provided or this method is not called.
+   */
   public SpanBatchSenderBuilder httpPoster(HttpPoster httpPoster) {
     this.httpPoster = httpPoster;
     return this;
   }
 
+  /**
+   * By default, {@value #DEFAULT_TRACE_URL} is used. Otherwise uses the provided {@code traceUrl}
+   */
   public SpanBatchSenderBuilder traceUrl(URL traceUrl) {
     this.traceUrl = traceUrl;
     return this;
