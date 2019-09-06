@@ -26,7 +26,7 @@ public final class Span implements Telemetry {
   private final long timestamp; // in epoch ms
 
   private final String serviceName; // service.name <- goes in attributes
-  private final double durationMs; // duration.ms <- goes in attributes
+  private final Double durationMs; // duration.ms <- goes in attributes
   private final String name; // goes in attributes
   private final String parentId; // parent.id <- goes in attributes
 
@@ -36,7 +36,7 @@ public final class Span implements Telemetry {
       String traceId,
       long timestamp,
       String serviceName,
-      double durationMs,
+      Double durationMs,
       String name,
       String parentId) {
     Utils.verifyNonNull(id, "id");
@@ -70,7 +70,7 @@ public final class Span implements Telemetry {
     private String traceId;
     private long timestamp = System.currentTimeMillis();
     private String serviceName;
-    private double durationMs;
+    private Double durationMs;
     private String name;
     private String parentId;
 

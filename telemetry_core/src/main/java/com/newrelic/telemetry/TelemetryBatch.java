@@ -21,7 +21,7 @@ import lombok.experimental.NonFinal;
 /** Represents a collection of {@link Telemetry} instances and some common attributes */
 @Value
 @NonFinal
-public class TelemetryBatch<T extends Telemetry> {
+public abstract class TelemetryBatch<T extends Telemetry> {
 
   @Getter Collection<T> telemetry;
 
@@ -46,10 +46,8 @@ public class TelemetryBatch<T extends Telemetry> {
     int halfSize = totalSize / 2;
 
     return Arrays.asList(
-        new TelemetryBatch<>(
-            telemetry.stream().limit(halfSize).collect(toList()), commonAttributes),
-        new TelemetryBatch<>(
-            telemetry.stream().skip(halfSize).collect(toList()), commonAttributes));
+        createSubBatch(telemetry.stream().limit(halfSize).collect(toList())),
+        createSubBatch(telemetry.stream().skip(halfSize).collect(toList())));
   }
 
   /**
@@ -70,4 +68,6 @@ public class TelemetryBatch<T extends Telemetry> {
   public boolean isEmpty() {
     return telemetry.isEmpty();
   }
+
+  public abstract TelemetryBatch<T> createSubBatch(Collection<T> telemetry);
 }

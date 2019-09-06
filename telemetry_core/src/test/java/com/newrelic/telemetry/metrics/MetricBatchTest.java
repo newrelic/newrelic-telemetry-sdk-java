@@ -36,12 +36,8 @@ class MetricBatchTest {
     List<TelemetryBatch<Metric>> splitBatches = testBatch.split();
     assertEquals(2, splitBatches.size());
 
-    assertTrue(
-        splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric1), commonAttributes)));
-    assertTrue(
-        splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric2), commonAttributes)));
+    assertTrue(splitBatches.contains(new MetricBatch(singletonList(metric1), commonAttributes)));
+    assertTrue(splitBatches.contains(new MetricBatch(singletonList(metric2), commonAttributes)));
   }
 
   @Test
@@ -55,10 +51,8 @@ class MetricBatchTest {
     List<TelemetryBatch<Metric>> splitBatches = testBatch.split();
     assertEquals(2, splitBatches.size());
 
-    assertTrue(
-        splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric1), commonAttributes)));
-    assertTrue(splitBatches.contains(new TelemetryBatch<Metric>(emptyList(), commonAttributes)));
+    assertTrue(splitBatches.contains(new MetricBatch(singletonList(metric1), commonAttributes)));
+    assertTrue(splitBatches.contains(new MetricBatch(emptyList(), commonAttributes)));
   }
 
   @Test
@@ -74,12 +68,9 @@ class MetricBatchTest {
 
     List<TelemetryBatch<Metric>> splitBatches = testBatch.split();
     assertEquals(2, splitBatches.size());
+    assertTrue(splitBatches.contains(new MetricBatch(singletonList(metric1), commonAttributes)));
     assertTrue(
-        splitBatches.contains(
-            new TelemetryBatch<Metric>(singletonList(metric1), commonAttributes)));
-    assertTrue(
-        splitBatches.contains(
-            new TelemetryBatch<Metric>(Arrays.asList(metric2, metric3), commonAttributes)));
+        splitBatches.contains(new MetricBatch(Arrays.asList(metric2, metric3), commonAttributes)));
   }
 
   @Test

@@ -25,6 +25,11 @@ public class SpanBatch extends TelemetryBatch<Span> {
     this(telemetry, commonAttributes, null);
   }
 
+  @Override
+  public TelemetryBatch<Span> createSubBatch(Collection<Span> telemetry) {
+    return new SpanBatch(telemetry, getCommonAttributes(), traceId);
+  }
+
   public SpanBatch(Collection<Span> telemetry, Attributes commonAttributes, String traceId) {
     super(telemetry, commonAttributes);
     this.traceId = traceId;

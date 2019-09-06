@@ -36,7 +36,7 @@ public class TelemetryClientExample {
         SimpleMetricBatchSender.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
             .build();
 
-    TelemetryClient sender = new TelemetryClient(batchSender);
+    TelemetryClient sender = new TelemetryClient(batchSender, null);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host", InetAddress.getLocalHost().getHostName());
