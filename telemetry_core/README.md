@@ -1,6 +1,6 @@
 ### Telemetry Core Module
 
-This module contains the low-level APIs to send dimensional metrics and tracing spans to New Relic.
+This module contains the low-level APIs to send dimensional metrics and spans to New Relic.
 
 Since it is intended to have minimal dependencies, it requires an HTTP implementation
 in order to function. Implementation of the following interface is required:
