@@ -55,7 +55,7 @@ public class TelemetryClient {
   }
 
   /**
-   * Send a batch of netrics, with standard retry logic. This happens on a background thread,
+   * Send a batch of metrics, with standard retry logic. This happens on a background thread,
    * asynchronously, so currently there will be no feedback to the caller outside of the logs.
    */
   public void sendBatch(MetricBatch batch) {
