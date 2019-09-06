@@ -75,7 +75,7 @@ class SpanJsonTelemetryBlockWriterTest {
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
     StringBuilder stringBuilder = new StringBuilder();
 
-    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributes -> "{}");
+    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
     testClass.appendTelemetryJson(spanBatch, stringBuilder);
 
     String result = stringBuilder.toString();
