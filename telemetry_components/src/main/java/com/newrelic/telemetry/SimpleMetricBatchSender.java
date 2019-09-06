@@ -16,7 +16,7 @@ import java.time.Duration;
 public class SimpleMetricBatchSender {
 
   public static MetricBatchSenderBuilder builder(String apiKey) {
-    return builder(apiKey, Duration.ZERO);
+    return builder(apiKey, Duration.ofSeconds(2));
   }
 
   public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {

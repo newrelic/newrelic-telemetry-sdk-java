@@ -10,7 +10,7 @@ import java.time.Duration;
 public class SimpleSpanBatchSender {
 
   public static SpanBatchSender build(String apiKey) {
-    return build(apiKey, Duration.ZERO);
+    return build(apiKey, Duration.ofSeconds(2));
   }
 
   public static SpanBatchSenderBuilder builder(String apiKey) {
