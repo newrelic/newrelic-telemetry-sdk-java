@@ -22,6 +22,12 @@ public class SpanBatchSender {
   private final SpanBatchMarshaller marshaller;
   private final BatchDataSender sender;
 
+  /**
+   * Creates a span batch sender that knows how to marshall span batches and send them
+   *
+   * @param marshaller Defines how to marshall span batches
+   * @param sender Sends span batches
+   */
   SpanBatchSender(SpanBatchMarshaller marshaller, BatchDataSender sender) {
     this.marshaller = marshaller;
     this.sender = sender;
@@ -49,6 +55,7 @@ public class SpanBatchSender {
     return sender.send(json);
   }
 
+  /** Creates a builder for {@link SpanBatchSender} */
   public static SpanBatchSenderBuilder builder() {
     return new SpanBatchSenderBuilder();
   }
