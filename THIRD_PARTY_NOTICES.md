@@ -5,7 +5,7 @@ their own copyright notices and license terms. These notices are provided
 below.
 
 In the event that a required notice is missing or incorrect, please notify us
-either by [opening an issue](https://github.com/newrelic/c-sdk/issues/new), or
+either by [opening an issue](https://github.com/newrelic/newrelic-telemetry-sdk-java/issues/new), or
 by e-mailing [open-source@newrelic.com](mailto:open-source@newrelic.com).
 
 ## Contents
@@ -15,7 +15,7 @@ by e-mailing [open-source@newrelic.com](mailto:open-source@newrelic.com).
 ## gson
 
 This product includes source derived from
-[gson](https://github.com/DaveGamble/cJSON), distributed under the
+[gson](https://github.com/google/gson), distributed under the
 [Apache 2.0 License](https://github.com/google/gson/blob/master/LICENSE):
 
 ```
