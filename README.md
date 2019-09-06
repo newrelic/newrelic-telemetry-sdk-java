@@ -1,6 +1,6 @@
 # New Relic Java Telemetry SDK 
 The New Relic Java Telemetry SDK for sending telemetry data to New Relic.
-The current SDK supports sending dimensional metrics to the Metric API. (Traces will be joining the party soon)
+The current SDK supports sending dimensional metrics to the Metric API.
 
 Why is this cool?
 
