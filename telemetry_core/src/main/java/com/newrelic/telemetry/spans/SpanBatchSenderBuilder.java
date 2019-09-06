@@ -23,7 +23,6 @@ public class SpanBatchSenderBuilder {
   private static final String spansPath = "/trace/v1";
 
   private String apiKey;
-  private AttributesJson attributesJson;
   private HttpPoster httpPoster;
 
   private URL traceUrl;
@@ -43,8 +42,8 @@ public class SpanBatchSenderBuilder {
 
     SpanBatchMarshaller marshaller =
         new SpanBatchMarshaller(
-            new SpanJsonCommonBlockWriter(attributesJson),
-            new SpanJsonTelemetryBlockWriter(attributesJson));
+            new SpanJsonCommonBlockWriter(new AttributesJson()),
+            new SpanJsonTelemetryBlockWriter(new AttributesJson()));
     BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled);
     return new SpanBatchSender(marshaller, sender);
   }
@@ -92,11 +91,6 @@ public class SpanBatchSenderBuilder {
    */
   public SpanBatchSenderBuilder apiKey(String apiKey) {
     this.apiKey = apiKey;
-    return this;
-  }
-
-  public SpanBatchSenderBuilder attributesJson(AttributesJson attributesJson) {
-    this.attributesJson = attributesJson;
     return this;
   }
 

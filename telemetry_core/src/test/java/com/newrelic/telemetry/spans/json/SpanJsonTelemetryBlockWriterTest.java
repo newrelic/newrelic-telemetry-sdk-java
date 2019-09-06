@@ -51,32 +51,15 @@ class SpanJsonTelemetryBlockWriterTest {
         "{\"id\":\"123\","
             + "\"trace.id\":\"987\","
             + "\"timestamp\":99999,"
-            + "\"attributes\":{\"a\":\"b\"}}";
+            + "\"attributes\":{\"duration.ms\":100.0,\"a\":\"b\",\"service.name\":\"Hot.Service\",\"name\":\"Trevor\",\"parent.id\":\"Jonathan\"}}";
     String span2Expected =
         "{\"id\":\"456\","
             + "\"trace.id\":\"654\","
             + "\"timestamp\":88888,"
-            + "\"attributes\":{\"c\":\"d\"}}";
+            + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
     String expected = "\"spans\":[" + span1Expected + "," + span2Expected + "]";
 
-    AttributesJson attributesJson =
-        attributes -> {
-          if (attributes.containsKey("a")) {
-            assertEquals("Hot.Service", attributes.get("service.name"));
-            assertEquals(100.0, attributes.get("duration.ms"));
-            assertEquals("Trevor", attributes.get("name"));
-            assertEquals("Jonathan", attributes.get("parent.id"));
-            return "{\"a\":\"b\"}";
-          }
-          if (attributes.containsKey("c")) {
-            assertEquals("Cold.Service", attributes.get("service.name"));
-            assertEquals(200.0, attributes.get("duration.ms"));
-            assertEquals("Joleene", attributes.get("name"));
-            assertEquals("Agatha", attributes.get("parent.id"));
-            return "{\"c\":\"d\"}";
-          }
-          return "IDK";
-        };
+    AttributesJson attributesJson = new AttributesJson();
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributesJson);
 
     testClass.appendTelemetryJson(batch, sb);

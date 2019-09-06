@@ -1,100 +1,93 @@
 /*
  * ---------------------------------------------------------------------------------------------
- *  Copyright (c) 2019 New Relic Corporation. All rights reserved.
- *  Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
- * --------------------------------------------------------------------------------------------
+ *   Copyright (c) 2019 New Relic Corporation. All rights reserved.
+ *   Licensed under the Apache 2.0 License. See LICENSE in the project root directory for license information.
+ *  --------------------------------------------------------------------------------------------
  */
 
 package com.newrelic.telemetry.metrics.json;
 
+import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.Summary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.StringWriter;
 
-/**
- * If you wish to provide your own json implementation, an implementation of this interface must be
- * provided. All of the methods must return valid JSON with properly escaped strings.
- *
- * <p>TODO: add links to external documentation of the json format and APIs.
- */
-public interface MetricToJson {
-  Logger logger = LoggerFactory.getLogger(MetricToJson.class);
+/** This class turns Metrics into JSON via an embedded JsonWriter from the gson project. */
+public class MetricToJson {
 
-  /**
-   * Summary json must be structured this to be accepted by the New Relic backend.
-   *
-   * <p>the timestamp should be in ms since Unix epoch
-   *
-   * <p>The attributes are optional, if not present
-   *
-   * <pre>
-   * {
-   *   "name": "mySummaryName",
-   *   "type": "summary",
-   *   "value: {
-   *     "count": 33,
-   *     "sum": 1234,
-   *     "min": 10,
-   *     "max": 80
-   *   },
-   *   "timestamp": 1560807066910,
-   *   "interval.ms": 5000,
-   *   "attributes": {
-   *     "key1": "value1",
-   *     "key2", 555,
-   *     "key3", false
-   *   }
-   * }
-   * </pre>
-   */
-  String writeSummaryJson(Summary summary);
+  private final AttributesJson attributeJson = new AttributesJson();
 
-  /**
-   * Gauge json must be structured this to be accepted by the New Relic backend.
-   *
-   * <p>the timestamp should be in ms since Unix epoch
-   *
-   * <p>The attributes are optional, if not present
-   *
-   * <pre>
-   * {
-   *   "name": "myGaugeName",
-   *   "type": "gauge",
-   *   "value: 556.888,
-   *   "timestamp": 1560807066910,
-   *   "attributes": {
-   *     "key1": "value1",
-   *     "key2", 555,
-   *     "key3", false
-   *   }
-   * }
-   * </pre>
-   */
-  String writeGaugeJson(Gauge gauge);
+  public String writeSummaryJson(Summary summary) {
+    try {
+      StringWriter out = new StringWriter();
+      JsonWriter jsonWriter = new JsonWriter(out);
+      jsonWriter.beginObject();
+      jsonWriter.name("name").value(summary.getName());
+      jsonWriter.name("type").value("summary");
 
-  /**
-   * Count json must be structured this to be accepted by the New Relic backend.
-   *
-   * <p>the timestamp should be in ms since Unix epoch
-   *
-   * <p>The attributes are optional, if not present
-   *
-   * <pre>
-   * {
-   *   "name": "myGaugeName",
-   *   "type": "count",
-   *   "value: 556.888,
-   *   "timestamp": 1560807066910,
-   *   "interval.ms": 5000,
-   *   "attributes": {
-   *     "key1": "value1",
-   *     "key2", 555,
-   *     "key3", false
-   *   }
-   * }
-   * </pre>
-   */
-  String writeCountJson(Count count);
+      jsonWriter.name("value");
+      jsonWriter.beginObject();
+      jsonWriter.name("count").value(summary.getCount());
+      jsonWriter.name("sum").value(summary.getSum());
+      jsonWriter.name("min").value(summary.getMin());
+      jsonWriter.name("max").value(summary.getMax());
+      jsonWriter.endObject();
+
+      jsonWriter.name("timestamp").value(summary.getStartTimeMs());
+      jsonWriter.name("interval.ms").value(summary.getEndTimeMs() - summary.getStartTimeMs());
+      String attributes = attributeJson.toJson(summary.getAttributes());
+      if (!attributes.isEmpty()) {
+        jsonWriter.name("attributes").jsonValue(attributes);
+      }
+      jsonWriter.endObject();
+      return out.toString();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to generate summary json", e);
+    }
+  }
+
+  public String writeGaugeJson(Gauge gauge) {
+    try {
+      StringWriter out = new StringWriter();
+      JsonWriter jsonWriter = new JsonWriter(out);
+      jsonWriter.beginObject();
+      jsonWriter.name("name").value(gauge.getName());
+      jsonWriter.name("type").value("gauge");
+      jsonWriter.name("value").value(gauge.getValue());
+      jsonWriter.name("timestamp").value(gauge.getTimestamp());
+      String attributes = attributeJson.toJson(gauge.getAttributes());
+      if (!attributes.isEmpty()) {
+        jsonWriter.name("attributes").jsonValue(attributes);
+      }
+      jsonWriter.endObject();
+      return out.toString();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to generate gauge json", e);
+    }
+  }
+
+  public String writeCountJson(Count count) {
+    try {
+      StringWriter out = new StringWriter();
+      JsonWriter jsonWriter = new JsonWriter(out);
+      jsonWriter.beginObject();
+      jsonWriter.name("name").value(count.getName());
+      jsonWriter.name("type").value("count");
+      jsonWriter.name("value").value(count.getValue());
+      jsonWriter.name("timestamp").value(count.getStartTimeMs());
+      jsonWriter.name("interval.ms").value(count.getEndTimeMs() - count.getStartTimeMs());
+
+      String attributes = attributeJson.toJson(count.getAttributes());
+      if (!attributes.isEmpty()) {
+        jsonWriter.name("attributes").jsonValue(attributes);
+      }
+      jsonWriter.endObject();
+      return out.toString();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to generate count json");
+    }
+  }
 }
