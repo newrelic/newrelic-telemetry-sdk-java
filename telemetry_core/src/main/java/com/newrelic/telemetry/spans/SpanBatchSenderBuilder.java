@@ -37,14 +37,9 @@ public class SpanBatchSenderBuilder {
   public SpanBatchSender build() {
     Utils.verifyNonNull(apiKey, "API key cannot be null");
     Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
+    Utils.verifyNonNull(attributesJson, "an AttributesJson implementation is required.");
 
-    if (traceUrl == null) {
-      try {
-        traceUrl = constructSpansUrlWithHost(URI.create("https://trace-api.newrelic.com/"));
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
-      }
-    }
+    URL traceUrl = getOrDefaultTraceUrl();
 
     SpanBatchMarshaller marshaller =
         new SpanBatchMarshaller(
@@ -52,6 +47,17 @@ public class SpanBatchSenderBuilder {
             new SpanJsonTelemetryBlockWriter(attributesJson));
     BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled);
     return new SpanBatchSender(marshaller, sender);
+  }
+
+  private URL getOrDefaultTraceUrl() {
+    if (traceUrl == null) {
+      try {
+        return constructSpansUrlWithHost(URI.create("https://trace-api.newrelic.com/"));
+      } catch (MalformedURLException e) {
+        throw new UncheckedIOException("Bad hardcoded URL", e);
+      }
+    }
+    return traceUrl;
   }
 
   /**

@@ -7,10 +7,8 @@
 
 package com.newrelic.telemetry.examples;
 
-import com.google.gson.Gson;
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.AttributesGson;
-import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.SimpleSpanBatchSender;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
@@ -44,10 +42,7 @@ public class SpanExample {
     String insightsInsertKey = args[0];
 
     SpanBatchSender sender =
-        SpanBatchSender.builder()
-            .apiKey(insightsInsertKey)
-            .httpPoster(new OkHttpPoster(Duration.ofSeconds(5)))
-            .attributesJson(new AttributesGson(new Gson()))
+        SimpleSpanBatchSender.builder(insightsInsertKey, Duration.ofSeconds(5))
             .enableAuditLogging()
             .build();
 
