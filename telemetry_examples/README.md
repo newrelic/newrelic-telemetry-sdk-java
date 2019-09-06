@@ -25,6 +25,12 @@ This is an example of how to write Count metrics to New Relic using the SDK.
 This is an example of pushing the boundaries of what is accepted by the New Relic APIs,
 and how you can see what happens when things go wrong.
 
+#### [SpanExample.java](src/main/java/com/newrelic/telemetry/examples/SpanExample.java)
+
+This example shows you how you can send spans to the New Relic trace ingest api.
+It demonstrates how to use the `SimpleSpanBatchSender` to easily create a `SpanBatchSender`
+that can be fed a `SpanBatch`.
+
 #### [TelemetryClientExample.java](src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 
 This is an example of how to use the provided `com.newrelic.telemetry.RetryingTelemetrySender` to handle
