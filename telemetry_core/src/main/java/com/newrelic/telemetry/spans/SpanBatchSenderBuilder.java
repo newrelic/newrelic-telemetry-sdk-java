@@ -55,6 +55,13 @@ public class SpanBatchSenderBuilder {
         throw new UncheckedIOException("Bad hardcoded URL", e);
       }
     }
+
+    SpanBatchMarshaller marshaller =
+        new SpanBatchMarshaller(
+            new SpanJsonCommonBlockWriter(new AttributesJson()),
+            new SpanJsonTelemetryBlockWriter(new AttributesJson()));
+    BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled);
+    return new SpanBatchSender(marshaller, sender);
     return traceUrl;
   }
 

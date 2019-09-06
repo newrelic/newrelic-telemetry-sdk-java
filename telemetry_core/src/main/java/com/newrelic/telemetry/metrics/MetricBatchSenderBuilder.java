@@ -50,7 +50,15 @@ public class MetricBatchSenderBuilder {
         throw new UncheckedIOException("Bad hardcoded URL", e);
       }
     }
-    return metricsUrl;
+
+    MetricBatchMarshaller marshaller =
+        new MetricBatchMarshaller(
+            new MetricBatchJsonCommonBlockWriter(new AttributesJson()),
+            new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
+    BatchDataSender sender =
+        new BatchDataSender(httpPoster, apiKey, metricsUrl, auditLoggingEnabled);
+
+    return new MetricBatchSender(marshaller, sender);
   }
 
   /**
