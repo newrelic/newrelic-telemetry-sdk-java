@@ -21,4 +21,9 @@ public class MetricBatch extends TelemetryBatch<Metric> {
   public MetricBatch(Collection<Metric> metrics, Attributes commonAttributes) {
     super(metrics, commonAttributes);
   }
+
+  @Override
+  public TelemetryBatch<Metric> createSubBatch(Collection<Metric> telemetry) {
+    return new MetricBatch(telemetry, getCommonAttributes());
+  }
 }
