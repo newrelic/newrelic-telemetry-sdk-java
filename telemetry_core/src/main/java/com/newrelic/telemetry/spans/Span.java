@@ -53,15 +53,15 @@ public final class Span implements Telemetry {
   /**
    * @param spanId The ID associated with this span
    * @return A Builder class that can be used to add variables to a Span object and create a new
-   * Span instance
+   *     Span instance
    */
   public static SpanBuilder builder(String spanId) {
     return new SpanBuilder(spanId);
   }
 
   /**
-   * A class for holding the variables associated with a Span object and creating a new Span
-   * object with those variables
+   * A class for holding the variables associated with a Span object and creating a new Span object
+   * with those variables
    */
   public static class SpanBuilder {
 
@@ -74,28 +74,25 @@ public final class Span implements Telemetry {
     private String name;
     private String parentId;
 
-    /**
-     * @param spanId The ID associated with the Span object to be created
-     */
+    /** @param spanId The ID associated with the Span object to be created */
     SpanBuilder(String spanId) {
       this.id = spanId;
     }
 
     /**
-     * @param attributes Dimensional attributes as key-value pairs, associated with the
-     * Span object to be created. See {@link Attributes}
+     * @param attributes Dimensional attributes as key-value pairs, associated with the Span object
+     *     to be created. See {@link Attributes}
      * @return The SpanBuilder object with its attributes variable set to the given attributes
-     * object
+     *     object
      */
     public SpanBuilder attributes(Attributes attributes) {
       this.attributes = attributes;
       return this;
     }
 
-
     /**
      * @param traceId The ID used to identify a request as it crosses process boundaries, and in
-     * turn link span events
+     *     turn link span events
      * @return The SpanBuilder object with its traceId variable set to the given Trace Id
      */
     public SpanBuilder traceId(String traceId) {
@@ -141,7 +138,7 @@ public final class Span implements Telemetry {
 
     /**
      * @param parentId The Id of the parent span for this Span event. If it is a root span, this
-     * variable should stay null, or not set
+     *     variable should stay null, or not set
      * @return The SpanBuilder object with its parentId variable set to the given Parent ID
      */
     public SpanBuilder parentId(String parentId) {
@@ -149,16 +146,12 @@ public final class Span implements Telemetry {
       return this;
     }
 
-    /**
-     * @return A Span object with the variables assigned to the builder class
-     */
+    /** @return A Span object with the variables assigned to the builder class */
     public Span build() {
       return new Span(id, attributes, traceId, timestamp, serviceName, durationMs, name, parentId);
     }
 
-    /**
-     * @return A string representing this SpanBuilder object and listing its variables
-     */
+    /** @return A string representing this SpanBuilder object and listing its variables */
     public String toString() {
       return "Span.SpanBuilder(id="
           + this.id
