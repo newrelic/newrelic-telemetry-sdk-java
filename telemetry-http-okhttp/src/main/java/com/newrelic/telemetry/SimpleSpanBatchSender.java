@@ -15,8 +15,8 @@ import java.time.Duration;
 public class SimpleSpanBatchSender {
 
   /**
-   * Create a new SpanBatchSender with your New Relic Insights Insert API key, and otherwise
-   * default settings. (2 second timeout, audit logging off, with the default endpoint URL)
+   * Create a new SpanBatchSender with your New Relic Insights Insert API key, and otherwise default
+   * settings. (2 second timeout, audit logging off, with the default endpoint URL)
    *
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
