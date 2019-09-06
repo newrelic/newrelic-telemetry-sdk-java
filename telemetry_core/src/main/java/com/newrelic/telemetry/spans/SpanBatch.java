@@ -14,6 +14,7 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/** Represents a set of {@link Span} instances, to be sent up to the New Relic Trace API. */
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class SpanBatch extends TelemetryBatch<Span> {
