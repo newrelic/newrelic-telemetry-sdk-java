@@ -78,15 +78,7 @@ class SpanApiIntegrationTest {
                     .put("id", "6f377f46-3f10-4e8e-8390-7717044cdbe9")
                     .put("trace.id", "123456")
                     .put("timestamp", 55555)
-                    .put(
-                        "attributes",
-                        ImmutableMap.of(
-                            "duration.ms",
-                            60,
-                            "service.name",
-                            "Span Test Service",
-                            "name",
-                            "spanTest"))
+                    .put("attributes", ImmutableMap.of("duration.ms", 60, "service.name", "Span Test Service", "name", "spanTest"))
                     .build()));
 
     mockServerClient

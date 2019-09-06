@@ -50,7 +50,6 @@ public class SpanExample {
             .httpPoster(new OkHttpPoster(Duration.ofSeconds(5)))
             .attributesJson(new AttributesGson(new Gson()))
             .enableAuditLogging()
-            .uriOverride(URI.create("https://staging-trace-api.newrelic.com"))
             .build();
 
     List<Span> spans = new ArrayList<>();
