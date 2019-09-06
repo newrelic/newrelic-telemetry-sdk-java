@@ -70,7 +70,7 @@ public class SpanExample {
     sender.sendBatch(new SpanBatch(spans, getCommonAttributes(), traceId));
   }
 
-  /** These attributes are shared across all metrics submitted in the batch. */
+  /** These attributes are shared across all spans submitted in the batch. */
   private static Attributes getCommonAttributes() {
     return new Attributes().put("exampleName", "SpanExample");
   }
