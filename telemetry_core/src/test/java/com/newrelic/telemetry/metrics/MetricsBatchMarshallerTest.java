@@ -5,20 +5,16 @@
  *  --------------------------------------------------------------------------------------------
  */
 
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.metrics.Count;
-import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.MetricBatch;
-import com.newrelic.telemetry.metrics.Summary;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
+import com.newrelic.telemetry.metrics.json.MetricToJson;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -28,20 +24,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-// NOTE: These tests leverage a real gson-based implementations, which is why they live in this
-// module
 class MetricsBatchMarshallerTest {
 
   private MetricBatchMarshaller metricBatchMarshaller;
 
   @BeforeEach
   void setup() {
-    Gson gson = new GsonBuilder().create();
-    AttributesJson attributesJson = new AttributesGson(gson);
+    AttributesJson attributesJson = new AttributesJson();
     metricBatchMarshaller =
         new MetricBatchMarshaller(
             new MetricBatchJsonCommonBlockWriter(attributesJson),
-            new MetricBatchJsonTelemetryBlockWriter(new MetricToGson(gson)));
+            new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
   }
 
   @Test

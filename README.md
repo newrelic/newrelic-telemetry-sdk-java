@@ -86,6 +86,10 @@ Integration test module. Uses docker-compose based tests to test the SDK end-to-
 ### Licensing
 The New Relic Java Telemetry SDK is licensed under the Apache 2.0 License.
 
+The New Relic Java Telemetry SDK also uses source code from third party libraries. 
+Full details on which libraries are used and the terms under which they are licensed can be found in the 
+third party notices document.
+
 ### Contributing
 Full details are available in our [CONTRIBUTING.md](CONTRIBUTING.md) file. 
 We'd love to get your contributions to improve the Java Telemetry SDK! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.

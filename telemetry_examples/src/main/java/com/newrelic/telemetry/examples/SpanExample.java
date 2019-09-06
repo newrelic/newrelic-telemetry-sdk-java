@@ -8,7 +8,7 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.SimpleSpanBatchSender;
+import com.newrelic.telemetry.OkHttpPoster;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This is an example of sending a batch of Spans to New Relic.
  *
- * <p>A SpanBatchSender is created with the Insights insert key and reference implementations from
- * Gson and OkHttp. An example batch of 4 spans (apples, oranges, beer, wine) is created and then
- * sent via sender.sendBatch().
+ * <p>A SpanBatchSender is created with the Insights insert key and the reference http
+ * implementation from OkHttp. An example batch of 4 spans (apples, oranges, beer, wine) is created
+ * and then sent via sender.sendBatch().
  *
  * <p>To run this example, pass the insights api key as a commandline argument.
  */
@@ -42,7 +42,9 @@ public class SpanExample {
     String insightsInsertKey = args[0];
 
     SpanBatchSender sender =
-        SimpleSpanBatchSender.builder(insightsInsertKey, Duration.ofSeconds(5))
+        SpanBatchSender.builder()
+            .apiKey(insightsInsertKey)
+            .httpPoster(new OkHttpPoster(Duration.ofSeconds(5)))
             .enableAuditLogging()
             .build();
 
