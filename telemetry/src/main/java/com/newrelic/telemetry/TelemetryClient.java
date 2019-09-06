@@ -11,9 +11,10 @@ import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
-import com.newrelic.telemetry.metrics.Metric;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.spans.SpanBatch;
+import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,11 +34,17 @@ public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
 
-  private final MetricBatchSender sender;
+  private final MetricBatchSender metricBatchSender;
+  private final SpanBatchSender spanBatchSender;
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
-  public TelemetryClient(MetricBatchSender sender) {
-    this.sender = sender;
+  public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
+    this.metricBatchSender = metricBatchSender;
+    this.spanBatchSender = spanBatchSender;
+  }
+
+  private interface BatchSender {
+    void sendBatch(TelemetryBatch<?> batch) throws ResponseException;
   }
 
   /**
@@ -45,23 +52,37 @@ public class TelemetryClient {
    * so currently there will be no feedback to the caller outside of the logs.
    */
   public void sendBatch(MetricBatch batch) {
-    scheduleBatchSend(batch, 0, TimeUnit.SECONDS);
+    scheduleBatchSend(
+        (b) -> metricBatchSender.sendBatch((MetricBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
-  private void scheduleBatchSend(MetricBatch batch, int waitTime, TimeUnit timeUnit) {
-    executor.schedule(() -> sendWithErrorHandling(batch, waitTime, timeUnit), waitTime, timeUnit);
+  public void sendBatch(SpanBatch batch) {
+    scheduleBatchSend((b) -> spanBatchSender.sendBatch((SpanBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
-  private void sendWithErrorHandling(MetricBatch batch, int preWaitTime, TimeUnit timeUnit) {
+  private void scheduleBatchSend(
+      BatchSender sender,
+      TelemetryBatch<? extends Telemetry> batch,
+      int waitTime,
+      TimeUnit timeUnit) {
+    executor.schedule(
+        () -> sendWithErrorHandling(sender, batch, waitTime, timeUnit), waitTime, timeUnit);
+  }
+
+  private void sendWithErrorHandling(
+      BatchSender batchSender,
+      TelemetryBatch<? extends Telemetry> batch,
+      int preWaitTime,
+      TimeUnit timeUnit) {
     try {
-      sender.sendBatch(batch);
-      LOG.debug("Metric batch sent");
+      batchSender.sendBatch(batch);
+      LOG.debug("Telemetry batch sent");
     } catch (RetryWithBackoffException e) {
-      backoff(batch, preWaitTime, timeUnit);
+      backoff(batchSender, batch, preWaitTime, timeUnit);
     } catch (RetryWithRequestedWaitException e) {
-      retry(batch, e);
+      retry(batchSender, batch, e);
     } catch (RetryWithSplitException e) {
-      splitAndSend(batch, timeUnit, e);
+      splitAndSend(batchSender, batch, timeUnit, e);
     } catch (ResponseException e) {
       LOG.error(
           "Received a fatal exception from the New Relic API. Aborting metric batch send.", e);
@@ -70,26 +91,29 @@ public class TelemetryClient {
     }
   }
 
-  private void splitAndSend(MetricBatch batch, TimeUnit timeUnit, RetryWithSplitException e) {
+  private <T extends Telemetry> void splitAndSend(
+      BatchSender sender, TelemetryBatch<T> batch, TimeUnit timeUnit, RetryWithSplitException e) {
     LOG.info("Metric batch size too large, splitting and retrying.", e);
-    List<TelemetryBatch<Metric>> splitBatches = batch.split();
-    splitBatches
-        .stream()
-        .map(
-            splitBatch ->
-                new MetricBatch(splitBatch.getTelemetry(), splitBatch.getCommonAttributes()))
-        .forEach(metricBatch -> scheduleBatchSend(metricBatch, 0, timeUnit));
+    List<TelemetryBatch<T>> splitBatches = batch.split();
+    splitBatches.forEach(metricBatch -> scheduleBatchSend(sender, metricBatch, 0, timeUnit));
   }
 
-  private void retry(MetricBatch batch, RetryWithRequestedWaitException e) {
+  private void retry(
+      BatchSender sender,
+      TelemetryBatch<? extends Telemetry> batch,
+      RetryWithRequestedWaitException e) {
     LOG.info(
         "Metric batch sending failed. Retrying failed batch after {} {}",
         e.getWaitTime(),
         e.getTimeUnit());
-    scheduleBatchSend(batch, e.getWaitTime(), e.getTimeUnit());
+    scheduleBatchSend(sender, batch, e.getWaitTime(), e.getTimeUnit());
   }
 
-  private void backoff(MetricBatch batch, int preWaitTime, TimeUnit timeUnit) {
+  private void backoff(
+      BatchSender sender,
+      TelemetryBatch<? extends Telemetry> batch,
+      int preWaitTime,
+      TimeUnit timeUnit) {
     int newWaitTime;
     if (preWaitTime == 0) {
       newWaitTime = 1;
@@ -98,7 +122,7 @@ public class TelemetryClient {
       newWaitTime = preWaitTime * 2;
     }
     LOG.info("Metric batch sending failed. Backing off {} {}", newWaitTime, timeUnit);
-    scheduleBatchSend(batch, newWaitTime, timeUnit);
+    scheduleBatchSend(sender, batch, newWaitTime, timeUnit);
   }
 
   /** Cleanly shuts down the background Executor thread. */

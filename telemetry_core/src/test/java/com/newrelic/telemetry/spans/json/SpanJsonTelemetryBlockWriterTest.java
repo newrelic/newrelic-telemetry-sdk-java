@@ -15,6 +15,7 @@ import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 class SpanJsonTelemetryBlockWriterTest {
@@ -65,6 +66,21 @@ class SpanJsonTelemetryBlockWriterTest {
     testClass.appendTelemetryJson(batch, sb);
     String result = sb.toString();
 
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void testNoTraceId() {
+    Span span = Span.builder("123").timestamp(12345).build();
+    SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
+    StringBuilder stringBuilder = new StringBuilder();
+
+    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+    testClass.appendTelemetryJson(spanBatch, stringBuilder);
+
+    String result = stringBuilder.toString();
+
+    String expected = "\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
     assertEquals(expected, result);
   }
 }
