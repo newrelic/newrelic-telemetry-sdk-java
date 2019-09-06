@@ -70,12 +70,11 @@ The `telemetry` library is published under the maven coordinates:
 `com.newrelic.telemetry:telemetry`
 
 
-#### `telemetry_components`
-This is additional components that are useful for using the SDK. It contains reference implementations for
-required components, implemented using standard open source libraries. 
-The `telemetry-components` library is published under the maven coordinates:
+#### `telemetry-http-okhttp`
+This is an implementation of the required http client interface using okhttp as the underlying library.
+The `telemetry-http-okhttp` library is published under the maven coordinates:
 
-`com.newrelic.telemetry:telemetry-components`
+`com.newrelic.telemetry:telemetry-http-okhttp`
 
 #### `telemetry_examples`
 Example code for using the metrics and telemetry APIs.

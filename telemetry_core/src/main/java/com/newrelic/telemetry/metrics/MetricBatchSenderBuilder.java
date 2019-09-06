@@ -43,14 +43,14 @@ public class MetricBatchSenderBuilder {
   }
 
   private URL getOrDefaultMetricsUrl() {
-    if (metricsUrl == null) {
-      try {
-        return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
-      }
+    if (metricsUrl != null) {
+      return metricsUrl;
     }
-    return metricsUrl;
+    try {
+      return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Bad hardcoded URL", e);
+    }
   }
 
   /**

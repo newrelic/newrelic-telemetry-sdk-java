@@ -22,7 +22,7 @@ plugins {
 dependencies {
     implementation("org.mock-server:mockserver-client-java:${Versions.mockserver}")
     implementation(project(":telemetry-core"))
-    implementation(project(":telemetry-components"))
+    implementation(project(":telemetry-http-okhttp"))
 
     testCompileOnly("org.projectlombok:lombok:${Versions.lombok}")
     testAnnotationProcessor("org.projectlombok:lombok:${Versions.lombok}")
