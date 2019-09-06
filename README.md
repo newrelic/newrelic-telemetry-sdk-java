@@ -70,12 +70,11 @@ The `telemetry` library is published under the maven coordinates:
 `com.newrelic.telemetry:telemetry`
 
 
-#### `telemetry_components`
-This is additional components that are useful for using the SDK. It contains reference implementations for
-required components, implemented using standard open source libraries. 
-The `telemetry-components` library is published under the maven coordinates:
+#### `telemetry-http-okhttp`
+This is an implementation of the required http client interface using okhttp as the underlying library.
+The `telemetry-http-okhttp` library is published under the maven coordinates:
 
-`com.newrelic.telemetry:telemetry-components`
+`com.newrelic.telemetry:telemetry-http-okhttp`
 
 #### `telemetry_examples`
 Example code for using the metrics and telemetry APIs.
@@ -85,6 +84,10 @@ Integration test module. Uses docker-compose based tests to test the SDK end-to-
 
 ### Licensing
 The New Relic Java Telemetry SDK is licensed under the Apache 2.0 License.
+
+The New Relic Java Telemetry SDK also uses source code from third party libraries. 
+Full details on which libraries are used and the terms under which they are licensed can be found in the 
+third party notices document.
 
 ### Contributing
 Full details are available in our [CONTRIBUTING.md](CONTRIBUTING.md) file. 

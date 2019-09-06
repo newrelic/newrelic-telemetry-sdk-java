@@ -1,6 +1,5 @@
 package com.newrelic.telemetry;
 
-import com.google.gson.Gson;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.spans.SpanBatchSender;
 import com.newrelic.telemetry.spans.SpanBatchSenderBuilder;
@@ -22,9 +21,6 @@ public class SimpleSpanBatchSender {
 
   public static SpanBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
     HttpPoster http = new OkHttpPoster(callTimeout);
-    return SpanBatchSender.builder()
-        .apiKey(apiKey)
-        .httpPoster(http)
-        .attributesJson(new AttributesGson(new Gson()));
+    return SpanBatchSender.builder().apiKey(apiKey).httpPoster(http);
   }
 }

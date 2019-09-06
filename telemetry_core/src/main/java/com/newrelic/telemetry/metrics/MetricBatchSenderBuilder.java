@@ -18,8 +18,6 @@ public class MetricBatchSenderBuilder {
   private static final String metricsPath = "/metric/v1";
 
   private String apiKey;
-  private MetricToJson metricToJson;
-  private AttributesJson attributesJson;
   private HttpPoster httpPoster;
   private URL metricsUrl;
   private boolean auditLoggingEnabled = false;
@@ -32,29 +30,27 @@ public class MetricBatchSenderBuilder {
   public MetricBatchSender build() {
     Utils.verifyNonNull(apiKey, "API key cannot be null");
     Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-    Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
-    Utils.verifyNonNull(attributesJson, "an AttributesJson implementation is required.");
 
     URL url = getOrDefaultMetricsUrl();
 
     MetricBatchMarshaller marshaller =
         new MetricBatchMarshaller(
-            new MetricBatchJsonCommonBlockWriter(attributesJson),
-            new MetricBatchJsonTelemetryBlockWriter(metricToJson));
+            new MetricBatchJsonCommonBlockWriter(new AttributesJson()),
+            new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
     BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled);
 
     return new MetricBatchSender(marshaller, sender);
   }
 
   private URL getOrDefaultMetricsUrl() {
-    if (metricsUrl == null) {
-      try {
-        return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
-      }
+    if (metricsUrl != null) {
+      return metricsUrl;
     }
-    return metricsUrl;
+    try {
+      return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Bad hardcoded URL", e);
+    }
   }
 
   /**
@@ -82,16 +78,6 @@ public class MetricBatchSenderBuilder {
 
   public MetricBatchSenderBuilder apiKey(String apiKey) {
     this.apiKey = apiKey;
-    return this;
-  }
-
-  public MetricBatchSenderBuilder metricToJson(MetricToJson metricToJson) {
-    this.metricToJson = metricToJson;
-    return this;
-  }
-
-  public MetricBatchSenderBuilder attributesJson(AttributesJson attributesJson) {
-    this.attributesJson = attributesJson;
     return this;
   }
 

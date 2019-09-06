@@ -8,7 +8,6 @@ import static org.mockserver.model.JsonBody.json;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import com.google.gson.Gson;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
@@ -61,7 +60,6 @@ class SpanApiIntegrationTest {
         SpanBatchSender.builder()
             .apiKey("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .attributesJson(new AttributesGson(new Gson()))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
             .enableAuditLogging()
             .build();
