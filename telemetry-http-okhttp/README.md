@@ -1,4 +1,4 @@
-This module contains reference implementations of the required http client for the SDK to function.
+This module contains an implementation of the required http client interface for the SDK to function.
 
 * `OkHttpPoster` : Implements the `HttpPoster` interface, using okhttp.
 
