@@ -35,22 +35,26 @@ public class MetricBatchSenderBuilder {
     Utils.verifyNonNull(metricToJson, "an MetricToJson implementation is required.");
     Utils.verifyNonNull(attributesJson, "an AttributesJson implementation is required.");
 
-    if (metricsUrl == null) {
-      try {
-        metricsUrl = constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
-      } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
-      }
-    }
+    URL url = getOrDefaultMetricsUrl();
 
     MetricBatchMarshaller marshaller =
         new MetricBatchMarshaller(
             new MetricBatchJsonCommonBlockWriter(attributesJson),
             new MetricBatchJsonTelemetryBlockWriter(metricToJson));
-    BatchDataSender sender =
-        new BatchDataSender(httpPoster, apiKey, metricsUrl, auditLoggingEnabled);
+    BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled);
 
     return new MetricBatchSender(marshaller, sender);
+  }
+
+  private URL getOrDefaultMetricsUrl() {
+    if (metricsUrl == null) {
+      try {
+        return constructMetricsUrlWithHost(URI.create("https://metric-api.newrelic.com/"));
+      } catch (MalformedURLException e) {
+        throw new UncheckedIOException("Bad hardcoded URL", e);
+      }
+    }
+    return metricsUrl;
   }
 
   /**
