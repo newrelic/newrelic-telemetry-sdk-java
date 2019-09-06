@@ -53,9 +53,9 @@ The project is configured to use the [google-java-format-gradle-plugin](https://
 The Telemetry SDK comes with tests in:.
 
 `integration_test`
-`metrics/src/test`
+`telemetry-core/src/test`
 `telemetry/src/test`
-`telemetry_components/src/test`
+`telemetry-http-okhttp/src/test`
 
 You can run all of these tests, and verify that your code is formatted correctly by running
 
