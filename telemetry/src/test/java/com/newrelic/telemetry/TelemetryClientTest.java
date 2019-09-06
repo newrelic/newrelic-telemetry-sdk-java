@@ -20,6 +20,9 @@ import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Metric;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.spans.Span;
+import com.newrelic.telemetry.spans.SpanBatch;
+import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -33,12 +36,13 @@ import org.mockito.stubbing.Answer;
 
 class TelemetryClientTest {
 
-  private MetricBatch batch;
+  private MetricBatch metricBatch;
+  private SpanBatch spanBatch;
 
   @BeforeEach
   void setup() {
-    Metric metric = makeMetric();
-    batch = makeBatch(singleton(metric));
+    metricBatch = makeBatch(singleton(makeMetric()));
+    spanBatch = new SpanBatch(singleton(makeSpan()), new Attributes().put("foo", "bar"));
   }
 
   private MetricBatch makeBatch(Collection<Metric> metrics) {
@@ -49,11 +53,24 @@ class TelemetryClientTest {
   void sendHappyPath() throws Exception {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
-    when(batchSender.sendBatch(batch)).thenAnswer(countDown(sendLatch));
+    when(batchSender.sendBatch(metricBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null);
 
-    testClass.sendBatch(batch);
+    testClass.sendBatch(metricBatch);
+    boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    assertTrue(result);
+  }
+
+  @Test
+  void sendSpansHappyPath() throws Exception {
+    SpanBatchSender batchSender = mock(SpanBatchSender.class);
+    CountDownLatch sendLatch = new CountDownLatch(1);
+    when(batchSender.sendBatch(spanBatch)).thenAnswer(countDown(sendLatch));
+
+    TelemetryClient testClass = new TelemetryClient(null, batchSender);
+
+    testClass.sendBatch(spanBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -63,16 +80,16 @@ class TelemetryClientTest {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     // First time explodes, second time succeeds
-    when(batchSender.sendBatch(batch))
+    when(batchSender.sendBatch(metricBatch))
         .thenAnswer(
             invocation -> {
               throw new RetryWithBackoffException();
             })
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null);
 
-    testClass.sendBatch(batch);
+    testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -81,16 +98,16 @@ class TelemetryClientTest {
   void sendGeneratesRetryWithRequestedBackoff() throws Exception {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
-    when(batchSender.sendBatch(batch))
+    when(batchSender.sendBatch(metricBatch))
         .thenAnswer(
             invocation -> {
               throw new RetryWithRequestedWaitException(15, TimeUnit.MILLISECONDS);
             })
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null);
 
-    testClass.sendBatch(batch);
+    testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -122,7 +139,7 @@ class TelemetryClientTest {
               return null;
             });
 
-    TelemetryClient testClass = new TelemetryClient(batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null);
 
     testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -153,5 +170,9 @@ class TelemetryClientTest {
         System.currentTimeMillis() - 100,
         System.currentTimeMillis(),
         new Attributes().put("bar", "baz"));
+  }
+
+  private Span makeSpan() {
+    return Span.builder("spanId").timestamp(6666).traceId("traceId").build();
   }
 }
