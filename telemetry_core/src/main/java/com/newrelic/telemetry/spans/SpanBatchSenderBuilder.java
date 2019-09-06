@@ -36,7 +36,6 @@ public class SpanBatchSenderBuilder {
   public SpanBatchSender build() {
     Utils.verifyNonNull(apiKey, "API key cannot be null");
     Utils.verifyNonNull(httpPoster, "an HttpPoster implementation is required.");
-    Utils.verifyNonNull(attributesJson, "an AttributesJson implementation is required.");
 
     URL traceUrl = getOrDefaultTraceUrl();
 
