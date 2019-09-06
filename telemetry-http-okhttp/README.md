@@ -1,4 +1,4 @@
-This module contains reference implementations of the required interfaces for the SDK to function.
+This module contains reference implementations of the required http client for the SDK to function.
 
 * `OkHttpPoster` : Implements the `HttpPoster` interface, using okhttp.
 
@@ -8,4 +8,4 @@ See the `telemetry-examples` module for sample usage.
 
 This library can be consumed via the following maven coordinates:
 
-`com.newrelic.telemetry:telemetry-components`
+`com.newrelic.telemetry:telemetry-http-okhttp`
