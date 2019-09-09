@@ -28,9 +28,7 @@ public class SpanBatchMarshaller {
 
     try {
       jsonWriter.beginArray().beginObject();
-      jsonWriter.name("common");
       commonBlockWriter.appendCommonJson(batch, jsonWriter);
-      jsonWriter.name("spans");
       telemetryBlockWriter.appendTelemetryJson(batch, jsonWriter);
       jsonWriter.endObject().endArray();
     } catch (IOException e) {

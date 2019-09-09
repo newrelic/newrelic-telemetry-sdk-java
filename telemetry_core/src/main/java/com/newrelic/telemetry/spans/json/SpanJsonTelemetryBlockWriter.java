@@ -24,6 +24,7 @@ public class SpanJsonTelemetryBlockWriter {
 
   public void appendTelemetryJson(SpanBatch batch, JsonWriter jsonWriter) {
     try {
+      jsonWriter.name("spans");
       jsonWriter.beginArray();
       Collection<Span> telemetry = batch.getTelemetry();
       for (Span span : telemetry) {

@@ -7,7 +7,7 @@
 
 package com.newrelic.telemetry.spans.json;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +34,7 @@ class SpanJsonCommonBlockWriterTest {
   void testAppendJsonWithCommonAttributesAndTraceId() throws IOException {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
-    String expected = "{\"trace.id\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}";
+    String expected = "{\"common\":{\"trace.id\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}}";
     SpanBatch batch =
         new SpanBatch(
             Collections.emptyList(), new Attributes().put("cleverKey", "cleverValue"), "123");
@@ -42,7 +42,9 @@ class SpanJsonCommonBlockWriterTest {
     when(attributesJson.toJson(batch.getCommonAttributes().asMap()))
         .thenReturn("{\"cleverKey\":\"cleverValue\"}");
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);
+    jsonWriter.beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
     testClass.appendCommonJson(batch, jsonWriter);
+    jsonWriter.endObject();
 
     assertEquals(expected, out.toString());
   }
@@ -52,26 +54,31 @@ class SpanJsonCommonBlockWriterTest {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
-    String expected = "{\"trace.id\":\"123\"}";
+    String expected = "{\"common\":{\"trace.id\":\"123\"}}";
     SpanBatch batch = new SpanBatch(Collections.emptyList(), new Attributes(), "123");
 
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);
+    jsonWriter.beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
     testClass.appendCommonJson(batch, jsonWriter);
+    jsonWriter.endObject();
     assertEquals(expected, out.toString());
   }
 
   @Test
-  void testAppendJsonWithCommonAttributesNoTraceId() {
+  void testAppendJsonWithCommonAttributesNoTraceId() throws IOException {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
-    String expected = "{\"attributes\":{\"You\":\"Wish\"}}";
+    String expected = "{\"common\":{\"attributes\":{\"You\":\"Wish\"}}}";
     SpanBatch batch = new SpanBatch(Collections.emptyList(), new Attributes().put("You", "Wish"));
+
 
     when(attributesJson.toJson(batch.getCommonAttributes().asMap()))
         .thenReturn("{\"You\":\"Wish\"}");
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);
+    jsonWriter.beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
     testClass.appendCommonJson(batch, jsonWriter);
+    jsonWriter.endObject();
 
     assertEquals(expected, out.toString());
   }
@@ -81,7 +88,7 @@ class SpanJsonCommonBlockWriterTest {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
-    String expected = "{}";
+    String expected = "";
     SpanBatch batch = new SpanBatch(Collections.emptyList(), new Attributes());
 
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);

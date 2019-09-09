@@ -14,6 +14,7 @@ import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.Test;
 class SpanJsonTelemetryBlockWriterTest {
 
   @Test
-  void testHappyPath() {
+  void testHappyPath() throws IOException {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
@@ -62,19 +63,21 @@ class SpanJsonTelemetryBlockWriterTest {
             + "\"trace.id\":\"654\","
             + "\"timestamp\":88888,"
             + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
-    String expected = "[" + span1Expected + "," + span2Expected + "]";
+    String expected = "{\"spans\":[" + span1Expected + "," + span2Expected + "]}";
 
     AttributesJson attributesJson = new AttributesJson();
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributesJson);
 
+    jsonWriter.beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
     testClass.appendTelemetryJson(batch, jsonWriter);
+    jsonWriter.endObject();
     String result = out.toString();
 
     assertEquals(expected, result);
   }
 
   @Test
-  void testNoTraceId() {
+  void testNoTraceId() throws IOException {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
@@ -82,16 +85,20 @@ class SpanJsonTelemetryBlockWriterTest {
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
 
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
 
     String result = out.toString();
 
-    String expected = "[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
+    String expected = "{\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]}";
     assertEquals(expected, result);
   }
 
   @Test
-  void testError() {
+  void testError() throws IOException {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
@@ -99,11 +106,37 @@ class SpanJsonTelemetryBlockWriterTest {
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
 
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
 
     String result = out.toString();
 
-    String expected = "[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]";
+    String expected = "{\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]}";
     assertEquals(expected, result);
   }
+
+  /**
+   * This case should be guarded against at a higher level in the calling code.
+   */
+  @Test
+  void testNoSpans() throws Exception {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
+    SpanBatch spanBatch = new SpanBatch(Collections.emptyList(), new Attributes());
+
+    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
+    testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
+
+    String result = out.toString();
+
+    String expected = "{\"spans\":[]}";
+    assertEquals(expected, result);  }
 }

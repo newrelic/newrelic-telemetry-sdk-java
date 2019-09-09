@@ -19,12 +19,14 @@ public class SpanJsonCommonBlockWriter {
   private AttributesJson attributesJson;
 
   public void appendCommonJson(SpanBatch batch, JsonWriter jsonWriter) {
+    if (!batch.hasCommonAttributes() && !batch.getTraceId().isPresent()) {
+      return;
+    }
     try {
+      jsonWriter.name("common");
       jsonWriter.beginObject();
-      if (batch.hasCommonAttributes() || batch.getTraceId().isPresent()) {
-        appendTraceId(batch, jsonWriter);
-        appendAttributes(batch, jsonWriter);
-      }
+      appendTraceId(batch, jsonWriter);
+      appendAttributes(batch, jsonWriter);
       jsonWriter.endObject();
     } catch (IOException e) {
       throw new RuntimeException("Failed to create span common block json", e);
