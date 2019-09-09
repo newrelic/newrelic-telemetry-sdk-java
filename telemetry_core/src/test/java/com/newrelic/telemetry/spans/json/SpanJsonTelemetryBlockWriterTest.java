@@ -95,7 +95,8 @@ class SpanJsonTelemetryBlockWriterTest {
 
     String result = stringBuilder.toString();
 
-    String expected = "\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]";
+    String expected =
+        "\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]";
     assertEquals(expected, result);
   }
 }

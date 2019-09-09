@@ -54,7 +54,7 @@ public class SpanJsonTelemetryBlockWriter {
     result.put("parent.id", span.getParentId());
     result.put("duration.ms", span.getDurationMs());
     result.put("service.name", span.getServiceName());
-    if(span.isError()){
+    if (span.isError()) {
       result.put("error", true);
     }
     return result;

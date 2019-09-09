@@ -12,5 +12,4 @@ class SpanBuilderTest {
     assertFalse(Span.builder("123").build().isError());
     assertTrue(Span.builder("123").isError().build().isError());
   }
-
 }

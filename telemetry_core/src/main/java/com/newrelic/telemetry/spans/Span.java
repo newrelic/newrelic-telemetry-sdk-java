@@ -150,14 +150,15 @@ public final class Span implements Telemetry {
       return this;
     }
 
-    public SpanBuilder isError(){
+    public SpanBuilder isError() {
       this.error = true;
       return this;
     }
 
     /** @return A Span object with the variables assigned to the builder class */
     public Span build() {
-      return new Span(id, attributes, traceId, timestamp, serviceName, durationMs, name, parentId, error);
+      return new Span(
+          id, attributes, traceId, timestamp, serviceName, durationMs, name, parentId, error);
     }
 
     /** @return A string representing this SpanBuilder object and listing its variables */
