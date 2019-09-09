@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Coming soon: TBD
 
-## [0.3.1] - 2019-09-06
-### Fix version in jar manifests
-- Not a functional change
+## [0.3.1] - 2019-09-09
+### Misc bugfixes and cleanup
 - Adds `Implementation-Version` and `Implementation-Vendor` to jar manifests
+- Properly escapes string in the span json
+- Set the proper version in the `User-Agent` string sent to the backend APIs
+- Fixes a stack overflow bug in the SimpleSpanBatchSender
+- Adds `error` as a top-level attribute in the Span
 
 ## [0.3.0] - 2019-09-06
 ### Support for traces via spans
