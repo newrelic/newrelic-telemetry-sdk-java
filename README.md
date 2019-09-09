@@ -14,7 +14,43 @@ We imagine you (or your customers) are interested in the telemetry data, generat
 
 For the most recently published version, see [Releases](https://github.com/newrelic/newrelic-telemetry-sdk-java/releases)
 
-### Getting Started: Requirements
+## Getting Started
+
+In order to send metrics or spans to New Relic, you will need an Insights Insert API Key. 
+Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
+for more information.
+
+Maven dependencies:
+
+```
+    <dependency>
+      <groupId>com.newrelic.telemetry</groupId>
+      <artifactId>telemetry</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.newrelic.telemetry</groupId>
+      <artifactId>telemetry-http-okhttp</artifactId>
+      <version>0.3.0</version>
+    </dependency>
+```
+
+Gradle dependencies: 
+
+```
+compile("com.newrelic.telemetry:telemetry:0.3.0")
+compile("com.newrelic.telemetry:telemetry-http-okhttp:0.3.0")
+```
+
+Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
+We recommend looking at the [TelemetryClientExample](telemetry_examples/src/main/java/com/newrelic/telemetry/exapmles/TelemetryClientExample.java)
+first.
+
+Note: If you do not want to include `okhttp` as a transitive depenedency, you will need to provide a custom implementation of the 
+`com.newrelic.telemetry.http.HttpPoster` interface, rather than using the `com.newrelic.telemetry:telemetry-http-okhttp` library.
+
+## For Developers: 
+### Requirements
 
 * Java 8 or greater
 * For IDEA:
