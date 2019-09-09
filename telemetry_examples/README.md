@@ -33,5 +33,5 @@ that can be fed a `SpanBatch`.
 
 #### [TelemetryClientExample.java](src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 
-This is an example of how to use the provided `com.newrelic.telemetry.RetryingTelemetrySender` to handle
+This is an example of how to use the provided `com.newrelic.telemetry.TelemetryClient` to handle
 errors in the recommended way.
