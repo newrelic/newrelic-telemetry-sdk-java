@@ -43,7 +43,7 @@ class SpanJsonTelemetryBlockWriterTest {
         Span.builder("456")
             .traceId("654")
             .timestamp(88888)
-            .serviceName("Cold.Service")
+            .serviceName("Cold.\"Light\".Service")
             .durationMs(200.0)
             .name("Joleene")
             .parentId("Agatha")
@@ -62,7 +62,7 @@ class SpanJsonTelemetryBlockWriterTest {
         "{\"id\":\"456\","
             + "\"trace.id\":\"654\","
             + "\"timestamp\":88888,"
-            + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
+            + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.\\\"Light\\\".Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
     String expected = "{\"spans\":[" + span1Expected + "," + span2Expected + "]}";
 
     AttributesJson attributesJson = new AttributesJson();

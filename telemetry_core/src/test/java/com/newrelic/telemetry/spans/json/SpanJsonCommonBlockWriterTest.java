@@ -34,10 +34,10 @@ class SpanJsonCommonBlockWriterTest {
   void testAppendJsonWithCommonAttributesAndTraceId() throws IOException {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
-    String expected = "{\"common\":{\"trace.id\":\"123\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}}";
+    String expected = "{\"common\":{\"trace.id\":\"12\\\"3\",\"attributes\":{\"cleverKey\":\"cleverValue\"}}}";
     SpanBatch batch =
         new SpanBatch(
-            Collections.emptyList(), new Attributes().put("cleverKey", "cleverValue"), "123");
+            Collections.emptyList(), new Attributes().put("cleverKey", "cleverValue"), "12\"3");
 
     when(attributesJson.toJson(batch.getCommonAttributes().asMap()))
         .thenReturn("{\"cleverKey\":\"cleverValue\"}");
