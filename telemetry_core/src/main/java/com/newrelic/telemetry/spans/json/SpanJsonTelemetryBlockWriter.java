@@ -7,8 +7,8 @@
 
 package com.newrelic.telemetry.spans.json;
 
+import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import java.io.IOException;

@@ -11,9 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.SpanBatch;
 import java.io.IOException;
 import java.io.StringWriter;
