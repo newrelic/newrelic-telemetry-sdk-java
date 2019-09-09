@@ -51,7 +51,7 @@ public class TelemetryClientExample {
     commonAttributes.put("appName", "testApplication");
     commonAttributes.put("environment", "staging");
 
-    sendSampleSpan(spanBatchSender, commonAttributes);
+    sendSampleSpan(telemetryClient, commonAttributes);
     sendSampleMetrics(telemetryClient, commonAttributes);
 
     // make sure to shutdown the client, else the background Executor will stop the program from
@@ -91,7 +91,7 @@ public class TelemetryClientExample {
     telemetryClient.sendBatch(batch);
   }
 
-  private static void sendSampleSpan(SpanBatchSender spanBatchSender, Attributes commonAttributes)
+  private static void sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes)
       throws ResponseException {
     Span sampleSpan =
         Span.builder(UUID.randomUUID().toString())
@@ -103,6 +103,6 @@ public class TelemetryClientExample {
     String traceId = UUID.randomUUID().toString();
     SpanBatch spanBatch =
         new SpanBatch(Collections.singleton(sampleSpan), commonAttributes, traceId);
-    spanBatchSender.sendBatch(spanBatch);
+    telemetryClient.sendBatch(spanBatch);
   }
 }
