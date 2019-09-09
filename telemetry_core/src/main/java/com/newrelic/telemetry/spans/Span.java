@@ -150,7 +150,12 @@ public final class Span implements Telemetry {
       return this;
     }
 
-    public SpanBuilder isError() {
+    /**
+     * Call this to indicate that the span contains an error condition.
+     *
+     * @return The SpanBuilder instance with the error field set to true
+     */
+    public SpanBuilder withError() {
       this.error = true;
       return this;
     }

@@ -86,7 +86,7 @@ class SpanJsonTelemetryBlockWriterTest {
 
   @Test
   void testError() {
-    Span span = Span.builder("667").timestamp(90210).isError().build();
+    Span span = Span.builder("667").timestamp(90210).withError().build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
     StringBuilder stringBuilder = new StringBuilder();
 

@@ -10,6 +10,6 @@ class SpanBuilderTest {
   @Test
   void testSpanErrors() {
     assertFalse(Span.builder("123").build().isError());
-    assertTrue(Span.builder("123").isError().build().isError());
+    assertTrue(Span.builder("123").withError().build().isError());
   }
 }
