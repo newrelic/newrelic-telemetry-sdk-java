@@ -8,7 +8,9 @@
 package com.newrelic.telemetry.spans.json;
 
 import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.SpanBatch;
+import java.io.IOException;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -16,30 +18,29 @@ public class SpanJsonCommonBlockWriter {
 
   private AttributesJson attributesJson;
 
-  public void appendCommonJson(SpanBatch batch, StringBuilder builder) {
-    if (!batch.hasCommonAttributes() && !batch.getTraceId().isPresent()) {
-      return;
-    }
-    builder.append("\"common\":").append("{");
-    appendTraceId(batch, builder);
-    appendAttributes(batch, builder);
-    builder.append("}");
-  }
-
-  private void appendTraceId(SpanBatch batch, StringBuilder builder) {
-    if (batch.getTraceId().isPresent()) {
-      builder.append("\"trace.id\":\"").append(batch.getTraceId().get()).append("\"");
-    }
-  }
-
-  private void appendAttributes(SpanBatch batch, StringBuilder builder) {
-    if (batch.hasCommonAttributes()) {
-      if (batch.getTraceId().isPresent()) {
-        builder.append(",");
+  public void appendCommonJson(SpanBatch batch, JsonWriter jsonWriter) {
+    try {
+      jsonWriter.beginObject();
+      if (batch.hasCommonAttributes() || batch.getTraceId().isPresent()) {
+        appendTraceId(batch, jsonWriter);
+        appendAttributes(batch, jsonWriter);
       }
-      builder
-          .append("\"attributes\":")
-          .append(attributesJson.toJson(batch.getCommonAttributes().asMap()));
+      jsonWriter.endObject();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to create span common block json", e);
+    }
+  }
+
+  private void appendTraceId(SpanBatch batch, JsonWriter jsonWriter) throws IOException {
+    if (batch.getTraceId().isPresent()) {
+      jsonWriter.name("trace.id").value(batch.getTraceId().get());
+    }
+  }
+
+  private void appendAttributes(SpanBatch batch, JsonWriter jsonWriter) throws IOException {
+    if (batch.hasCommonAttributes()) {
+      jsonWriter.name("attributes");
+      jsonWriter.jsonValue(attributesJson.toJson(batch.getCommonAttributes().asMap()));
     }
   }
 }

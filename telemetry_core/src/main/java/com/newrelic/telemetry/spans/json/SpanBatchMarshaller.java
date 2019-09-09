@@ -1,6 +1,9 @@
 package com.newrelic.telemetry.spans.json;
 
+import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.SpanBatch;
+import java.io.IOException;
+import java.io.StringWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,18 +22,21 @@ public class SpanBatchMarshaller {
 
   public String toJson(SpanBatch batch) {
     logger.debug("Generating json for span batch.");
-    StringBuilder builder = new StringBuilder();
 
-    builder.append("[").append("{");
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
 
-    int lengthBefore = builder.length();
-    commonBlockWriter.appendCommonJson(batch, builder);
-    if (builder.length() > lengthBefore) {
-      builder.append(",");
+    try {
+      jsonWriter.beginArray().beginObject();
+      jsonWriter.name("common");
+      commonBlockWriter.appendCommonJson(batch, jsonWriter);
+      jsonWriter.name("spans");
+      telemetryBlockWriter.appendTelemetryJson(batch, jsonWriter);
+      jsonWriter.endObject().endArray();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to marshall json for a span batch");
     }
-    telemetryBlockWriter.appendTelemetryJson(batch, builder);
 
-    builder.append("}").append("]");
-    return builder.toString();
+    return out.toString();
   }
 }

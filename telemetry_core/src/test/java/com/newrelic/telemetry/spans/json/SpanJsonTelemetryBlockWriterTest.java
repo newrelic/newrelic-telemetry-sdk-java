@@ -11,8 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +24,9 @@ class SpanJsonTelemetryBlockWriterTest {
 
   @Test
   void testHappyPath() {
-    StringBuilder sb = new StringBuilder();
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
     Span span1 =
         Span.builder("123")
             .traceId("987")
@@ -58,29 +62,31 @@ class SpanJsonTelemetryBlockWriterTest {
             + "\"trace.id\":\"654\","
             + "\"timestamp\":88888,"
             + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
-    String expected = "\"spans\":[" + span1Expected + "," + span2Expected + "]";
+    String expected = "[" + span1Expected + "," + span2Expected + "]";
 
     AttributesJson attributesJson = new AttributesJson();
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributesJson);
 
-    testClass.appendTelemetryJson(batch, sb);
-    String result = sb.toString();
+    testClass.appendTelemetryJson(batch, jsonWriter);
+    String result = out.toString();
 
     assertEquals(expected, result);
   }
 
   @Test
   void testNoTraceId() {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
     Span span = Span.builder("123").timestamp(12345).build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
-    StringBuilder stringBuilder = new StringBuilder();
 
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
-    testClass.appendTelemetryJson(spanBatch, stringBuilder);
+    testClass.appendTelemetryJson(spanBatch, jsonWriter);
 
-    String result = stringBuilder.toString();
+    String result = out.toString();
 
-    String expected = "\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
+    String expected = "[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
     assertEquals(expected, result);
   }
 }

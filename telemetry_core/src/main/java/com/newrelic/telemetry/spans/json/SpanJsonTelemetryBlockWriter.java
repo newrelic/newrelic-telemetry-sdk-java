@@ -8,11 +8,13 @@
 package com.newrelic.telemetry.spans.json;
 
 import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Value;
 
 @Value
@@ -20,32 +22,25 @@ public class SpanJsonTelemetryBlockWriter {
 
   private final AttributesJson attributesJson;
 
-  public void appendTelemetryJson(SpanBatch batch, StringBuilder sb) {
-    AtomicBoolean isFirst = new AtomicBoolean(true);
-    sb.append("\"spans\":[");
-    batch
-        .getTelemetry()
-        .forEach(
-            span -> {
-              if (!isFirst.getAndSet(false)) {
-                sb.append(",");
-              }
-              sb.append("{").append("\"id\":\"").append(span.getId()).append("\",");
-              appendIfTraceIdExists(sb, span)
-                  .append("\"timestamp\":")
-                  .append(span.getTimestamp())
-                  .append(",")
-                  .append("\"attributes\":" + attributesJson.toJson(enhanceAttributes(span)))
-                  .append("}");
-            });
-    sb.append("]");
-  }
+  public void appendTelemetryJson(SpanBatch batch, JsonWriter jsonWriter) {
 
-  private StringBuilder appendIfTraceIdExists(StringBuilder sb, Span span) {
-    if (span.getTraceId() != null) {
-      sb.append("\"trace.id\":\"").append(span.getTraceId()).append("\",");
+    try {
+      jsonWriter.beginArray();
+      Collection<Span> telemetry = batch.getTelemetry();
+      for (Span span : telemetry) {
+        jsonWriter.beginObject();
+        jsonWriter.name("id").value(span.getId());
+        if (span.getTraceId() != null) {
+          jsonWriter.name("trace.id").value(span.getTraceId());
+        }
+        jsonWriter.name("timestamp").value(span.getTimestamp());
+        jsonWriter.name("attributes").jsonValue(attributesJson.toJson(enhanceAttributes(span)));
+        jsonWriter.endObject();
+      }
+      jsonWriter.endArray();
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to generate span telemetry json", e);
     }
-    return sb;
   }
 
   private Map<String, Object> enhanceAttributes(Span span) {
