@@ -70,7 +70,7 @@ class SpanJsonTelemetryBlockWriterTest {
 
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendTelemetryJson(batch, jsonWriter);
     jsonWriter.endObject();
     String result = out.toString();
@@ -90,7 +90,7 @@ class SpanJsonTelemetryBlockWriterTest {
 
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
     jsonWriter.endObject();
 
@@ -112,7 +112,7 @@ class SpanJsonTelemetryBlockWriterTest {
 
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
     jsonWriter.endObject();
 
@@ -135,7 +135,7 @@ class SpanJsonTelemetryBlockWriterTest {
 
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
     jsonWriter.endObject();
 

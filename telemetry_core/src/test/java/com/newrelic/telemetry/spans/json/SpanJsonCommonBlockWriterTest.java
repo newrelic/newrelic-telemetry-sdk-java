@@ -45,7 +45,7 @@ class SpanJsonCommonBlockWriterTest {
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendCommonJson(batch, jsonWriter);
     jsonWriter.endObject();
 
@@ -63,7 +63,7 @@ class SpanJsonCommonBlockWriterTest {
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendCommonJson(batch, jsonWriter);
     jsonWriter.endObject();
     assertEquals(expected, out.toString());
@@ -82,7 +82,7 @@ class SpanJsonCommonBlockWriterTest {
     SpanJsonCommonBlockWriter testClass = new SpanJsonCommonBlockWriter(attributesJson);
     jsonWriter
         .beginObject(); // Because we are testing through a real writer, we have to give it object
-                        // context in order to do fragment work
+    // context in order to do fragment work
     testClass.appendCommonJson(batch, jsonWriter);
     jsonWriter.endObject();
 
