@@ -11,8 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,8 +24,10 @@ import org.junit.jupiter.api.Test;
 class SpanJsonTelemetryBlockWriterTest {
 
   @Test
-  void testHappyPath() {
-    StringBuilder sb = new StringBuilder();
+  void testHappyPath() throws IOException {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
     Span span1 =
         Span.builder("123")
             .traceId("987")
@@ -38,7 +43,7 @@ class SpanJsonTelemetryBlockWriterTest {
         Span.builder("456")
             .traceId("654")
             .timestamp(88888)
-            .serviceName("Cold.Service")
+            .serviceName("Cold.\"Light\".Service")
             .durationMs(200.0)
             .name("Joleene")
             .parentId("Agatha")
@@ -57,46 +62,86 @@ class SpanJsonTelemetryBlockWriterTest {
         "{\"id\":\"456\","
             + "\"trace.id\":\"654\","
             + "\"timestamp\":88888,"
-            + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
-    String expected = "\"spans\":[" + span1Expected + "," + span2Expected + "]";
+            + "\"attributes\":{\"duration.ms\":200.0,\"c\":\"d\",\"service.name\":\"Cold.\\\"Light\\\".Service\",\"name\":\"Joleene\",\"parent.id\":\"Agatha\"}}";
+    String expected = "{\"spans\":[" + span1Expected + "," + span2Expected + "]}";
 
     AttributesJson attributesJson = new AttributesJson();
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributesJson);
 
-    testClass.appendTelemetryJson(batch, sb);
-    String result = sb.toString();
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+    // context in order to do fragment work
+    testClass.appendTelemetryJson(batch, jsonWriter);
+    jsonWriter.endObject();
+    String result = out.toString();
 
     assertEquals(expected, result);
   }
 
   @Test
-  void testNoTraceId() {
+  void testNoTraceId() throws IOException {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
     Span span = Span.builder("123").timestamp(12345).build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
-    StringBuilder stringBuilder = new StringBuilder();
 
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
-    testClass.appendTelemetryJson(spanBatch, stringBuilder);
 
-    String result = stringBuilder.toString();
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+    // context in order to do fragment work
+    testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
 
-    String expected = "\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
+    String result = out.toString();
+
+    String expected = "{\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]}";
     assertEquals(expected, result);
   }
 
   @Test
-  void testError() {
+  void testError() throws IOException {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
     Span span = Span.builder("667").timestamp(90210).withError().build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
-    StringBuilder stringBuilder = new StringBuilder();
 
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
-    testClass.appendTelemetryJson(spanBatch, stringBuilder);
 
-    String result = stringBuilder.toString();
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+    // context in order to do fragment work
+    testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
+
+    String result = out.toString();
 
     String expected =
-        "\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]";
+        "{\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]}";
+    assertEquals(expected, result);
+  }
+
+  /** This case should be guarded against at a higher level in the calling code. */
+  @Test
+  void testNoSpans() throws Exception {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
+    SpanBatch spanBatch = new SpanBatch(Collections.emptyList(), new Attributes());
+
+    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+    // context in order to do fragment work
+    testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
+
+    String result = out.toString();
+
+    String expected = "{\"spans\":[]}";
     assertEquals(expected, result);
   }
 }
