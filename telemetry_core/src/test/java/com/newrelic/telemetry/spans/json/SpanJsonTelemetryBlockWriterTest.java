@@ -83,4 +83,19 @@ class SpanJsonTelemetryBlockWriterTest {
     String expected = "\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{}}]";
     assertEquals(expected, result);
   }
+
+  @Test
+  void testError() {
+    Span span = Span.builder("667").timestamp(90210).isError().build();
+    SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
+    StringBuilder stringBuilder = new StringBuilder();
+
+    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+    testClass.appendTelemetryJson(spanBatch, stringBuilder);
+
+    String result = stringBuilder.toString();
+
+    String expected = "\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]";
+    assertEquals(expected, result);
+  }
 }
