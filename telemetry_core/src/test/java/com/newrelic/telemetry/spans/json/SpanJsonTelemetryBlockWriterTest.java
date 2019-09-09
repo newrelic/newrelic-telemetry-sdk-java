@@ -68,7 +68,9 @@ class SpanJsonTelemetryBlockWriterTest {
     AttributesJson attributesJson = new AttributesJson();
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(attributesJson);
 
-    jsonWriter.beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+                        // context in order to do fragment work
     testClass.appendTelemetryJson(batch, jsonWriter);
     jsonWriter.endObject();
     String result = out.toString();
@@ -87,7 +89,8 @@ class SpanJsonTelemetryBlockWriterTest {
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
 
     jsonWriter
-        .beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+                        // context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
     jsonWriter.endObject();
 
@@ -108,19 +111,19 @@ class SpanJsonTelemetryBlockWriterTest {
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
 
     jsonWriter
-        .beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+                        // context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
     jsonWriter.endObject();
 
     String result = out.toString();
 
-    String expected = "{\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]}";
+    String expected =
+        "{\"spans\":[{\"id\":\"667\",\"timestamp\":90210,\"attributes\":{\"error\":true}}]}";
     assertEquals(expected, result);
   }
 
-  /**
-   * This case should be guarded against at a higher level in the calling code.
-   */
+  /** This case should be guarded against at a higher level in the calling code. */
   @Test
   void testNoSpans() throws Exception {
     StringWriter out = new StringWriter();
@@ -131,12 +134,14 @@ class SpanJsonTelemetryBlockWriterTest {
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
 
     jsonWriter
-        .beginObject(); // Because we are testing through a real writer, we have to give it object context in order to do fragment work
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+                        // context in order to do fragment work
     testClass.appendTelemetryJson(spanBatch, jsonWriter);
     jsonWriter.endObject();
 
     String result = out.toString();
 
     String expected = "{\"spans\":[]}";
-    assertEquals(expected, result);  }
+    assertEquals(expected, result);
+  }
 }
