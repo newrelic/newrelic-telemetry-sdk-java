@@ -7,8 +7,8 @@
 
 package com.newrelic.telemetry.metrics.json;
 
+import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.json.AttributesJson;
-import com.newrelic.telemetry.json.JsonWriter;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.Summary;

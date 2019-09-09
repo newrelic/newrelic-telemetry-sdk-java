@@ -1,6 +1,6 @@
 package com.newrelic.telemetry.spans.json;
 
-import com.newrelic.telemetry.json.JsonWriter;
+import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.spans.SpanBatch;
 import java.io.IOException;
 import java.io.StringWriter;

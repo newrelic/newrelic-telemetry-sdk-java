@@ -6,6 +6,7 @@
  */
 package com.newrelic.telemetry.json;
 
+import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
