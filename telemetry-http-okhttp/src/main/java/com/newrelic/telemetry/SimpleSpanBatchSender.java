@@ -34,7 +34,7 @@ public class SimpleSpanBatchSender {
    *     Relic API Keys</a>
    */
   public static SpanBatchSenderBuilder builder(String apiKey) {
-    return builder(apiKey);
+    return builder(apiKey, Duration.ofSeconds(2));
   }
 
   /**
