@@ -8,6 +8,7 @@ import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,5 +49,21 @@ public class MetricBatchSender {
         batch.size());
     String json = marshaller.toJson(batch);
     return sender.send(json);
+  }
+
+  public Response sendBatch(List<MetricBatch> batchList) throws ResponseException {
+    if (batchList == null || batchList.size() == 0) {
+      logger.debug("Tried to send a null or empty metric batch list");
+      return new Response(202, "Ignored", "Empty batch");
+    }
+    Response response = null;
+    for (MetricBatch batch : batchList) {
+      response = sendBatch(batch);
+    }
+    if (response == null) {
+      logger.debug("No response from New Relic. Something is broken");
+      return new Response(202, "Broken", "No response from New Relic");
+    }
+    return response;
   }
 }
