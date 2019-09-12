@@ -43,7 +43,7 @@ compile("com.newrelic.telemetry:telemetry-http-okhttp:0.3.1")
 ```
 
 Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
-We recommend looking at the [TelemetryClientExample](telemetry_examples/src/main/java/com/newrelic/telemetry/exapmles/TelemetryClientExample.java)
+We recommend looking at the [TelemetryClientExample](telemetry_examples/src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 first.
 
 Note: If you do not want to include `okhttp` as a transitive depenedency, you will need to provide a custom implementation of the 
