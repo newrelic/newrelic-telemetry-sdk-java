@@ -60,7 +60,7 @@ Note: If you do not want to include `okhttp` as a transitive depenedency, you wi
 
 ### Building
 CI builds are run on Azure Pipelines: 
-[![Build Status](https://dev.azure.com/newrelic-builds/java/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/newrelic-builds/java/_build/latest?definitionId=8&branchName=master)
+[![Build Status](https://dev.azure.com/NRAzurePipelines/Java%20CI/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/NRAzurePipelines/Java%20CI/_build/latest?definitionId=6&branchName=master)
 
 The project uses gradle 5 for building, and the gradle wrapper is provided.
 
