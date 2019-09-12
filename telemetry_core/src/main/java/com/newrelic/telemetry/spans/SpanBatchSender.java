@@ -42,7 +42,7 @@ public class SpanBatchSender {
    */
   public Response sendBatch(SpanBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {
-      logger.debug("Tried to send a null or empty span batch");
+      logger.debug("Skipped sending a null or empty span batch");
       return new Response(202, "Ignored", "Empty batch");
     }
     logger.debug(

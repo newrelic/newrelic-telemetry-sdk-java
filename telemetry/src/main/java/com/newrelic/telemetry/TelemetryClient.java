@@ -135,6 +135,7 @@ public class TelemetryClient {
 
   /** Cleanly shuts down the background Executor thread. */
   public void shutdown() {
+    LOG.info("Shutting down the TelemetryClient background Executor");
     executor.shutdown();
   }
 }
