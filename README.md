@@ -75,7 +75,7 @@ They are implemented with the testcontainers library; [mock-server](https://gith
 
 There are two modes to run the integration tests.
 * Run with gradle: `$ ./gradlew integration_test:test`
-* Run the `LowLevelApiIntegrationTest` class in IDEA.
+* Run the integration test classes in IDEA directly. It should "just work".
 
 ### Code style
 This project uses the [google-java-format](https://github.com/google/google-java-format) code style, and it is 
