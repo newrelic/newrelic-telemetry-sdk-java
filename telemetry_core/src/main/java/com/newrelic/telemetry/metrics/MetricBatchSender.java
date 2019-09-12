@@ -40,7 +40,7 @@ public class MetricBatchSender {
    */
   public Response sendBatch(MetricBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {
-      logger.debug("Tried to send a null or empty metric batch");
+      logger.debug("Skipped sending of an empty metric batch.");
       return new Response(202, "Ignored", "Empty batch");
     }
     logger.debug(
