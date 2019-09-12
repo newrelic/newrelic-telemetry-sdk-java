@@ -50,6 +50,10 @@ public class BatchDataSender {
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
     this.auditLoggingEnabled = auditLoggingEnabled;
+    logger.info("BatchDataSender configured with endpoint {}", endpointURl);
+    if (auditLoggingEnabled) {
+      logger.info("BatchDataSender configured with audit logging enabled.");
+    }
   }
 
   public Response send(String json)
