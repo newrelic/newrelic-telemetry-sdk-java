@@ -102,6 +102,8 @@ public class SpanBatchSenderBuilder {
 
   /**
    * By default, {@value #DEFAULT_TRACE_URL} is used. Otherwise uses the provided {@code traceUrl}
+   *
+   * @deprecated Use the {@link #uriOverride(URI)} method instead.
    */
   public SpanBatchSenderBuilder traceUrl(URL traceUrl) {
     this.traceUrl = traceUrl;

@@ -11,7 +11,7 @@ import lombok.Value;
 
 /**
  * Spans are New Relic's analog of OpenTracing spans. They can represent events such as external
- * calls individual operations, and datastore calls.
+ * calls, individual operations, and datastore calls.
  */
 @Value
 public final class Span implements Telemetry {
