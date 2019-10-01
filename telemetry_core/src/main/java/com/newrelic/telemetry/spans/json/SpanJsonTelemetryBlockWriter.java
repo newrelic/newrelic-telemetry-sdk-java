@@ -35,7 +35,7 @@ public class SpanJsonTelemetryBlockWriter {
           jsonWriter.name("trace.id").value(span.getTraceId());
         }
         jsonWriter.name("timestamp").value(span.getTimestamp());
-        Map<String, Object> enhancedAttributes = new AttributesEnhancer(span).apply();
+        Map<String, Object> enhancedAttributes = new AttributesEnhancer(span).enhance();
         jsonWriter.name("attributes").jsonValue(attributesJson.toJson(enhancedAttributes));
         jsonWriter.endObject();
       }
@@ -55,7 +55,7 @@ public class SpanJsonTelemetryBlockWriter {
       this.newAttrs = new HashMap<>(span.getAttributes().asMap());
     }
 
-    Map<String, Object> apply() {
+    Map<String, Object> enhance() {
       put("name", () -> ofNullable(span.getName()));
       put("parent.id", () -> ofNullable(span.getParentId()));
       put("duration.ms", () -> ofNullable(span.getDurationMs()));
