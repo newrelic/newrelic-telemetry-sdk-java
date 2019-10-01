@@ -42,10 +42,10 @@ public class SpanJsonTelemetryBlockWriter {
 
   private Map<String, Object> enhanceAttributes(Span span) {
     Map<String, Object> result = new HashMap<>(span.getAttributes().asMap());
-    result.put("name", span.getName());
-    result.put("parent.id", span.getParentId());
-    result.put("duration.ms", span.getDurationMs());
-    result.put("service.name", span.getServiceName());
+    result.putIfAbsent("name", span.getName());
+    result.putIfAbsent("parent.id", span.getParentId());
+    result.putIfAbsent("duration.ms", span.getDurationMs());
+    result.putIfAbsent("service.name", span.getServiceName());
     if (span.isError()) {
       result.put("error", true);
     }
