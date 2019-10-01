@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.2] - 2019-10-01
 ### Misc bugfixes and cleanup
 - Update license format in source files
-- Log when audit logging is enabled and endpoint url at startup
+- At startup, log something when audit logging is enabled
+- At startup, log endpoint url
 - Fix for [bug #102](https://github.com/newrelic/newrelic-telemetry-sdk-java/issues/102) - nulls sent in spans json payload
 
 ## [0.3.1] - 2019-09-09
