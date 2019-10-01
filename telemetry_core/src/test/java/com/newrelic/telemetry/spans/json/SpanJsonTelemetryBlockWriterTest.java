@@ -120,9 +120,7 @@ class SpanJsonTelemetryBlockWriterTest {
     assertEquals(expected, result);
   }
 
-  /**
-   * This case should be guarded against at a higher level in the calling code.
-   */
+  /** This case should be guarded against at a higher level in the calling code. */
   @Test
   void testNoSpans() throws Exception {
     StringWriter out = new StringWriter();
@@ -149,15 +147,13 @@ class SpanJsonTelemetryBlockWriterTest {
     StringWriter out = new StringWriter();
     JsonWriter jsonWriter = new JsonWriter(out);
 
-    Attributes attrs = new Attributes()
-        .put("service.name", "ipanema")
-        .put("parent.id", "0xff")
-        .put("duration.ms", 101)
-        .put("name", "lucy");
-    Span span = Span.builder("123")
-        .timestamp(12345)
-        .attributes(attrs)
-        .build();
+    Attributes attrs =
+        new Attributes()
+            .put("service.name", "ipanema")
+            .put("parent.id", "0xff")
+            .put("duration.ms", 101)
+            .put("name", "lucy");
+    Span span = Span.builder("123").timestamp(12345).attributes(attrs).build();
     SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
 
     SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
@@ -170,13 +166,54 @@ class SpanJsonTelemetryBlockWriterTest {
 
     String result = out.toString();
 
-    String expected = "{\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{"
-        + "\"duration.ms\":101,"
-        + "\"service.name\":\"ipanema\","
-        + "\"name\":\"lucy\","
-        + "\"parent.id\":\"0xff\""
-        + "}}]}";
+    String expected =
+        "{\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{"
+            + "\"duration.ms\":101,"
+            + "\"service.name\":\"ipanema\","
+            + "\"name\":\"lucy\","
+            + "\"parent.id\":\"0xff\""
+            + "}}]}";
     assertEquals(expected, result);
   }
 
+  @Test
+  void testNullAttributesDontOverrideAndAreOmitted() throws IOException {
+    StringWriter out = new StringWriter();
+    JsonWriter jsonWriter = new JsonWriter(out);
+
+    Attributes attrs =
+        new Attributes()
+            .put("service.name", (String) null)
+            .put("parent.id", (String) null)
+            .put("duration.ms", (Integer) null)
+            .put("db.js", (String) null)
+            .put("name", (String) null);
+    Span span =
+        Span.builder("123")
+            .timestamp(12345)
+            .parentId("0xff")
+            .name("lucy")
+            .durationMs(101)
+            .attributes(attrs)
+            .build();
+    SpanBatch spanBatch = new SpanBatch(Collections.singleton(span), new Attributes());
+
+    SpanJsonTelemetryBlockWriter testClass = new SpanJsonTelemetryBlockWriter(new AttributesJson());
+
+    jsonWriter
+        .beginObject(); // Because we are testing through a real writer, we have to give it object
+    // context in order to do fragment work
+    testClass.appendTelemetryJson(spanBatch, jsonWriter);
+    jsonWriter.endObject();
+
+    String result = out.toString();
+
+    String expected =
+        "{\"spans\":[{\"id\":\"123\",\"timestamp\":12345,\"attributes\":{"
+            + "\"duration.ms\":101.0,"
+            + "\"name\":\"lucy\","
+            + "\"parent.id\":\"0xff\""
+            + "}}]}";
+    assertEquals(expected, result);
+  }
 }
