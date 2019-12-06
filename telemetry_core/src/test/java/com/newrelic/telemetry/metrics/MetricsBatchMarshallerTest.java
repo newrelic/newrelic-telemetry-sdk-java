@@ -112,16 +112,32 @@ class MetricsBatchMarshallerTest {
                 new Gauge("gaugeNegInf", Double.NEGATIVE_INFINITY, 555, new Attributes()),
                 new Gauge("gaugePosInf", Double.POSITIVE_INFINITY, 555, new Attributes()),
                 new Summary(
-                    "summarySumBad", 100, Double.NaN, 1000d, 1000d, 555, 666, new Attributes()),
-                new Summary(
-                    "summaryMinBad", 100, 1000d, Double.NaN, 1000d, 555, 666, new Attributes()),
-                new Summary(
-                    "summaryMaxBad", 100, 1000d, 1000d, Double.NaN, 555, 666, new Attributes())),
+                    "summarySumBad", 100, Double.NaN, 1000d, 1000d, 555, 666, new Attributes())),
             commonAttributes);
     String json = metricBatchMarshaller.toJson(metricBatch);
 
     String expected = "[{\"metrics\":[]}]";
     JSONAssert.assertEquals(expected, json, false);
+  }
+
+  @Test
+  @DisplayName("Metric formatting handles null min and max")
+  void testNullMinMaxMetricValues() throws Exception {
+
+    Attributes commonAttributes = new Attributes();
+
+    MetricBatch metricBatch =
+        new MetricBatch(
+            Arrays.asList(
+                new Summary(
+                    "summaryMinNull", 100, 1000d, Double.NaN, 1000d, 555, 666, new Attributes()),
+                new Summary(
+                    "summaryMaxNull", 100, 1000d, 1000d, Double.NaN, 555, 666, new Attributes())),
+            commonAttributes);
+    String json = metricBatchMarshaller.toJson(metricBatch);
+
+    assertTrue(json.contains("\"min\":null"));
+    assertTrue(json.contains("\"max\":null"));
   }
 
   @Test

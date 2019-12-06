@@ -29,8 +29,10 @@ public class MetricToJson {
       jsonWriter.beginObject();
       jsonWriter.name("count").value(summary.getCount());
       jsonWriter.name("sum").value(summary.getSum());
-      jsonWriter.name("min").value(summary.getMin());
-      jsonWriter.name("max").value(summary.getMax());
+      jsonWriter.name("min");
+      writeDouble(jsonWriter, summary.getMin());
+      jsonWriter.name("max");
+      writeDouble(jsonWriter, summary.getMax());
       jsonWriter.endObject();
 
       jsonWriter.name("timestamp").value(summary.getStartTimeMs());
@@ -85,6 +87,14 @@ public class MetricToJson {
       return out.toString();
     } catch (IOException e) {
       throw new RuntimeException("Failed to generate count json");
+    }
+  }
+
+  private void writeDouble(final JsonWriter jsonWriter, final double value) throws IOException {
+    if (Double.isFinite(value)) {
+      jsonWriter.value(value);
+    } else {
+      jsonWriter.nullValue();
     }
   }
 }

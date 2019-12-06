@@ -42,8 +42,7 @@ public class MetricBatchJsonTelemetryBlockWriter {
         metric,
         count -> isFinite((count.getValue())),
         gauge -> isFinite((gauge.getValue())),
-        summary ->
-            isFinite(summary.getMax()) && isFinite(summary.getMin()) && isFinite(summary.getSum()));
+        summary -> isFinite(summary.getSum()));
   }
 
   private String toJsonString(Metric metric) {
