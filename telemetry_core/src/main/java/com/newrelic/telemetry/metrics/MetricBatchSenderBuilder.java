@@ -25,7 +25,7 @@ public class MetricBatchSenderBuilder {
   private HttpPoster httpPoster;
   private URL metricsUrl;
   private boolean auditLoggingEnabled = false;
-  private String additionalUserAgent;
+  private String secondaryUserAgent;
 
   /**
    * Build the final {@link MetricBatchSender}.
@@ -43,7 +43,7 @@ public class MetricBatchSenderBuilder {
             new MetricBatchJsonCommonBlockWriter(new AttributesJson()),
             new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
     BatchDataSender sender =
-        new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled, additionalUserAgent);
+        new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled, secondaryUserAgent);
 
     return new MetricBatchSender(marshaller, sender);
   }
@@ -107,12 +107,12 @@ public class MetricBatchSenderBuilder {
    * Provide additional user agent information. The product is required to be non-null and
    * non-empty. The version is optional, although highly recommended.
    */
-  public MetricBatchSenderBuilder additionalUserAgent(String product, String version) {
-    Utils.verifyNonNull(product, "Product cannot be null in the additional user-agent.");
+  public MetricBatchSenderBuilder secondaryUserAgent(String product, String version) {
+    Utils.verifyNonBlank(product, "Product cannot be null or empty in the secondary user-agent.");
     if (version == null || version.isEmpty()) {
-      additionalUserAgent = product;
+      secondaryUserAgent = product;
     } else {
-      additionalUserAgent = product + "/" + version;
+      secondaryUserAgent = product + "/" + version;
     }
     return this;
   }

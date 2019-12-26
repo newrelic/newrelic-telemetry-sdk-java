@@ -27,7 +27,7 @@ public class SpanBatchSenderBuilder {
   private URL traceUrl;
   private boolean auditLoggingEnabled = false;
 
-  private String additionalUserAgent;
+  private String secondaryUserAgent;
 
   /**
    * Build the final {@link SpanBatchSender}.
@@ -45,7 +45,7 @@ public class SpanBatchSenderBuilder {
             new SpanJsonCommonBlockWriter(new AttributesJson()),
             new SpanJsonTelemetryBlockWriter(new AttributesJson()));
     BatchDataSender sender =
-        new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled, additionalUserAgent);
+        new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled, secondaryUserAgent);
     return new SpanBatchSender(marshaller, sender);
   }
 
@@ -118,12 +118,12 @@ public class SpanBatchSenderBuilder {
    * Provide additional user agent information. The product is required to be non-null and
    * non-empty. The version is optional, although highly recommended.
    */
-  public SpanBatchSenderBuilder additionalUserAgent(String product, String version) {
-    Utils.verifyNonNull(product, "Product cannot be null in the additional user-agent.");
+  public SpanBatchSenderBuilder secondaryUserAgent(String product, String version) {
+    Utils.verifyNonBlank(product, "Product cannot be null or empty in the secondary user-agent.");
     if (version == null || version.isEmpty()) {
-      additionalUserAgent = product;
+      secondaryUserAgent = product;
     } else {
-      additionalUserAgent = product + "/" + version;
+      secondaryUserAgent = product + "/" + version;
     }
     return this;
   }

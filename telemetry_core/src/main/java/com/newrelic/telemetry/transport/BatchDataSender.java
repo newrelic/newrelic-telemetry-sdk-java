@@ -42,7 +42,7 @@ public class BatchDataSender {
   static {
     Package thisPackage = BatchDataSender.class.getPackage();
     String implementationVersion =
-        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("Unknown Version");
+        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("UnknownVersion");
     BASE_USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
   }
 
@@ -51,12 +51,12 @@ public class BatchDataSender {
       String apiKey,
       URL endpointURl,
       boolean auditLoggingEnabled,
-      String additionalUserAgent) {
+      String secondaryUserAgent) {
     this.client = client;
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
     this.auditLoggingEnabled = auditLoggingEnabled;
-    this.userAgent = buildUserAgent(additionalUserAgent);
+    this.userAgent = buildUserAgent(secondaryUserAgent);
     logger.info("BatchDataSender configured with endpoint {}", endpointURl);
     if (auditLoggingEnabled) {
       logger.info("BatchDataSender configured with audit logging enabled.");

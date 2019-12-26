@@ -66,7 +66,7 @@ class SpanApiIntegrationTest {
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
             .enableAuditLogging()
-            .additionalUserAgent("myTestApp", null)
+            .secondaryUserAgent("myTestApp", null)
             .build();
   }
 

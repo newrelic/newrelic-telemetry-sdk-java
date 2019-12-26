@@ -79,7 +79,7 @@ class MetricApiIntegrationTest {
     metricBatchSender =
         SimpleMetricBatchSender.builder("fakeKey", Duration.ofMillis(1500))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
-            .additionalUserAgent("testApplication", "1.0.0")
+            .secondaryUserAgent("testApplication", "1.0.0")
             .build();
   }
 
