@@ -25,6 +25,7 @@ public class MetricBatchSenderBuilder {
   private HttpPoster httpPoster;
   private URL metricsUrl;
   private boolean auditLoggingEnabled = false;
+  private String additionalUserAgent;
 
   /**
    * Build the final {@link MetricBatchSender}.
@@ -41,7 +42,8 @@ public class MetricBatchSenderBuilder {
         new MetricBatchMarshaller(
             new MetricBatchJsonCommonBlockWriter(new AttributesJson()),
             new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
-    BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled);
+    BatchDataSender sender =
+        new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled, additionalUserAgent);
 
     return new MetricBatchSender(marshaller, sender);
   }
@@ -80,13 +82,38 @@ public class MetricBatchSenderBuilder {
     return this;
   }
 
+  /**
+   * Provide your New Relic Insights Insert API key
+   *
+   * @see <a
+   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
+   *     Relic API Keys</a>
+   */
   public MetricBatchSenderBuilder apiKey(String apiKey) {
     this.apiKey = apiKey;
     return this;
   }
 
+  /**
+   * Provide an implementation for HTTP POST. {@link #build()} will throw if an implementation is
+   * not provided or this method is not called.
+   */
   public MetricBatchSenderBuilder httpPoster(HttpPoster httpPoster) {
     this.httpPoster = httpPoster;
+    return this;
+  }
+
+  /**
+   * Provide additional user agent information. The product is required to be non-null and
+   * non-empty. The version is optional, although highly recommended.
+   */
+  public MetricBatchSenderBuilder additionalUserAgent(String product, String version) {
+    Utils.verifyNonNull(product, "Product cannot be null in the additional user-agent.");
+    if (version == null || version.isEmpty()) {
+      additionalUserAgent = product;
+    } else {
+      additionalUserAgent = product + "/" + version;
+    }
     return this;
   }
 

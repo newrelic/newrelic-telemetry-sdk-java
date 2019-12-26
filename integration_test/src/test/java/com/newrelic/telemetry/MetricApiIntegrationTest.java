@@ -79,6 +79,7 @@ class MetricApiIntegrationTest {
     metricBatchSender =
         SimpleMetricBatchSender.builder("fakeKey", Duration.ofMillis(1500))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
+            .additionalUserAgent("testApplication", "1.0.0")
             .build();
   }
 
@@ -120,7 +121,7 @@ class MetricApiIntegrationTest {
                         new MetricPayload[] {expectedPayload},
                         MediaType.JSON_UTF_8,
                         MatchType.ONLY_MATCHING_FIELDS))
-                .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.*")
+                .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* testApplication/1.0.0")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
                 .withHeader("Content-Length", ".*"))
         .respond(new HttpResponse().withStatusCode(202));
