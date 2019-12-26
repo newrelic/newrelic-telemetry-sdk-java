@@ -27,33 +27,47 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BatchDataSender {
+
   private static final Logger logger = LoggerFactory.getLogger(BatchDataSender.class);
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
-  private static final String USER_AGENT_VALUE;
+  private static final String BASE_USER_AGENT_VALUE;
 
   private final HttpPoster client;
   private final String apiKey;
   private final URL endpointURl;
   private final boolean auditLoggingEnabled;
+  private final String userAgent;
 
   static {
     Package thisPackage = BatchDataSender.class.getPackage();
     String implementationVersion =
-        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("Unknown Version");
-    USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
+        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("UnknownVersion");
+    BASE_USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
   }
 
   public BatchDataSender(
-      HttpPoster client, String apiKey, URL endpointURl, boolean auditLoggingEnabled) {
+      HttpPoster client,
+      String apiKey,
+      URL endpointURl,
+      boolean auditLoggingEnabled,
+      String secondaryUserAgent) {
     this.client = client;
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
     this.auditLoggingEnabled = auditLoggingEnabled;
+    this.userAgent = buildUserAgent(secondaryUserAgent);
     logger.info("BatchDataSender configured with endpoint {}", endpointURl);
     if (auditLoggingEnabled) {
       logger.info("BatchDataSender configured with audit logging enabled.");
     }
+  }
+
+  private String buildUserAgent(String additionalUserAgent) {
+    if (additionalUserAgent == null || additionalUserAgent.isEmpty()) {
+      return BASE_USER_AGENT_VALUE;
+    }
+    return BASE_USER_AGENT_VALUE + " " + additionalUserAgent;
   }
 
   public Response send(String json)
@@ -93,7 +107,7 @@ public class BatchDataSender {
     Map<String, String> headers = new HashMap<>();
     headers.put("Api-Key", apiKey);
     headers.put("Content-Encoding", "gzip");
-    headers.put("User-Agent", USER_AGENT_VALUE);
+    headers.put("User-Agent", userAgent);
     try {
       HttpResponse response = client.post(endpointURl, headers, payload, MEDIA_TYPE);
       String responseBody = response.getBody();

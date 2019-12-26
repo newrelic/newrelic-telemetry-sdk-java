@@ -66,6 +66,7 @@ class SpanApiIntegrationTest {
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
             .enableAuditLogging()
+            .secondaryUserAgent("myTestApp", null)
             .build();
   }
 
@@ -101,7 +102,7 @@ class SpanApiIntegrationTest {
                         new SpanPayload[] {expectedPayload},
                         MediaType.JSON_UTF_8,
                         MatchType.ONLY_MATCHING_FIELDS))
-                .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.*")
+                .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* myTestApp")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
                 .withHeader("Content-Length", ".*"))
         .respond(new HttpResponse().withStatusCode(202));

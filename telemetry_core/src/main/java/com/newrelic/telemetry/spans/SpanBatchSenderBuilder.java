@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URL;
 
 public class SpanBatchSenderBuilder {
+
   private static final String spansPath = "/trace/v1";
   private static final String DEFAULT_TRACE_URL = "https://trace-api.newrelic.com/";
 
@@ -25,6 +26,8 @@ public class SpanBatchSenderBuilder {
 
   private URL traceUrl;
   private boolean auditLoggingEnabled = false;
+
+  private String secondaryUserAgent;
 
   /**
    * Build the final {@link SpanBatchSender}.
@@ -41,7 +44,8 @@ public class SpanBatchSenderBuilder {
         new SpanBatchMarshaller(
             new SpanJsonCommonBlockWriter(new AttributesJson()),
             new SpanJsonTelemetryBlockWriter(new AttributesJson()));
-    BatchDataSender sender = new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled);
+    BatchDataSender sender =
+        new BatchDataSender(httpPoster, apiKey, traceUrl, auditLoggingEnabled, secondaryUserAgent);
     return new SpanBatchSender(marshaller, sender);
   }
 
@@ -107,6 +111,20 @@ public class SpanBatchSenderBuilder {
    */
   public SpanBatchSenderBuilder traceUrl(URL traceUrl) {
     this.traceUrl = traceUrl;
+    return this;
+  }
+
+  /**
+   * Provide additional user agent information. The product is required to be non-null and
+   * non-empty. The version is optional, although highly recommended.
+   */
+  public SpanBatchSenderBuilder secondaryUserAgent(String product, String version) {
+    Utils.verifyNonBlank(product, "Product cannot be null or empty in the secondary user-agent.");
+    if (version == null || version.isEmpty()) {
+      secondaryUserAgent = product;
+    } else {
+      secondaryUserAgent = product + "/" + version;
+    }
     return this;
   }
 
