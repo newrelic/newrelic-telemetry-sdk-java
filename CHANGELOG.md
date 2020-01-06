@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Coming soon
 - Enable adding additional user agent information to the HTTP requests made by the SDK.
 
+## [0.3.4] - 2020-01-06
+- Allow adding user-supplied suffix to HTTP `User-Agent`
+
 ## [0.3.3] - 2019-12-18
 ### Misc bugfixes and cleanup
 - Allow summary min/max to be null 
