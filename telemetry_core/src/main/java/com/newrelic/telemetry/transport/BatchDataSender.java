@@ -86,7 +86,9 @@ public class BatchDataSender {
     try {
       payload = compressJson(json);
     } catch (IOException e) {
-      logger.error("Failed to serialize the batch for sending to the ingest API", e);
+      logger.error(
+          "Failed to serialize the batch for sending to the ingest API. Discard batch recommended.",
+          e);
       throw new DiscardBatchException();
     }
     return payload;
@@ -125,13 +127,13 @@ public class BatchDataSender {
         case 405:
         case 411:
           logger.warn(
-              "Response from New Relic ingest API: code: {}, body: {}",
+              "Response from New Relic ingest API. Discarding batch recommended.: code: {}, body: {}",
               response.getCode(),
               responseBody);
           throw new DiscardBatchException();
         case 413:
           logger.warn(
-              "Response from New Relic ingest API: code: {}, body: {}",
+              "Response from New Relic ingest API. Retry with split recommended.: code: {}, body: {}",
               response.getCode(),
               responseBody);
           throw new RetryWithSplitException();
@@ -139,13 +141,14 @@ public class BatchDataSender {
           return handle429(response, responseBody);
         default:
           logger.error(
-              "Response from New Relic ingest API: code: {}, body: {}",
+              "Response from New Relic ingest API. Batch retry recommended. : code: {}, body: {}",
               response.getCode(),
               responseBody);
           throw new RetryWithBackoffException();
       }
     } catch (IOException e) {
-      logger.error("IOException while trying to send data to New Relic", e);
+      logger.warn(
+          "IOException while trying to send data to New Relic. Batch retry recommended.", e);
       throw new RetryWithBackoffException();
     }
   }
@@ -173,7 +176,7 @@ public class BatchDataSender {
       return Integer.parseInt(retryAfter.get(0));
     } catch (NumberFormatException e) {
       logger.warn(
-          "Unparseable retry-after header from New Relic ingest API: code: {}, body: {}, retry-after: {}",
+          "Unparseable retry-after header from New Relic ingest API. Retry with backoff recommended. : code: {}, body: {}, retry-after: {}",
           response.getCode(),
           responseBody,
           response.getHeaders().get("retry-after"));
@@ -188,7 +191,7 @@ public class BatchDataSender {
     List<String> retryAfter = findHeader(responseHeaders, "retry-after");
     int retryAfterSeconds = getRetryAfterValue(response, responseBody, retryAfter);
     logger.warn(
-        "Response from New Relic ingest API: code: {}, body: {}, retry-after: {}",
+        "Response from New Relic ingest API. Retry with wait recommended.b: code: {}, body: {}, retry-after: {}",
         response.getCode(),
         responseBody,
         retryAfterSeconds);
