@@ -191,7 +191,7 @@ public class BatchDataSender {
     List<String> retryAfter = findHeader(responseHeaders, "retry-after");
     int retryAfterSeconds = getRetryAfterValue(response, responseBody, retryAfter);
     logger.warn(
-        "Response from New Relic ingest API. Retry with wait recommended.b: code: {}, body: {}, retry-after: {}",
+        "Response from New Relic ingest API. Retry with wait recommended : code: {}, body: {}, retry-after: {}",
         response.getCode(),
         responseBody,
         retryAfterSeconds);
