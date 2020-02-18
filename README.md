@@ -49,6 +49,17 @@ first.
 Note: If you do not want to include `okhttp` as a transitive depenedency, you will need to provide a custom implementation of the 
 `com.newrelic.telemetry.http.HttpPoster` interface, rather than using the `com.newrelic.telemetry:telemetry-http-okhttp` library.
 
+## Logging
+The Telemetry SDK uses slf4j for all logging. Having a slf4j implementation in your application is required in order to see log information.
+See [the slf4j documentation](http://www.slf4j.org/manual.html#swapping) for details.
+
+### Enabling audit logging
+The various builders for the Telemetry SDK components include an option to `enableAuditLogging`. Enabling this option will cause the
+SDK to product additional logging at `DEBUG` level. This logging includes the details of every payload sent to the New Relic APIs, and the responses from those APIs.
+
+*WARNING*: If you enable audit logging, all the data in your spans and metrics will be sent to your logging system. It is recommended that you only enable
+audit logging when absolutely necessary.
+
 ## For Developers: 
 ### Requirements
 
