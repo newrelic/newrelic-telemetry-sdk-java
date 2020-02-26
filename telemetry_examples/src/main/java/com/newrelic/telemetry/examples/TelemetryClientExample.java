@@ -9,15 +9,11 @@ import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.SimpleSpanBatchSender;
 import com.newrelic.telemetry.TelemetryClient;
 import com.newrelic.telemetry.exceptions.ResponseException;
-import com.newrelic.telemetry.metrics.Count;
-import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.MetricBatch;
-import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.metrics.MetricBuffer;
-import com.newrelic.telemetry.metrics.Summary;
+import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -56,8 +52,7 @@ public class TelemetryClientExample {
     telemetryClient.shutdown();
   }
 
-  private static void sendSampleMetrics(
-      TelemetryClient telemetryClient, Attributes commonAttributes) {
+  private static void sendSampleMetrics(TelemetryClient telemetryClient, Attributes commonAttributes) {
     long startTime = System.currentTimeMillis();
 
     MetricBuffer metricBuffer = new MetricBuffer(commonAttributes);

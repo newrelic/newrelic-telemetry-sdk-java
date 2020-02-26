@@ -4,19 +4,20 @@
  */
 package com.newrelic.telemetry.metrics.json;
 
-import static java.lang.Double.isFinite;
+import com.newrelic.telemetry.metrics.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.newrelic.telemetry.metrics.Count;
-import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.Metric;
-import com.newrelic.telemetry.metrics.MetricBatch;
-import com.newrelic.telemetry.metrics.Summary;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.lang.Double.isFinite;
+
 public class MetricBatchJsonTelemetryBlockWriter {
 
+  private static final Logger logger = LoggerFactory.getLogger(MetricBatchJsonTelemetryBlockWriter.class);
   private final MetricToJson metricToJson;
 
   public MetricBatchJsonTelemetryBlockWriter(MetricToJson metricToJson) {
@@ -27,13 +28,18 @@ public class MetricBatchJsonTelemetryBlockWriter {
     builder.append("\"metrics\":").append("[");
     Collection<Metric> metrics = batch.getTelemetry();
 
+    AtomicInteger filteredCount = new AtomicInteger();
     builder.append(
         metrics
             .stream()
             .filter(this::isValid)
             .map(this::toJsonString)
+            .peek(x -> filteredCount.getAndIncrement())
             .collect(Collectors.joining(",")));
 
+    if(filteredCount.get() > 0){
+      logger.debug("Dropped " + filteredCount.get() + " metrics from batch due to invalid metric contents (you should fix this)");
+    }
     builder.append("]");
   }
 
