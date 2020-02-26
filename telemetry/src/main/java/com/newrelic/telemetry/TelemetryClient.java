@@ -45,7 +45,10 @@ public class TelemetryClient {
    * @param metricBatchSender The sender for dimensional metrics.
    * @param eventBatchSender The sender for custom events
    */
-  public TelemetryClient(SpanBatchSender spanBatchSender, MetricBatchSender metricBatchSender, EventBatchSender eventBatchSender) {
+  public TelemetryClient(
+      SpanBatchSender spanBatchSender,
+      MetricBatchSender metricBatchSender,
+      EventBatchSender eventBatchSender) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;

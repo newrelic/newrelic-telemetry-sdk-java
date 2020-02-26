@@ -10,7 +10,6 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
@@ -50,7 +49,7 @@ class TelemetryClientTest {
   @Test
   void sendHappyPath() throws Exception {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
-//    EventBatchSender eventBatchSender = mock(EventBatchSender.class);
+    //    EventBatchSender eventBatchSender = mock(EventBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(metricBatch)).thenAnswer(countDown(sendLatch));
 
