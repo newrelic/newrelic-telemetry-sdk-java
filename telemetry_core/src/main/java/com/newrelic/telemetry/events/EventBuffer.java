@@ -28,7 +28,7 @@ public class EventBuffer {
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EventBuffer.class);
 
   @Getter(AccessLevel.PACKAGE)
-  private final Queue<Event> Events = new ConcurrentLinkedQueue<>();
+  private final Queue<Event> events = new ConcurrentLinkedQueue<>();
 
   @Getter(AccessLevel.PACKAGE)
   private final Attributes commonAttributes;
@@ -46,10 +46,10 @@ public class EventBuffer {
   /**
    * Append a {@link Event} to this buffer, to be sent in the next {@link EventBatch}.
    *
-   * @param Event The new {@link Event} instance to be sent.
+   * @param event The new {@link Event} instance to be sent.
    */
-  public void addEvent(Event Event) {
-    Events.add(Event);
+  public void addEvent(Event event) {
+    events.add(event);
   }
 
   /**
@@ -64,14 +64,14 @@ public class EventBuffer {
    */
   public EventBatch createBatch() {
     logger.debug("Creating Event batch.");
-    Collection<Event> Events = new ArrayList<>(this.Events.size());
+    Collection<Event> eventsForBatch = new ArrayList<>(this.events.size());
 
     // Drain the Event buffer and return the batch
-    Event Event;
-    while ((Event = this.Events.poll()) != null) {
-      Events.add(Event);
+    Event ev;
+    while ((ev = this.events.poll()) != null) {
+      eventsForBatch.add(ev);
     }
 
-    return new EventBatch(Events, this.commonAttributes);
+    return new EventBatch(eventsForBatch, this.commonAttributes);
   }
 }
