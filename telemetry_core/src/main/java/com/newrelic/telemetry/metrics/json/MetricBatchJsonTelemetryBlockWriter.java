@@ -4,15 +4,16 @@
  */
 package com.newrelic.telemetry.metrics.json;
 
-import static java.lang.Double.isFinite;
-
 import com.newrelic.telemetry.metrics.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static java.lang.Double.isFinite;
 
 public class MetricBatchJsonTelemetryBlockWriter {
 
@@ -37,10 +38,10 @@ public class MetricBatchJsonTelemetryBlockWriter {
             .peek(x -> filteredCount.getAndIncrement())
             .collect(Collectors.joining(",")));
 
-    if (filteredCount.get() > 0) {
+    if (filteredCount.get() != metrics.size()) {
       logger.debug(
           "Dropped "
-              + filteredCount.get()
+              + (metrics.size() - filteredCount.get())
               + " metrics from batch due to invalid metric contents (you should fix this)");
     }
     builder.append("]");
