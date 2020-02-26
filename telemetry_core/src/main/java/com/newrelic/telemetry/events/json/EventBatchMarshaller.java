@@ -1,6 +1,6 @@
 package com.newrelic.telemetry.events.json;
 
-import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.events.EventBatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,7 +8,7 @@ public class EventBatchMarshaller {
 
     private static final Logger logger = LoggerFactory.getLogger(EventBatchMarshaller.class);
 
-    public String toJson(MetricBatch batch) {
+    public String toJson(EventBatch batch) {
         logger.debug("Generating json for event batch.");
         StringBuilder builder = new StringBuilder();
 

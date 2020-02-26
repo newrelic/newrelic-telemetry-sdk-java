@@ -22,9 +22,9 @@ public class EventBatchSender {
         this.sender = sender;
     }
 
-//    public static EventBatchSenderBuilder builder() {
-//        return new EventBatchSenderBuilder();
-//    }
+    public static EventBatchSenderBuilder builder() {
+        return new EventBatchSenderBuilder();
+    }
 
     /**
      * Send a batch of metrics to New Relic.
@@ -36,13 +36,13 @@ public class EventBatchSender {
      *     the subclasses of {@link ResponseException} will be thrown. See the documentation on that
      *     hierarchy for details on the recommended ways to respond to those exceptions.
      */
-    public Response sendBatch(MetricBatch batch) throws ResponseException {
+    public Response sendBatch(EventBatch batch) throws ResponseException {
         if (batch == null || batch.size() == 0) {
-            logger.debug("Skipped sending of an empty metric batch.");
+            logger.debug("Skipped sending of an empty event batch.");
             return new Response(202, "Ignored", "Empty batch");
         }
         logger.debug(
-                "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest endpoint)",
+                "Sending an event batch (number of metrics: {}) to the New Relic event ingest endpoint)",
                 batch.size());
         String json = marshaller.toJson(batch);
         return sender.send(json);
