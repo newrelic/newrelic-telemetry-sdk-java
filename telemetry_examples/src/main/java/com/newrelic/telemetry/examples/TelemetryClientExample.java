@@ -52,7 +52,8 @@ public class TelemetryClientExample {
     telemetryClient.shutdown();
   }
 
-  private static void sendSampleMetrics(TelemetryClient telemetryClient, Attributes commonAttributes) {
+  private static void sendSampleMetrics(
+      TelemetryClient telemetryClient, Attributes commonAttributes) {
     long startTime = System.currentTimeMillis();
 
     MetricBuffer metricBuffer = new MetricBuffer(commonAttributes);

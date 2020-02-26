@@ -17,7 +17,8 @@ import static java.lang.Double.isFinite;
 
 public class MetricBatchJsonTelemetryBlockWriter {
 
-  private static final Logger logger = LoggerFactory.getLogger(MetricBatchJsonTelemetryBlockWriter.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(MetricBatchJsonTelemetryBlockWriter.class);
   private final MetricToJson metricToJson;
 
   public MetricBatchJsonTelemetryBlockWriter(MetricToJson metricToJson) {
@@ -37,8 +38,11 @@ public class MetricBatchJsonTelemetryBlockWriter {
             .peek(x -> filteredCount.getAndIncrement())
             .collect(Collectors.joining(",")));
 
-    if(filteredCount.get() > 0){
-      logger.debug("Dropped " + filteredCount.get() + " metrics from batch due to invalid metric contents (you should fix this)");
+    if (filteredCount.get() > 0) {
+      logger.debug(
+          "Dropped "
+              + filteredCount.get()
+              + " metrics from batch due to invalid metric contents (you should fix this)");
     }
     builder.append("]");
   }
