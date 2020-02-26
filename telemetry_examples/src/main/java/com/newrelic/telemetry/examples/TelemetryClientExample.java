@@ -41,7 +41,8 @@ public class TelemetryClientExample {
             .build();
     SpanBatchSender spanBatchSender = SimpleSpanBatchSender.builder(insightsInsertKey).build();
 
-    TelemetryClient telemetryClient = new TelemetryClient(batchSender, spanBatchSender);
+    // FIXME Need example with events
+    TelemetryClient telemetryClient = new TelemetryClient(spanBatchSender, batchSender, null);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host", InetAddress.getLocalHost().getHostName());

@@ -4,6 +4,7 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
@@ -31,6 +32,7 @@ public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
 
+  private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -39,12 +41,14 @@ public class TelemetryClient {
    * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
    * one of the telemetry types, you can pass in a null value for that sender.
    *
-   * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
+   * @param metricBatchSender The sender for dimensional metrics.
+   * @param eventBatchSender The sender for custom events
    */
-  public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
+  public TelemetryClient(SpanBatchSender spanBatchSender, MetricBatchSender metricBatchSender, EventBatchSender eventBatchSender) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
+    this.eventBatchSender = eventBatchSender;
   }
 
   private interface BatchSender {

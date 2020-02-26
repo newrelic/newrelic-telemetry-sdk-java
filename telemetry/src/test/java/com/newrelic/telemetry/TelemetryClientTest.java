@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
@@ -49,10 +50,11 @@ class TelemetryClientTest {
   @Test
   void sendHappyPath() throws Exception {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
+//    EventBatchSender eventBatchSender = mock(EventBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(metricBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null);
+    TelemetryClient testClass = new TelemetryClient(null, batchSender, null);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -65,7 +67,7 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(spanBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(null, batchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null);
 
     testClass.sendBatch(spanBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -84,7 +86,7 @@ class TelemetryClientTest {
             })
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null);
+    TelemetryClient testClass = new TelemetryClient(null, batchSender, null);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -102,7 +104,7 @@ class TelemetryClientTest {
             })
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null);
+    TelemetryClient testClass = new TelemetryClient(null, batchSender, null);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -136,7 +138,7 @@ class TelemetryClientTest {
               return null;
             });
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null);
+    TelemetryClient testClass = new TelemetryClient(null, batchSender, null);
 
     testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
