@@ -4,6 +4,8 @@
  */
 package com.newrelic.telemetry.transport;
 
+import static java.util.Collections.emptyList;
+
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.DiscardBatchException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
@@ -11,9 +13,6 @@ import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -24,8 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
-
-import static java.util.Collections.emptyList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BatchDataSender {
 

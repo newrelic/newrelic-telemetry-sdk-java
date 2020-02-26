@@ -13,7 +13,6 @@ import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
