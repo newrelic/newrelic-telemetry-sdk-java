@@ -6,14 +6,11 @@ import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.transport.BatchDataSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventBatchSender {
 
@@ -55,7 +52,7 @@ public class EventBatchSender {
     try {
       response = sender.send(json);
     } catch (RetryWithSplitException splitx) {
-       response = splitBatchAndSend(batch, new LinkedBlockingDeque<>());
+      response = splitBatchAndSend(batch, new LinkedBlockingDeque<>());
     }
 
     return response;
@@ -64,9 +61,8 @@ public class EventBatchSender {
   @SuppressWarnings("unchecked")
   Response splitBatchAndSend(EventBatch batch, BlockingDeque<TelemetryBatch> queue) {
     logger.info(
-            "Tried to send a too-large event batch (number of events: {}) to the New Relic event ingest endpoint. Splitting)",
-            batch.size()
-    );
+        "Tried to send a too-large event batch (number of events: {}) to the New Relic event ingest endpoint. Splitting)",
+        batch.size());
     List<TelemetryBatch<Event>> twoBatches = batch.split();
     Response response = null;
 
@@ -85,13 +81,14 @@ public class EventBatchSender {
         // We have to log and swallow this exception as there may be other split batches
         // might succeed at sending
         logger.info(
-                "Failed to send a split event batch to the New Relic event ingest endpoint. Exception: {}",
-                rsx
-        );
+            "Failed to send a split event batch to the New Relic event ingest endpoint. Exception: {}",
+            rsx);
       }
     }
     if (response == null) {
-      response = new Response(200, "OK", "Large payload was split - check log in case of dropped sub-batch");
+      response =
+          new Response(
+              200, "OK", "Large payload was split - check log in case of dropped sub-batch");
     }
 
     return response;
