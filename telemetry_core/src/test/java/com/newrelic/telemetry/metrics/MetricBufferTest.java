@@ -4,11 +4,11 @@
  */
 package com.newrelic.telemetry.metrics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.newrelic.telemetry.Attributes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MetricBufferTest {
 
