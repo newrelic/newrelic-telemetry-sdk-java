@@ -6,11 +6,12 @@ import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class EventBatchSender {
 
@@ -29,9 +30,9 @@ public class EventBatchSender {
   }
 
   /**
-   * Send a batch of metrics to New Relic.
+   * Send a batch of events to New Relic.
    *
-   * @param batch The batch to send. This batch will be drained of accumulated metrics as a part of
+   * @param batch The batch to send. This batch will be drained of accumulated events as a part of
    *     this process.
    * @return The response from the ingest API.
    * @throws ResponseException In cases where the batch is unable to be successfully sent, one of
