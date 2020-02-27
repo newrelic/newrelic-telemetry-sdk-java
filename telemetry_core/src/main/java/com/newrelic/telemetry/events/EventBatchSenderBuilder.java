@@ -4,6 +4,7 @@ import com.newrelic.telemetry.AbstractSenderBuilder;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
+
 import java.net.URL;
 
 public class EventBatchSenderBuilder extends AbstractSenderBuilder<EventBatchSenderBuilder> {
@@ -18,8 +19,6 @@ public class EventBatchSenderBuilder extends AbstractSenderBuilder<EventBatchSen
     URL url = getOrDefaultSendUrl();
 
     EventBatchMarshaller marshaller = new EventBatchMarshaller();
-    //                        new MetricBatchJsonCommonBlockWriter(new AttributesJson()),
-    //                        new MetricBatchJsonTelemetryBlockWriter(new MetricToJson()));
     BatchDataSender sender =
         new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled, secondaryUserAgent);
 
