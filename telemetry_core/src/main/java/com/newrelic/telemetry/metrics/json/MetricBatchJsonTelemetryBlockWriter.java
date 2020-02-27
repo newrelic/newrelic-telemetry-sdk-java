@@ -38,7 +38,7 @@ public class MetricBatchJsonTelemetryBlockWriter {
             .collect(Collectors.joining(",")));
 
     if (retainedCount.get() != metrics.size()) {
-      logger.debug(
+      logger.info(
           "Dropped "
               + (metrics.size() - retainedCount.get())
               + " metrics from batch due to invalid metric contents (you should fix this)");
