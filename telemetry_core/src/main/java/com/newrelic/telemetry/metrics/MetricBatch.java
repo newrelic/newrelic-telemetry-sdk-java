@@ -35,7 +35,7 @@ public class MetricBatch extends TelemetryBatch<Metric> {
     private String instrumentationProvider;
     private String serviceName;
     private Collection<Metric> metrics = Collections.emptyList();
-    private Attributes attributes = new Attributes();
+    private CommonAttributesBuilder commonAttributesBuilder = new CommonAttributesBuilder();
 
     /**
      * Optional. Specify the name of the service that is creating the metrics. The service name will
@@ -44,7 +44,7 @@ public class MetricBatch extends TelemetryBatch<Metric> {
      * @param serviceName - The name of the service
      */
     public Builder serviceName(String serviceName) {
-      this.serviceName = serviceName;
+      commonAttributesBuilder.serviceName(serviceName);
       return this;
     }
 
@@ -55,12 +55,12 @@ public class MetricBatch extends TelemetryBatch<Metric> {
      * @param instrumentationProvider - The instrumentation provider name
      */
     public Builder instrumentationProvider(String instrumentationProvider) {
-      this.instrumentationProvider = instrumentationProvider;
+      commonAttributesBuilder.instrumentationProvider(instrumentationProvider);
       return this;
     }
 
     public Builder attributes(Attributes attributes) {
-      this.attributes = attributes;
+      commonAttributesBuilder.attributes(attributes);
       return this;
     }
 
@@ -70,13 +70,7 @@ public class MetricBatch extends TelemetryBatch<Metric> {
     }
 
     public MetricBatch build() {
-      Attributes attributes = new Attributes(this.attributes);
-      if (serviceName != null) {
-        attributes.put("service.name", serviceName);
-      }
-      if (instrumentationProvider != null) {
-        attributes.put("instrumentation.provider", instrumentationProvider);
-      }
+      Attributes attributes = commonAttributesBuilder.build();
       return new MetricBatch(metrics, attributes);
     }
   }
