@@ -4,11 +4,11 @@
  */
 package com.newrelic.telemetry.metrics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.newrelic.telemetry.Attributes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MetricBufferTest {
 
@@ -53,5 +53,25 @@ class MetricBufferTest {
     MetricBatch batch = metricBuffer.createBatch();
 
     assertEquals(commonAttributes, batch.getCommonAttributes());
+  }
+
+  @Test
+  @DisplayName("Verify that the builder sets up common attributes")
+  void testBuilder() {
+    String serviceName = "gopher";
+    String provider = "sweet_instrumentation";
+    Attributes attributes = new Attributes().put("foo", "bar");
+    Attributes expectedAttributes =
+        new Attributes(attributes)
+            .put("service.name", serviceName)
+            .put("instrumentation.provider", provider);
+
+    MetricBuffer buffer =
+        MetricBuffer.builder()
+            .attributes(attributes)
+            .serviceName(serviceName)
+            .instrumentationProvider(provider)
+            .build();
+    assertEquals(expectedAttributes, buffer.getCommonAttributes());
   }
 }

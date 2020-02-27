@@ -6,14 +6,15 @@ package com.newrelic.telemetry.metrics;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.util.Utils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * A buffer for collecting {@link Metric Metrics}.
@@ -74,5 +75,53 @@ public class MetricBuffer {
     }
 
     return new MetricBatch(metrics, this.commonAttributes);
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Attributes attributes = new Attributes();
+    private String serviceName;
+    private String instrumentationProvider;
+
+    public Builder attributes(Attributes attributes) {
+      this.attributes = attributes;
+      return this;
+    }
+
+    /**
+     * Optional. Specify the name of the service that is creating the metrics. The service name will
+     * be included in all common attributes.
+     *
+     * @param serviceName - The name of the service
+     */
+    public Builder serviceName(String serviceName) {
+      this.serviceName = serviceName;
+      return this;
+    }
+
+    /**
+     * Optional. Specify the name of the instrumentation that provides the metrics. The
+     * instrumentation provider will be included in all common attributes.
+     *
+     * @param instrumentationProvider - The instrumentation provider name
+     */
+    public Builder instrumentationProvider(String instrumentationProvider) {
+      this.instrumentationProvider = instrumentationProvider;
+      return this;
+    }
+
+    public MetricBuffer build() {
+      Attributes attributes = new Attributes(this.attributes);
+      if (serviceName != null) {
+        attributes.put("service.name", serviceName);
+      }
+      if (instrumentationProvider != null) {
+        attributes.put("instrumentation.provider", instrumentationProvider);
+      }
+      return new MetricBuffer(attributes);
+    }
   }
 }
