@@ -28,19 +28,19 @@ public class MetricBatchJsonTelemetryBlockWriter {
     builder.append("\"metrics\":").append("[");
     Collection<Metric> metrics = batch.getTelemetry();
 
-    AtomicInteger filteredCount = new AtomicInteger();
+    AtomicInteger retainedCount = new AtomicInteger();
     builder.append(
         metrics
             .stream()
             .filter(this::isValid)
             .map(this::toJsonString)
-            .peek(x -> filteredCount.getAndIncrement())
+            .peek(x -> retainedCount.getAndIncrement())
             .collect(Collectors.joining(",")));
 
-    if (filteredCount.get() != metrics.size()) {
+    if (retainedCount.get() != metrics.size()) {
       logger.debug(
           "Dropped "
-              + (metrics.size() - filteredCount.get())
+              + (metrics.size() - retainedCount.get())
               + " metrics from batch due to invalid metric contents (you should fix this)");
     }
     builder.append("]");
