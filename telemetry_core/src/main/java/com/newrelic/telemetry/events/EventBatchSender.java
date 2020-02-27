@@ -49,14 +49,11 @@ public class EventBatchSender {
         batch.size());
     String json = marshaller.toJson(batch);
 
-    Response response = null;
     try {
-      response = sender.send(json);
+      return sender.send(json);
     } catch (RetryWithSplitException splitx) {
-      response = splitBatchAndSend(batch, new LinkedBlockingDeque<>());
+      return splitBatchAndSend(batch, new LinkedBlockingDeque<>());
     }
-
-    return response;
   }
 
   @SuppressWarnings("unchecked")

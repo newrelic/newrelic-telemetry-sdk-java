@@ -1,25 +1,26 @@
 package com.newrelic.telemetry.events;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class EventBatchSenderTest {
 
   @Test
   void testSplitSend() throws Exception {
-    Event el = new Event("xxx", null, System.currentTimeMillis(), "svcA", "A");
-    Event el2 = new Event("yyy", null, System.currentTimeMillis(), "svcA", "A");
+    Event el = new Event("JitThing1", null, System.currentTimeMillis());
+    Event el2 = new Event("JitThing2", null, System.currentTimeMillis());
     List<Event> events = new ArrayList<>();
     events.add(el);
     events.add(el2);
