@@ -99,7 +99,6 @@ public class BatchDataSender {
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
     gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));
     gzipOutputStream.close();
-
     return compressedOutput.toByteArray();
   }
 
