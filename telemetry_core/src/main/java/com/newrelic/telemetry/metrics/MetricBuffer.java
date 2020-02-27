@@ -82,12 +82,12 @@ public class MetricBuffer {
   }
 
   public static class Builder {
-    private Attributes attributes = new Attributes();
+    private final CommonAttributesBuilder commonAttributesBuilder = new CommonAttributesBuilder();
     private String serviceName;
     private String instrumentationProvider;
 
     public Builder attributes(Attributes attributes) {
-      this.attributes = attributes;
+      commonAttributesBuilder.attributes(attributes);
       return this;
     }
 
@@ -98,7 +98,7 @@ public class MetricBuffer {
      * @param serviceName - The name of the service
      */
     public Builder serviceName(String serviceName) {
-      this.serviceName = serviceName;
+      commonAttributesBuilder.serviceName(serviceName);
       return this;
     }
 
@@ -109,18 +109,13 @@ public class MetricBuffer {
      * @param instrumentationProvider - The instrumentation provider name
      */
     public Builder instrumentationProvider(String instrumentationProvider) {
-      this.instrumentationProvider = instrumentationProvider;
+      commonAttributesBuilder.instrumentationProvider(instrumentationProvider);
       return this;
     }
 
     public MetricBuffer build() {
-      Attributes attributes = new Attributes(this.attributes);
-      if (serviceName != null) {
-        attributes.put("service.name", serviceName);
-      }
-      if (instrumentationProvider != null) {
-        attributes.put("instrumentation.provider", instrumentationProvider);
-      }
+      Attributes attributes = commonAttributesBuilder.build();
+
       return new MetricBuffer(attributes);
     }
   }
