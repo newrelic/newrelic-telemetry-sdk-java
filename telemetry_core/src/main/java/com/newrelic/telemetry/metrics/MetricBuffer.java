@@ -6,14 +6,15 @@ package com.newrelic.telemetry.metrics;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.util.Utils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * A buffer for collecting {@link Metric Metrics}.
@@ -76,15 +77,25 @@ public class MetricBuffer {
     return new MetricBatch(metrics, this.commonAttributes);
   }
 
+  /**
+   * Returns a new Builder instance for help with creating new MetricBatch instances
+   *
+   * @return a new instance of MetricBatch.Builder
+   */
   public static Builder builder() {
     return new Builder();
   }
 
   public static class Builder {
     private final CommonAttributesBuilder commonAttributesBuilder = new CommonAttributesBuilder();
-    private String serviceName;
-    private String instrumentationProvider;
 
+    /**
+     * Provides the base collection of common attributes that will be applied to all buffered
+     * metrics.
+     *
+     * @param attributes - common attributes to be applied to all metrics within this buffer
+     * @return this builder
+     */
     public Builder attributes(Attributes attributes) {
       commonAttributesBuilder.attributes(attributes);
       return this;
@@ -92,7 +103,7 @@ public class MetricBuffer {
 
     /**
      * Optional. Specify the name of the service that is creating the metrics. The service name will
-     * be included in all common attributes.
+     * be included in all common attributes as "service.name".
      *
      * @param serviceName - The name of the service
      */
@@ -102,19 +113,25 @@ public class MetricBuffer {
     }
 
     /**
-     * Optional. Specify the name of the instrumentation that provides the metrics. The
-     * instrumentation provider will be included in all common attributes.
+     * Optional. Specify the name of the instrumentation that provides the metrics, typically a
+     * library like "micrometer" or "dropwizard-metrics" or "kamon", for example. This is generally
+     * not expected to be called by a user's manual instrumentation code. The instrumentation
+     * provider will be included in all common attributes as "instrumentation.provider".
      *
-     * @param instrumentationProvider - The instrumentation provider name
+     * @param instrumentationProvider - The name of the instrumentation library
      */
     public Builder instrumentationProvider(String instrumentationProvider) {
       commonAttributesBuilder.instrumentationProvider(instrumentationProvider);
       return this;
     }
 
+    /**
+     * Builds the new MetricBuffer instance
+     *
+     * @return a newly created instance of MetricBuffer configured with data from this builder
+     */
     public MetricBuffer build() {
       Attributes attributes = commonAttributesBuilder.build();
-
       return new MetricBuffer(attributes);
     }
   }
