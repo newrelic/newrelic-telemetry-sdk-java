@@ -55,7 +55,12 @@ public class TelemetryClientExample {
       TelemetryClient telemetryClient, Attributes commonAttributes) {
     long startTime = System.currentTimeMillis();
 
-    MetricBuffer metricBuffer = new MetricBuffer(commonAttributes);
+    MetricBuffer metricBuffer =
+        MetricBuffer.builder()
+            .serviceName("Sample Service")
+            .instrumentationProvider("Manual instrumentation")
+            .attributes(commonAttributes)
+            .build();
     metricBuffer.addMetric(
         new Gauge("temperatureC", 44d, startTime, new Attributes().put("room", "kitchen")));
     metricBuffer.addMetric(
