@@ -4,12 +4,6 @@
  */
 package com.newrelic.telemetry;
 
-import static java.util.Collections.singleton;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
@@ -20,6 +14,10 @@ import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +25,12 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
+
+import static java.util.Collections.singleton;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TelemetryClientTest {
 
@@ -77,17 +78,19 @@ class TelemetryClientTest {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     // First time explodes, second time succeeds
+    Answer<Object> requestRetry = invocation -> {
+      throw new RetryWithBackoffException();
+    };
     when(batchSender.sendBatch(metricBatch))
-        .thenAnswer(
-            invocation -> {
-              throw new RetryWithBackoffException();
-            })
-        .thenAnswer(countDown(sendLatch));
+            .thenAnswer(requestRetry)
+            .thenAnswer(requestRetry)
+            .thenAnswer(requestRetry)
+            .thenAnswer(countDown(sendLatch));
 
     TelemetryClient testClass = new TelemetryClient(batchSender, null);
 
     testClass.sendBatch(metricBatch);
-    boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    boolean result = sendLatch.await(10, TimeUnit.SECONDS);
     assertTrue(result);
   }
 
