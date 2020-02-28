@@ -6,15 +6,14 @@ package com.newrelic.telemetry.metrics;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.util.Utils;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Value;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Value;
+import org.slf4j.LoggerFactory;
 
 /**
  * A buffer for collecting {@link Metric Metrics}.
