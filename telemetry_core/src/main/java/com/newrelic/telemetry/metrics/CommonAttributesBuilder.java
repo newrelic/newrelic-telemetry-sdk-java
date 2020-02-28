@@ -37,7 +37,7 @@ public class CommonAttributesBuilder {
    * instrumentation should generally not call this method. This value is intended for use by
    * instrumentation frameworks. The value will end up in the "instrumentation.provider" attribute.
    *
-   * @param instrumentationProvider - The instrumention provider name
+   * @param instrumentationProvider - The instrumentation provider name
    * @return this builder
    */
   public CommonAttributesBuilder instrumentationProvider(String instrumentationProvider) {
