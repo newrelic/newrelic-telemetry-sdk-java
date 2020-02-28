@@ -58,16 +58,33 @@ public class MetricBatch extends TelemetryBatch<Metric> {
       return this;
     }
 
+    /**
+     * Provides the core set of common attributes to be used with all metrics in the batch.
+     *
+     * @param attributes - the set of common attributes to use for all metrics.
+     * @return this builder
+     */
     public Builder attributes(Attributes attributes) {
       commonAttributesBuilder.attributes(attributes);
       return this;
     }
 
+    /**
+     * Provides the collection of metrics contained within the metric batch.
+     *
+     * @param metrics - the collection of new relic metrics
+     * @return this builder
+     */
     public Builder metrics(Collection<Metric> metrics) {
       this.metrics = metrics;
       return this;
     }
 
+    /**
+     * Builds the metric batch
+     *
+     * @return A new MetricBatch instance configured with data from this builder
+     */
     public MetricBatch build() {
       Attributes attributes = commonAttributesBuilder.build();
       return new MetricBatch(metrics, attributes);
