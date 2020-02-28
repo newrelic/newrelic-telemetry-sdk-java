@@ -33,9 +33,10 @@ public class CommonAttributesBuilder {
   }
 
   /**
-   * Specifies the name of the provider of the instrumentation to this builder, for example "micrometer" or "opentelemetry". Users doing manual
-   * instrumentation should generally not call this method. This value is intended for use by
-   * instrumentation frameworks. The value will end up in the "instrumentation.provider" attribute.
+   * Specifies the name of the provider of the instrumentation to this builder, for example
+   * "micrometer" or "opentelemetry". Users doing manual instrumentation should generally not call
+   * this method. This value is intended for use by instrumentation frameworks. The value will end
+   * up in the "instrumentation.provider" attribute.
    *
    * @param instrumentationProvider - The instrumentation provider name
    * @return this builder
