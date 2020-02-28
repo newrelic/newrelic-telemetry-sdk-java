@@ -28,26 +28,17 @@ public final class Span implements Telemetry {
   private final String parentId; // parent.id <- goes in attributes
   private final boolean error;
 
-  private Span(
-      String id,
-      Attributes attributes,
-      String traceId,
-      long timestamp,
-      String serviceName,
-      Double durationMs,
-      String name,
-      String parentId,
-      boolean error) {
-    Utils.verifyNonNull(id, "id");
-    this.id = id;
-    this.attributes = attributes;
-    this.traceId = traceId;
-    this.timestamp = timestamp;
-    this.serviceName = serviceName;
-    this.durationMs = durationMs;
-    this.name = name;
-    this.parentId = parentId;
-    this.error = error;
+  private Span(SpanBuilder spanBuilder) {
+    Utils.verifyNonNull(spanBuilder.id, "id");
+    this.id = spanBuilder.id;
+    this.attributes = spanBuilder.attributes;
+    this.traceId = spanBuilder.traceId;
+    this.timestamp = spanBuilder.timestamp;
+    this.serviceName = spanBuilder.serviceName;
+    this.durationMs = spanBuilder.durationMs;
+    this.name = spanBuilder.name;
+    this.parentId = spanBuilder.parentId;
+    this.error = spanBuilder.error;
   }
 
   /**
@@ -159,8 +150,7 @@ public final class Span implements Telemetry {
 
     /** @return A Span object with the variables assigned to the builder class */
     public Span build() {
-      return new Span(
-          id, attributes, traceId, timestamp, serviceName, durationMs, name, parentId, error);
+      return new Span(this);
     }
 
     /** @return A string representing this SpanBuilder object and listing its variables */
