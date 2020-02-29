@@ -127,6 +127,10 @@ public class TelemetryClient {
       BatchSender sender, TelemetryBatch<? extends Telemetry> batch, Backoff backoff) {
 
     long newWaitTime = backoff.nextWaitMs();
+    if (newWaitTime == -1) {
+      LOG.error("Max retries exceeded.  Dropping {} pieces of telemetry data!", batch.size());
+      return;
+    }
     LOG.info("Metric batch sending failed. Backing off {} {}", newWaitTime, TimeUnit.MILLISECONDS);
     scheduleBatchSend(sender, batch, newWaitTime, TimeUnit.MILLISECONDS, backoff);
   }
