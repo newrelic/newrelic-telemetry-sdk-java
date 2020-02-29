@@ -18,7 +18,7 @@ public class Backoff {
   public static Backoff defaultBackoff() {
     return Backoff.builder()
         .maxBackoff(15, TimeUnit.SECONDS)
-        .backoffFactor(10, TimeUnit.SECONDS)
+        .backoffFactor(1, TimeUnit.SECONDS)
         .maxRetries(10)
         .build();
   }
@@ -61,7 +61,7 @@ public class Backoff {
     /** The base amount of time to start doubling from when backing off. */
     public Builder backoffFactor(int backoffFactor, TimeUnit unit) {
       this.backoffFactorMs = unit.toMillis(backoffFactor);
-      return null;
+      return this;
     }
 
     public Builder maxRetries(int maxRetries) {
