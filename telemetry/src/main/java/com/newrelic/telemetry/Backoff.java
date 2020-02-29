@@ -1,5 +1,7 @@
 package com.newrelic.telemetry;
 
+import java.util.concurrent.TimeUnit;
+
 public class Backoff {
 
   private final long maxBackoffTimeMs;
@@ -7,14 +9,22 @@ public class Backoff {
   private final int maxRetries;
   private int numRetries = 0;
 
-  public Backoff(long maxBackoffTimeMs, long backoffFactorMs, int maxRetries) {
-    this.maxBackoffTimeMs = maxBackoffTimeMs;
-    this.backoffFactorMs = backoffFactorMs;
-    this.maxRetries = maxRetries;
+  private Backoff(Builder builder) {
+    this.maxBackoffTimeMs = builder.maxBackoffTimeMs;
+    this.backoffFactorMs = builder.backoffFactorMs;
+    this.maxRetries = builder.maxRetries;
   }
 
   public static Backoff defaultBackoff() {
-    return new Backoff(15000, 1000, 10);
+    return Backoff.builder()
+        .maxBackoff(15, TimeUnit.SECONDS)
+        .backoffFactor(10, TimeUnit.SECONDS)
+        .maxRetries(10)
+        .build();
+  }
+
+  public static Builder builder() {
+    return new Builder();
   }
 
   /**
@@ -34,5 +44,33 @@ public class Backoff {
       return -1;
     }
     return (long) Math.min(maxBackoffTimeMs, backoffFactorMs * Math.pow(2, n - 1));
+  }
+
+  public static class Builder {
+
+    private long maxBackoffTimeMs;
+    private long backoffFactorMs;
+    private int maxRetries;
+
+    /** The max time between retries */
+    public Builder maxBackoff(int backoff, TimeUnit unit) {
+      this.maxBackoffTimeMs = unit.toMillis(backoff);
+      return this;
+    }
+
+    /** The base amount of time to start doubling from when backing off. */
+    public Builder backoffFactor(int backoffFactor, TimeUnit unit) {
+      this.backoffFactorMs = unit.toMillis(backoffFactor);
+      return null;
+    }
+
+    public Builder maxRetries(int maxRetries) {
+      this.maxRetries = maxRetries;
+      return this;
+    }
+
+    public Backoff build() {
+      return new Backoff(this);
+    }
   }
 }
