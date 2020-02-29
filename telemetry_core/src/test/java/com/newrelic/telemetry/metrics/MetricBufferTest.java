@@ -54,4 +54,24 @@ class MetricBufferTest {
 
     assertEquals(commonAttributes, batch.getCommonAttributes());
   }
+
+  @Test
+  @DisplayName("Verify that the builder sets up common attributes")
+  void testBuilder() {
+    String serviceName = "gopher";
+    String provider = "sweet_instrumentation";
+    Attributes attributes = new Attributes().put("foo", "bar");
+    Attributes expectedAttributes =
+        new Attributes(attributes)
+            .put("service.name", serviceName)
+            .put("instrumentation.provider", provider);
+
+    MetricBuffer buffer =
+        MetricBuffer.builder()
+            .attributes(attributes)
+            .serviceName(serviceName)
+            .instrumentationProvider(provider)
+            .build();
+    assertEquals(expectedAttributes, buffer.getCommonAttributes());
+  }
 }
