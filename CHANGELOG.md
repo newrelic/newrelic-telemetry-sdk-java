@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Coming soon
 - Enable adding additional user agent information to the HTTP requests made by the SDK.
 
+## [0.4.0] - 2020-03-04
+- Additional documentation for logging
+- Improved details in log messages, including number of metrics dropped
+- Add first-class support for `service.name` and `instrumentation.provider` via `MetricBatch.Builder`
+- Add incremental retry with backoff strategy that will eventually time out and give up
+- Miscellaneous cleanups/enhancements 
+ 
 ## [0.3.4] - 2020-01-06
 - Allow adding user-supplied suffix to HTTP `User-Agent`
 
