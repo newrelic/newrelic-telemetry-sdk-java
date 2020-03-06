@@ -9,12 +9,7 @@ import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.SimpleSpanBatchSender;
 import com.newrelic.telemetry.TelemetryClient;
 import com.newrelic.telemetry.exceptions.ResponseException;
-import com.newrelic.telemetry.metrics.Count;
-import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.MetricBatch;
-import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.metrics.MetricBuffer;
-import com.newrelic.telemetry.metrics.Summary;
+import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
@@ -61,7 +56,12 @@ public class TelemetryClientExample {
       TelemetryClient telemetryClient, Attributes commonAttributes) {
     long startTime = System.currentTimeMillis();
 
-    MetricBuffer metricBuffer = new MetricBuffer(commonAttributes);
+    MetricBuffer metricBuffer =
+        MetricBuffer.builder()
+            .serviceName("Sample Service")
+            .instrumentationProvider("Manual instrumentation")
+            .attributes(commonAttributes)
+            .build();
     metricBuffer.addMetric(
         new Gauge("temperatureC", 44d, startTime, new Attributes().put("room", "kitchen")));
     metricBuffer.addMetric(

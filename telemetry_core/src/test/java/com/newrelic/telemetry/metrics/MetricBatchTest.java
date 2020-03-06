@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import lombok.Value;
@@ -79,6 +80,29 @@ class MetricBatchTest {
 
     List<TelemetryBatch<Metric>> splitBatches = testBatch.split();
     assertEquals(0, splitBatches.size());
+  }
+
+  @Test
+  void testBuilder() throws Exception {
+    String serviceName = "foxtrot";
+    String provider = "super-duper-instrumentation";
+    Attributes attributes = new Attributes().put("a", "b");
+    Metric metric1 = new Count("foo", 12, 123, 124, new Attributes());
+    Metric metric2 = new Count("bar", 13, 123, 124, new Attributes());
+    Collection<Metric> metrics = Arrays.asList(metric1, metric2);
+    Attributes expectedAttributes =
+        new Attributes(attributes)
+            .put("service.name", serviceName)
+            .put("instrumentation.provider", provider);
+    MetricBatch result =
+        MetricBatch.builder()
+            .attributes(attributes)
+            .metrics(metrics)
+            .serviceName(serviceName)
+            .instrumentationProvider(provider)
+            .build();
+    assertEquals(metrics, result.getTelemetry());
+    assertEquals(expectedAttributes, result.getCommonAttributes());
   }
 
   @Value

@@ -78,17 +78,20 @@ class TelemetryClientTest {
     MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     // First time explodes, second time succeeds
+    Answer<Object> requestRetry =
+        invocation -> {
+          throw new RetryWithBackoffException();
+        };
     when(batchSender.sendBatch(metricBatch))
-        .thenAnswer(
-            invocation -> {
-              throw new RetryWithBackoffException();
-            })
+        .thenAnswer(requestRetry)
+        .thenAnswer(requestRetry)
+        .thenAnswer(requestRetry)
         .thenAnswer(countDown(sendLatch));
 
     TelemetryClient testClass = new TelemetryClient(null, batchSender, null);
 
     testClass.sendBatch(metricBatch);
-    boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    boolean result = sendLatch.await(10, TimeUnit.SECONDS);
     assertTrue(result);
   }
 
