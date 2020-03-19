@@ -6,7 +6,7 @@ Why is this cool?
 
 Dimensional metrics and spans in New Relic! No agent required. 
 
-The telemetry SDK tries to be helpful, so your job of sending telemetry data to New Relic can be done in the right way, easily. We've covered all of the basics for you so you can focus on writing feature code directly related to your business need or interest.
+Our [Telemetry SDK](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/new-relic-sdks/telemetry-sdks-send-custom-telemetry-data-new-relic) tries to be helpful, so your job of sending telemetry data to New Relic can be done in the right way, easily. We've covered all of the basics for you so you can focus on writing feature code directly related to your business need or interest.
 
 Why would you want to use the telemetry SDK?
 
@@ -67,6 +67,17 @@ audit logging when absolutely necessary.
     * Annotation processing enabled for the project (Sample instructions can be found [here](https://immutables.github.io/apt.html) for popular IDEs)
 * Docker & docker-compose must be installed for integration testing
 
+## Find and use your data
+
+Tips on how to find and query your data in New Relic:
+- [Find metric data](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/metric-api/introduction-metric-api#find-data)
+- [Find trace/span data](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/trace-api/introduction-trace-api#view-data)
+
+For general querying information, see:
+- [Query New Relic data](https://docs.newrelic.com/docs/using-new-relic/data/understand-data/query-new-relic-data)
+- [Intro to NRQL](https://docs.newrelic.com/docs/query-data/nrql-new-relic-query-language/getting-started/introduction-nrql)
+
+
 ### Building
 CI builds are run on Azure Pipelines: 
 [![Build status](https://dev.azure.com/NRAzurePipelines/Java%20CI/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/NRAzurePipelines/Java%20CI/_build/latest?definitionId=6&branchName=master)
@@ -125,16 +136,6 @@ Example code for using the metrics and telemetry APIs.
 
 #### `integration_test`
 Integration test module. Uses docker-compose based tests to test the SDK end-to-end.
-
-## Find and use your data
-
-Tips on how to find and query your data in New Relic:
-- [Find metric data](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/metric-api/introduction-metric-api#find-data)
-- [Find trace/span data](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/trace-api/introduction-trace-api#view-data)
-
-For general querying information, see:
-- [Query New Relic data](https://docs.newrelic.com/docs/using-new-relic/data/understand-data/query-new-relic-data)
-- [Intro to NRQL](https://docs.newrelic.com/docs/query-data/nrql-new-relic-query-language/getting-started/introduction-nrql)
 
 ### Licensing
 The New Relic Java Telemetry SDK is licensed under the Apache 2.0 License.
