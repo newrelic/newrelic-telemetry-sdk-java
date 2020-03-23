@@ -4,7 +4,6 @@ import com.newrelic.telemetry.AbstractSenderBuilder;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
-
 import java.net.URL;
 
 public class EventBatchSenderBuilder extends AbstractSenderBuilder<EventBatchSenderBuilder> {

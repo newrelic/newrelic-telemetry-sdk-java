@@ -1,19 +1,18 @@
 package com.newrelic.telemetry.events;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.transport.BatchDataSender;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
 
 public class EventBatchSenderTest {
 
