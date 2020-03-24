@@ -7,6 +7,15 @@ import org.slf4j.LoggerFactory;
 public class EventBatchMarshaller {
 
   private static final Logger logger = LoggerFactory.getLogger(EventBatchMarshaller.class);
+  private final EventBatchJsonCommonBlockWriter commonBlockWriter;
+  private final EventBatchJsonTelemetryBlockWriter telemetryBlockWriter;
+
+  public EventBatchMarshaller(
+      EventBatchJsonCommonBlockWriter commonBlockWriter,
+      EventBatchJsonTelemetryBlockWriter telemetryBlockWriter) {
+    this.commonBlockWriter = commonBlockWriter;
+    this.telemetryBlockWriter = telemetryBlockWriter;
+  }
 
   public String toJson(EventBatch batch) {
     logger.debug("Generating json for event batch.");
@@ -14,12 +23,12 @@ public class EventBatchMarshaller {
 
     builder.append("[").append("{");
 
-    //        int lengthBefore = builder.length();
-    //        commonBlockWriter.appendCommonJson(batch, builder);
-    //        if (builder.length() > lengthBefore) {
-    //            builder.append(",");
-    //        }
-    //        telemetryBlockWriter.appendTelemetryJson(batch, builder);
+    int lengthBefore = builder.length();
+    commonBlockWriter.appendCommonJson(batch, builder);
+    if (builder.length() > lengthBefore) {
+      builder.append(",");
+    }
+    telemetryBlockWriter.appendTelemetryJson(batch, builder);
 
     builder.append("}").append("]");
     return builder.toString();

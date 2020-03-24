@@ -1,10 +1,9 @@
 package com.newrelic.telemetry.events.json;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.events.Event;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 class EventToJsonTest {
 
@@ -15,12 +14,11 @@ class EventToJsonTest {
         new Event(
             "jitThing", new Attributes().put("foo", "bar").put("bar", "baz"), eventTimeMillis);
     String expected =
-        "{\"eventType\":\"jitThing\",\"sdkEventTimeMillis\":888777666222,\"foo\":\"bar\",\"bar\":\"baz\"}";
+        "{\"eventType\":\"jitThing\", \"timestamp\":888777666222, \"attributes\": {\"foo\":\"bar\",\"bar\":\"baz\"}}";
 
     EventToJson eventToJson = new EventToJson();
 
-    String result = eventToJson.apply(event);
-
-    assertEquals(expected, result);
+    String json = eventToJson.apply(event);
+    JSONAssert.assertEquals(expected, json, false);
   }
 }
