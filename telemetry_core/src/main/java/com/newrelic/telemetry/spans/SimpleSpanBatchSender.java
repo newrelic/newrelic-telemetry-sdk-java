@@ -2,12 +2,11 @@
  * Copyright 2019 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.spans;
 
 import com.newrelic.telemetry.http.HttpPoster;
-import com.newrelic.telemetry.spans.SpanBatchSender;
-import com.newrelic.telemetry.spans.SpanBatchSenderBuilder;
 import java.time.Duration;
+import java.util.function.Function;
 
 /**
  * A builder class for creating a SpanBatchSender that uses okhttp as the underlying http client
@@ -17,6 +16,12 @@ import java.time.Duration;
  * more succinctly.
  */
 public class SimpleSpanBatchSender {
+
+  private static Function<Duration, HttpPoster> ctor = null;
+
+  public static void provider(Function<Duration, HttpPoster> provider) {
+    ctor = provider;
+  }
 
   /**
    * Create a new SpanBatchSender with your New Relic Insights Insert API key, and otherwise default
@@ -62,7 +67,6 @@ public class SimpleSpanBatchSender {
    *     Relic API Keys</a>
    */
   public static SpanBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    HttpPoster http = new OkHttpPoster(callTimeout);
-    return SpanBatchSender.builder().apiKey(apiKey).httpPoster(http);
+    return SpanBatchSender.builder().apiKey(apiKey).httpPoster(ctor.apply(callTimeout));
   }
 }

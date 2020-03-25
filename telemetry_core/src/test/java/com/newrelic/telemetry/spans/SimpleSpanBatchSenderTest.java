@@ -2,17 +2,17 @@
  * Copyright 2019 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.spans;
 
-import static com.newrelic.telemetry.SimpleMetricBatchSender.build;
-import static com.newrelic.telemetry.SimpleMetricBatchSender.builder;
+import static com.newrelic.telemetry.spans.SimpleSpanBatchSender.build;
+import static com.newrelic.telemetry.spans.SimpleSpanBatchSender.builder;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
-class SimpleMetricBatchSenderTest {
+class SimpleSpanBatchSenderTest {
 
   @Test
   void testBuilders() throws Exception {

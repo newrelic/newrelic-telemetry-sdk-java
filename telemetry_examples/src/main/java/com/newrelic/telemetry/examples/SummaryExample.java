@@ -5,9 +5,9 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.SimpleMetricBatchSender;
 import com.newrelic.telemetry.metrics.Summary;
 import java.util.Arrays;
 import java.util.List;

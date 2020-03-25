@@ -2,11 +2,11 @@
  * Copyright 2019 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.metrics;
 
-import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
+import com.newrelic.telemetry.http.HttpPoster;
 import java.time.Duration;
+import java.util.function.Function;
 
 /**
  * A builder class for creating a MetricBatchSender that uses okhttp as the underlying http client
@@ -16,6 +16,12 @@ import java.time.Duration;
  * more succinctly.
  */
 public class SimpleMetricBatchSender {
+
+  private static Function<Duration, HttpPoster> ctor = null;
+
+  public static void provider(Function<Duration, HttpPoster> provider) {
+    ctor = provider;
+  }
 
   /**
    * Create a new MetricBatchSender with your New Relic Insights Insert API key, and otherwise
@@ -61,7 +67,6 @@ public class SimpleMetricBatchSender {
    *     Relic API Keys</a>
    */
   public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    OkHttpPoster okHttpPoster = new OkHttpPoster(callTimeout);
-    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(okHttpPoster);
+    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(ctor.apply(callTimeout));
   }
 }
