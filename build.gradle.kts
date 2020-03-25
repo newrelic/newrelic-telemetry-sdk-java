@@ -31,7 +31,7 @@ allprojects {
 
 }
 
-listOf(":telemetry-http-okhttp", ":telemetry-http-java11", ":telemetry-core", ":telemetry").forEach {
+listOf(":telemetry-core", ":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11").forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
