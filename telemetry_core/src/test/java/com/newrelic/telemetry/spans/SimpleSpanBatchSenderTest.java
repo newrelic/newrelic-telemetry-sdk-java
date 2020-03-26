@@ -4,11 +4,11 @@
  */
 package com.newrelic.telemetry.spans;
 
-import static com.newrelic.telemetry.spans.SimpleSpanBatchSender.build;
-import static com.newrelic.telemetry.spans.SimpleSpanBatchSender.builder;
+import static com.newrelic.telemetry.spans.SimpleSpanBatchSender.*;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.newrelic.telemetry.http.HttpPoster;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +16,9 @@ class SimpleSpanBatchSenderTest {
 
   @Test
   void testBuilders() throws Exception {
+    HttpPoster dummyPoster = (url, headers, body, mediaType) -> null;
+    provider(duration -> dummyPoster);
+
     assertNotNull(builder("abc123", ofSeconds(5)));
     assertNotNull(builder("abc123"));
     assertNotNull(build("abc123"));
