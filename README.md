@@ -65,8 +65,6 @@ audit logging when absolutely necessary.
 
 * Java 8 or greater
 * For IDEA:
-    * lombok plugin installed
-    * Annotation processing enabled for the project (Sample instructions can be found [here](https://immutables.github.io/apt.html) for popular IDEs)
 * Docker & docker-compose must be installed for integration testing
 
 ### Building

@@ -1,7 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 private object Versions {
-    const val lombok = "1.18.6"
     const val junit = "5.3.1"
     const val mockito = "2.23.0"
     const val mockserver = "5.5.1"
@@ -24,8 +23,6 @@ dependencies {
     implementation(project(":telemetry-core"))
     implementation(project(":telemetry-http-okhttp"))
 
-    testCompileOnly("org.projectlombok:lombok:${Versions.lombok}")
-    testAnnotationProcessor("org.projectlombok:lombok:${Versions.lombok}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${Versions.junit}")
     testImplementation("com.squareup.okhttp3:okhttp:${Versions.okhttp}")

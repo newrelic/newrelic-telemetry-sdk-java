@@ -7,13 +7,11 @@ package com.newrelic.telemetry.spans;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.util.Utils;
-import lombok.Value;
 
 /**
  * Spans are New Relic's analog of OpenTracing spans. They can represent events such as external
  * calls, individual operations, and datastore calls.
  */
-@Value
 public final class Span implements Telemetry {
 
   private final String id;
@@ -48,6 +46,113 @@ public final class Span implements Telemetry {
    */
   public static SpanBuilder builder(String spanId) {
     return new SpanBuilder(spanId);
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public Attributes getAttributes() {
+    return attributes;
+  }
+
+  public String getTraceId() {
+    return traceId;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
+
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  public Double getDurationMs() {
+    return durationMs;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getParentId() {
+    return parentId;
+  }
+
+  public boolean isError() {
+    return error;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Span span = (Span) o;
+
+    if (getTimestamp() != span.getTimestamp()) return false;
+    if (isError() != span.isError()) return false;
+    if (getId() != null ? !getId().equals(span.getId()) : span.getId() != null) return false;
+    if (getAttributes() != null
+        ? !getAttributes().equals(span.getAttributes())
+        : span.getAttributes() != null) return false;
+    if (getTraceId() != null ? !getTraceId().equals(span.getTraceId()) : span.getTraceId() != null)
+      return false;
+    if (getServiceName() != null
+        ? !getServiceName().equals(span.getServiceName())
+        : span.getServiceName() != null) return false;
+    if (getDurationMs() != null
+        ? !getDurationMs().equals(span.getDurationMs())
+        : span.getDurationMs() != null) return false;
+    if (getName() != null ? !getName().equals(span.getName()) : span.getName() != null)
+      return false;
+    return getParentId() != null
+        ? getParentId().equals(span.getParentId())
+        : span.getParentId() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getId() != null ? getId().hashCode() : 0;
+    result = 31 * result + (getAttributes() != null ? getAttributes().hashCode() : 0);
+    result = 31 * result + (getTraceId() != null ? getTraceId().hashCode() : 0);
+    result = 31 * result + (int) (getTimestamp() ^ (getTimestamp() >>> 32));
+    result = 31 * result + (getServiceName() != null ? getServiceName().hashCode() : 0);
+    result = 31 * result + (getDurationMs() != null ? getDurationMs().hashCode() : 0);
+    result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+    result = 31 * result + (getParentId() != null ? getParentId().hashCode() : 0);
+    result = 31 * result + (isError() ? 1 : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Span{"
+        + "id='"
+        + id
+        + '\''
+        + ", attributes="
+        + attributes
+        + ", traceId='"
+        + traceId
+        + '\''
+        + ", timestamp="
+        + timestamp
+        + ", serviceName='"
+        + serviceName
+        + '\''
+        + ", durationMs="
+        + durationMs
+        + ", name='"
+        + name
+        + '\''
+        + ", parentId='"
+        + parentId
+        + '\''
+        + ", error="
+        + error
+        + '}';
   }
 
   /**
@@ -154,24 +259,33 @@ public final class Span implements Telemetry {
     }
 
     /** @return A string representing this SpanBuilder object and listing its variables */
+    @Override
     public String toString() {
-      return "Span.SpanBuilder(id="
-          + this.id
+      return "SpanBuilder{"
+          + "id='"
+          + id
+          + '\''
           + ", attributes="
-          + this.attributes
-          + ", traceId="
-          + this.traceId
+          + attributes
+          + ", traceId='"
+          + traceId
+          + '\''
           + ", timestamp="
-          + this.timestamp
-          + ", serviceName="
-          + this.serviceName
+          + timestamp
+          + ", serviceName='"
+          + serviceName
+          + '\''
           + ", durationMs="
-          + this.durationMs
-          + ", name="
-          + this.name
-          + ", parentId="
-          + this.parentId
-          + ")";
+          + durationMs
+          + ", name='"
+          + name
+          + '\''
+          + ", parentId='"
+          + parentId
+          + '\''
+          + ", error="
+          + error
+          + '}';
     }
   }
 }

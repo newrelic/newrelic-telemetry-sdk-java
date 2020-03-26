@@ -7,8 +7,6 @@ package com.newrelic.telemetry.metrics;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * A {@link Metric} that represents an aggregated set of observations, with statistics, reported
@@ -17,10 +15,7 @@ import lombok.ToString;
  * <p><b>Important</b>: Values are not validated on construction, and this class's methods do not
  * throw.
  */
-@ToString
-@EqualsAndHashCode
 public final class Summary implements Metric {
-
   private final String name;
   private final int count;
   private final double sum;
@@ -115,5 +110,66 @@ public final class Summary implements Metric {
    */
   public long getEndTimeMs() {
     return endTimeMs;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Summary summary = (Summary) o;
+
+    if (getCount() != summary.getCount()) return false;
+    if (Double.compare(summary.getSum(), getSum()) != 0) return false;
+    if (Double.compare(summary.getMin(), getMin()) != 0) return false;
+    if (Double.compare(summary.getMax(), getMax()) != 0) return false;
+    if (getStartTimeMs() != summary.getStartTimeMs()) return false;
+    if (getEndTimeMs() != summary.getEndTimeMs()) return false;
+    if (getName() != null ? !getName().equals(summary.getName()) : summary.getName() != null)
+      return false;
+    return getAttributes() != null
+        ? getAttributes().equals(summary.getAttributes())
+        : summary.getAttributes() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result;
+    long temp;
+    result = getName() != null ? getName().hashCode() : 0;
+    result = 31 * result + getCount();
+    temp = Double.doubleToLongBits(getSum());
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(getMin());
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(getMax());
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    result = 31 * result + (int) (getStartTimeMs() ^ (getStartTimeMs() >>> 32));
+    result = 31 * result + (int) (getEndTimeMs() ^ (getEndTimeMs() >>> 32));
+    result = 31 * result + (getAttributes() != null ? getAttributes().hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Summary{"
+        + "name='"
+        + name
+        + '\''
+        + ", count="
+        + count
+        + ", sum="
+        + sum
+        + ", min="
+        + min
+        + ", max="
+        + max
+        + ", startTimeMs="
+        + startTimeMs
+        + ", endTimeMs="
+        + endTimeMs
+        + ", attributes="
+        + attributes
+        + '}';
   }
 }

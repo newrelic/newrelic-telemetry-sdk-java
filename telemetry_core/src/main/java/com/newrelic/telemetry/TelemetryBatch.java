@@ -11,18 +11,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import lombok.Getter;
-import lombok.Value;
-import lombok.experimental.NonFinal;
 
 /** Represents a collection of {@link Telemetry} instances and some common attributes */
-@Value
-@NonFinal
 public abstract class TelemetryBatch<T extends Telemetry> {
 
-  @Getter Collection<T> telemetry;
+  private Collection<T> telemetry;
 
-  @Getter Attributes commonAttributes;
+  private Attributes commonAttributes;
 
   public TelemetryBatch(Collection<T> telemetry, Attributes commonAttributes) {
     this.telemetry = Utils.verifyNonNull(telemetry);
@@ -67,4 +62,44 @@ public abstract class TelemetryBatch<T extends Telemetry> {
   }
 
   public abstract TelemetryBatch<T> createSubBatch(Collection<T> telemetry);
+
+  public Collection<T> getTelemetry() {
+    return telemetry;
+  }
+
+  public Attributes getCommonAttributes() {
+    return commonAttributes;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    TelemetryBatch<?> that = (TelemetryBatch<?>) o;
+
+    if (getTelemetry() != null
+        ? !getTelemetry().equals(that.getTelemetry())
+        : that.getTelemetry() != null) return false;
+    return getCommonAttributes() != null
+        ? getCommonAttributes().equals(that.getCommonAttributes())
+        : that.getCommonAttributes() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getTelemetry() != null ? getTelemetry().hashCode() : 0;
+    result = 31 * result + (getCommonAttributes() != null ? getCommonAttributes().hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "TelemetryBatch{"
+        + "telemetry="
+        + telemetry
+        + ", commonAttributes="
+        + commonAttributes
+        + '}';
+  }
 }

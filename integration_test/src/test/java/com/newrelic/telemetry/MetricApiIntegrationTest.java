@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-import lombok.Value;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -223,9 +222,14 @@ class MetricApiIntegrationTest {
 
   //
   // [{\"common\":{\"attributes\":{\"key1\":\"val1\"}},\"metrics\":[{\"name\":\"myCounter\",\"type\":\"count\",\"value\":1.0,\"timestamp\":1557180766612,\"interval.ms\":42,\"attributes\":{\"key2\":\"val2\"}}]}]"
-  @Value
+
   private static class MetricPayload {
-    Map<String, Object> common;
-    List<Map<String, Object>> metrics;
+    private final Map<String, Object> common;
+    private final List<Map<String, Object>> metrics;
+
+    public MetricPayload(Map<String, Object> singletonMap, List<Map<String, Object>> asList) {
+      common = singletonMap;
+      metrics = asList;
+    }
   }
 }
