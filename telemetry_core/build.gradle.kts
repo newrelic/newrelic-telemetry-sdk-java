@@ -7,6 +7,11 @@ private object Versions {
     const val jsonassert = "1.5.0"
 }
 
+configure<JavaPluginConvention> {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 dependencies {
     "api"("org.slf4j:slf4j-api:${Versions.slf4j}")
     compileOnly("org.projectlombok:lombok:${Versions.lombok}")

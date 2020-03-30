@@ -49,7 +49,7 @@ public abstract class TelemetryBatch<T extends Telemetry> {
 
   /**
    * Returns the number of telemetry items in this collection. If this batch contains more than
-   * <tt>Integer.MAX_VALUE</tt> items, returns <tt>Integer.MAX_VALUE</tt>.
+   * {Integer.MAX_VALUE} items, returns {Integer.MAX_VALUE}.
    *
    * @return the number of telemetry items in this batch
    */

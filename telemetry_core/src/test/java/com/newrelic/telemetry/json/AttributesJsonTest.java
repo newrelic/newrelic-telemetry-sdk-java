@@ -2,11 +2,10 @@
  * Copyright 2019 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.newrelic.telemetry;
+package com.newrelic.telemetry.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.newrelic.telemetry.json.AttributesJson;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
