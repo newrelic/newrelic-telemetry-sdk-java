@@ -16,7 +16,6 @@ class SimpleSpanBatchSenderTest {
 
   @Test
   void testBuilders() throws Exception {
-    HttpPoster dummyPoster = (url, headers, body, mediaType) -> null;
     assertNotNull(builder("abc123", ofSeconds(5)));
     assertNotNull(builder("abc123"));
     assertNotNull(build("abc123"));
