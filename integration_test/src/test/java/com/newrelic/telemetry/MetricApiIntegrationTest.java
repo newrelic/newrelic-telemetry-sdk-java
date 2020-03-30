@@ -72,7 +72,6 @@ class MetricApiIntegrationTest {
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
-    SimpleMetricBatchSender.provider(OkHttpPoster::new);
     metricBatchSender =
         SimpleMetricBatchSender.builder("fakeKey", Duration.ofMillis(1500))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
