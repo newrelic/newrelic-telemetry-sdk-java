@@ -45,13 +45,13 @@ public class Java11HttpPoster implements HttpPoster {
           httpClient.send(
               req, java.net.http.HttpResponse.BodyHandlers.ofString(Charset.defaultCharset()));
 
-      return of(response);
+      return toSdkResponse(response);
     } catch (URISyntaxException | InterruptedException e) {
       throw new IOException(e);
     }
   }
 
-  public static HttpResponse of(java.net.http.HttpResponse actual) {
+  public static HttpResponse toSdkResponse(java.net.http.HttpResponse actual) {
     return new HttpResponse(
         actual.body().toString(),
         actual.statusCode(),
