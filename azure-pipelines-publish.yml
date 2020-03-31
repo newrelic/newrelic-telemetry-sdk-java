@@ -36,7 +36,7 @@ steps:
     gradleWrapperFile: 'gradlew'
     options: "-Psigning.secretKeyRingFile=$(secring.secureFilePath)"
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
+    jdkVersionOption: '1.11'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
