@@ -36,6 +36,12 @@ Before we can accept a pull request, you must sign our [Contributor Licensing Ag
 
 Minimally, the [test suite](#testing-guidelines) must pass for us to accept a PR. Ideally, we would love it if you also added appropriate tests if you're implementing a feature!
 
+Please ensure, when making changes to the number or types of fields within the project, that the `toString()`, `equals()` and `hashCode()` methods are also updated.
+
+The easiest way to do this is to autogenerate the methods in the IDE, and when adding a new field, to completely delete the old implementation of the methods and regenerate.
+
+You should not have a need to override or modify the generated boilerplate, but if you do so, you must include a comment that explains why.
+
 ## Coding Style Guidelines
 Our code base is formatted according to the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
 
