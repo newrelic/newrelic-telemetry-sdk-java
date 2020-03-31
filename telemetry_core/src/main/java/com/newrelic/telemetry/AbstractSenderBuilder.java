@@ -47,6 +47,8 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
     return self();
   }
 
+  public abstract Object build();
+
   @SuppressWarnings("unchecked")
   protected final B self() {
     return (B) this;
@@ -84,7 +86,8 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
   }
 
   /**
-   * By default, {@value #DEFAULT_URL} is used. Otherwise uses the provided {@code traceUrl}
+   * By default, the DEFAULT_URL defined in specific subclasses is used. Otherwise uses the provided
+   * {@code traceUrl}
    *
    * @deprecated Use the {@link #uriOverride(URI)} method instead.
    */

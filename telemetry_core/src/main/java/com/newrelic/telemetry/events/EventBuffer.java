@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Value;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -23,14 +20,11 @@ import org.slf4j.LoggerFactory;
  *
  * <p>This class is thread-safe.
  */
-@Value
-public class EventBuffer {
+public final class EventBuffer {
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EventBuffer.class);
 
-  @Getter(AccessLevel.PACKAGE)
   private final Queue<Event> events = new ConcurrentLinkedQueue<>();
 
-  @Getter(AccessLevel.PACKAGE)
   private final Attributes commonAttributes;
 
   /**
@@ -73,5 +67,39 @@ public class EventBuffer {
     }
 
     return new EventBatch(eventsForBatch, this.commonAttributes);
+  }
+
+  Queue<Event> getEvents() {
+    return events;
+  }
+
+  Attributes getCommonAttributes() {
+    return commonAttributes;
+  }
+
+  @Override
+  public String toString() {
+    return "EventBuffer{" + "events=" + events + ", commonAttributes=" + commonAttributes + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    EventBuffer that = (EventBuffer) o;
+
+    if (getEvents() != null ? !getEvents().equals(that.getEvents()) : that.getEvents() != null)
+      return false;
+    return getCommonAttributes() != null
+        ? getCommonAttributes().equals(that.getCommonAttributes())
+        : that.getCommonAttributes() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getEvents() != null ? getEvents().hashCode() : 0;
+    result = 31 * result + (getCommonAttributes() != null ? getCommonAttributes().hashCode() : 0);
+    return result;
   }
 }
