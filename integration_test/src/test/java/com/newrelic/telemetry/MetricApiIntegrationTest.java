@@ -18,7 +18,11 @@ import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
-import com.newrelic.telemetry.metrics.*;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatchSender;
+import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.Summary;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
@@ -71,7 +75,6 @@ class MetricApiIntegrationTest {
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
-    SimpleMetricBatchSender.provider(OkHttpPoster::new);
     metricBatchSender =
         SimpleMetricBatchSender.builder("fakeKey", Duration.ofMillis(1500))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))

@@ -8,7 +8,6 @@ import static com.newrelic.telemetry.SimpleMetricBatchSender.*;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.newrelic.telemetry.http.HttpPoster;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
