@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import lombok.Value;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -105,10 +104,13 @@ class MetricBatchTest {
     assertEquals(expectedAttributes, result.getCommonAttributes());
   }
 
-  @Value
   private static class DummyMetric implements Metric {
+    private final String name;
+    private final Map<String, Object> attributes;
 
-    String name;
-    Map<String, Object> attributes;
+    private DummyMetric(String name, Map<String, Object> attributes) {
+      this.name = name;
+      this.attributes = attributes;
+    }
   }
 }

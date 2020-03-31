@@ -8,8 +8,6 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.HashMap;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * A collection of key-value pairs that can be used as the dimensional attributes for metrics.
@@ -17,8 +15,6 @@ import lombok.ToString;
  * <p>Only String keys are allowed. Acceptable values for attributes include Numbers, Strings, and
  * booleans.
  */
-@EqualsAndHashCode
-@ToString
 public class Attributes {
   private final Map<String, Object> rawAttributes = new HashMap<>();
 
@@ -77,5 +73,27 @@ public class Attributes {
   /** @return true if there are no attributes in this Attributes instance */
   public boolean isEmpty() {
     return rawAttributes.isEmpty();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Attributes that = (Attributes) o;
+
+    return rawAttributes != null
+        ? rawAttributes.equals(that.rawAttributes)
+        : that.rawAttributes == null;
+  }
+
+  @Override
+  public int hashCode() {
+    return rawAttributes != null ? rawAttributes.hashCode() : 0;
+  }
+
+  @Override
+  public String toString() {
+    return "Attributes{" + "rawAttributes=" + rawAttributes + '}';
   }
 }

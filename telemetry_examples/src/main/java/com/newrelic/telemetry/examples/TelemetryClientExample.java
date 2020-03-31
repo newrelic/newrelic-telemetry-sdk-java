@@ -4,11 +4,8 @@
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.*;
 import com.newrelic.telemetry.SimpleSpanBatchSender;
-import com.newrelic.telemetry.TelemetryClient;
-import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
@@ -40,8 +37,7 @@ public class TelemetryClientExample {
     TelemetryClient telemetryClient = new TelemetryClient(spanBatchSender, batchSender, null);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
-    commonAttributes.put("host", InetAddress.getLocalHost().getHostName());
-    commonAttributes.put("appName", "testApplication");
+    commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());
     commonAttributes.put("environment", "staging");
 
     sendSampleSpan(telemetryClient, commonAttributes);
@@ -89,8 +85,7 @@ public class TelemetryClientExample {
     telemetryClient.sendBatch(batch);
   }
 
-  private static void sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes)
-      throws ResponseException {
+  private static void sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
     Span sampleSpan =
         Span.builder(UUID.randomUUID().toString())
             .timestamp(System.currentTimeMillis())

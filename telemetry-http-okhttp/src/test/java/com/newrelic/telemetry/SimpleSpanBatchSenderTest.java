@@ -4,8 +4,7 @@
  */
 package com.newrelic.telemetry;
 
-import static com.newrelic.telemetry.SimpleSpanBatchSender.build;
-import static com.newrelic.telemetry.SimpleSpanBatchSender.builder;
+import static com.newrelic.telemetry.SimpleSpanBatchSender.*;
 import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

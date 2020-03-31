@@ -7,8 +7,6 @@ package com.newrelic.telemetry.metrics;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.util.Utils;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * A {@link Metric} representing a single signed, floating-point quantity measured at a point in
@@ -17,8 +15,6 @@ import lombok.ToString;
  * <p><b>Important</b>: Values are not validated on construction, and this class's methods do not
  * throw.
  */
-@ToString
-@EqualsAndHashCode
 public final class Gauge implements Metric {
 
   private final String name;
@@ -58,5 +54,48 @@ public final class Gauge implements Metric {
   /** @return Dimensional attributes, as key-value pairs, associated with this Gauge. */
   public Map<String, Object> getAttributes() {
     return attributes;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Gauge gauge = (Gauge) o;
+
+    if (Double.compare(gauge.getValue(), getValue()) != 0) return false;
+    if (getTimestamp() != gauge.getTimestamp()) return false;
+    if (getName() != null ? !getName().equals(gauge.getName()) : gauge.getName() != null)
+      return false;
+    return getAttributes() != null
+        ? getAttributes().equals(gauge.getAttributes())
+        : gauge.getAttributes() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result;
+    long temp;
+    result = getName() != null ? getName().hashCode() : 0;
+    temp = Double.doubleToLongBits(getValue());
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    result = 31 * result + (int) (getTimestamp() ^ (getTimestamp() >>> 32));
+    result = 31 * result + (getAttributes() != null ? getAttributes().hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Gauge{"
+        + "name='"
+        + name
+        + '\''
+        + ", value="
+        + value
+        + ", timestamp="
+        + timestamp
+        + ", attributes="
+        + attributes
+        + '}';
   }
 }
