@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 /** Represents a set of {@link Span} instances, to be sent up to the New Relic Trace API. */
-// @EqualsAndHashCode(callSuper = true)
-// @ToString(callSuper = true)
 public class SpanBatch extends TelemetryBatch<Span> {
 
   private final String traceId;
