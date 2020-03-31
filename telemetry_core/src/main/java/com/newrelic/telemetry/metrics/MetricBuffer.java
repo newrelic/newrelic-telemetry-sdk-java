@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Value;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -24,14 +21,11 @@ import org.slf4j.LoggerFactory;
  *
  * <p>This class is thread-safe.
  */
-@Value
-public class MetricBuffer {
+public final class MetricBuffer {
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MetricBuffer.class);
 
-  @Getter(AccessLevel.PACKAGE)
   private final Queue<Metric> metrics = new ConcurrentLinkedQueue<>();
 
-  @Getter(AccessLevel.PACKAGE)
   private final Attributes commonAttributes;
 
   /**
@@ -74,6 +68,40 @@ public class MetricBuffer {
     }
 
     return new MetricBatch(metrics, this.commonAttributes);
+  }
+
+  Queue<Metric> getMetrics() {
+    return metrics;
+  }
+
+  Attributes getCommonAttributes() {
+    return commonAttributes;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    MetricBuffer that = (MetricBuffer) o;
+
+    if (getMetrics() != null ? !getMetrics().equals(that.getMetrics()) : that.getMetrics() != null)
+      return false;
+    return getCommonAttributes() != null
+        ? getCommonAttributes().equals(that.getCommonAttributes())
+        : that.getCommonAttributes() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getMetrics() != null ? getMetrics().hashCode() : 0;
+    result = 31 * result + (getCommonAttributes() != null ? getCommonAttributes().hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "MetricBuffer{" + "metrics=" + metrics + ", commonAttributes=" + commonAttributes + '}';
   }
 
   /**

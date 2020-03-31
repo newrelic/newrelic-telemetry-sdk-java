@@ -8,12 +8,8 @@ import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Collection;
 import java.util.Optional;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /** Represents a set of {@link Span} instances, to be sent up to the New Relic Trace API. */
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
 public class SpanBatch extends TelemetryBatch<Span> {
 
   private final String traceId;
@@ -34,5 +30,30 @@ public class SpanBatch extends TelemetryBatch<Span> {
 
   public Optional<String> getTraceId() {
     return Optional.ofNullable(traceId);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    SpanBatch spanBatch = (SpanBatch) o;
+
+    return getTraceId() != null
+        ? getTraceId().equals(spanBatch.getTraceId())
+        : spanBatch.getTraceId() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (getTraceId() != null ? getTraceId().hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "SpanBatch{" + "traceId='" + traceId + '\'' + "} " + super.toString();
   }
 }

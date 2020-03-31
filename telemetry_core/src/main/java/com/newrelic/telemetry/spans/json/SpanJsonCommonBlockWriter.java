@@ -8,12 +8,14 @@ import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.SpanBatch;
 import java.io.IOException;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class SpanJsonCommonBlockWriter {
 
   private AttributesJson attributesJson;
+
+  public SpanJsonCommonBlockWriter(AttributesJson attributesJson) {
+    this.attributesJson = attributesJson;
+  }
 
   public void appendCommonJson(SpanBatch batch, JsonWriter jsonWriter) {
     if (!batch.hasCommonAttributes() && !batch.getTraceId().isPresent()) {
@@ -41,5 +43,10 @@ public class SpanJsonCommonBlockWriter {
       jsonWriter.name("attributes");
       jsonWriter.jsonValue(attributesJson.toJson(batch.getCommonAttributes().asMap()));
     }
+  }
+
+  @Override
+  public String toString() {
+    return "SpanJsonCommonBlockWriter{" + "attributesJson=" + attributesJson + '}';
   }
 }

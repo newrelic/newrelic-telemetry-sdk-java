@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import lombok.Value;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -132,9 +131,13 @@ class SpanApiIntegrationTest {
   "spans":[{"id":"6f377f46-3f10-4e8e-8390-7717044cdbe9","trace.id":"144cbde7-65f0-4043-8d5d-e70cce479d89","timestamp":1567707504897,"attributes":{"duration.ms":62.0,"service.name":"Telemetry SDK Span Example (apples)","name":"apples"}}]}]
    */
 
-  @Value
   private static class SpanPayload {
-    Map<String, Object> common;
-    List<Map<String, Object>> spans;
+    private final Map<String, Object> common;
+    private final List<Map<String, Object>> spans;
+
+    public SpanPayload(ImmutableMap<String, Object> of, List<Map<String, Object>> singletonList) {
+      common = of;
+      spans = singletonList;
+    }
   }
 }
