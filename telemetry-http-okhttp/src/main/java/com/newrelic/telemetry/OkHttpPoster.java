@@ -45,7 +45,4 @@ public class OkHttpPoster implements HttpPoster {
     }
   }
 
-  public OkHttpClient getOkHttpClient() {
-    return okHttpClient;
-  }
 }
