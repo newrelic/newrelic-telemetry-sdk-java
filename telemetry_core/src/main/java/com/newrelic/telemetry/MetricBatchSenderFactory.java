@@ -4,18 +4,17 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
 import java.time.Duration;
 
 /**
- * A builder class for creating a MetricBatchSender that uses okhttp as the underlying http client
- * implementation.
+ * A factory interface for creating a MetricBatchSender.
  *
- * <p>Note: This class will be deprecated in the near future and be replaced with something named
- * more succinctly.
+ * <p>Concrete implementations use different HTTP providers.
  */
-public class SimpleMetricBatchSender {
+public interface MetricBatchSenderFactory {
 
   /**
    * Create a new MetricBatchSender with your New Relic Insights Insert API key, and otherwise
@@ -25,7 +24,7 @@ public class SimpleMetricBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static MetricBatchSender build(String apiKey) {
+  default MetricBatchSender build(String apiKey) {
     return builder(apiKey).build();
   }
 
@@ -36,7 +35,7 @@ public class SimpleMetricBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static MetricBatchSenderBuilder builder(String apiKey) {
+  default MetricBatchSenderBuilder builder(String apiKey) {
     return builder(apiKey, Duration.ofSeconds(2));
   }
 
@@ -48,7 +47,7 @@ public class SimpleMetricBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static MetricBatchSender build(String apiKey, Duration callTimeout) {
+  default MetricBatchSender build(String apiKey, Duration callTimeout) {
     return builder(apiKey, callTimeout).build();
   }
 
@@ -60,7 +59,9 @@ public class SimpleMetricBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(new OkHttpPoster(callTimeout));
+  default MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
+    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
   }
+
+  HttpPoster getPoster(Duration callTimeout);
 }

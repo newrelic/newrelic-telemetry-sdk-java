@@ -59,9 +59,10 @@ class SpanApiIntegrationTest {
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
+    SpanBatchSenderFactory factory = d -> new OkHttpPoster(d);
     spanBatchSender =
-        SpanBatchSender.builder()
-            .apiKey("fakeKey")
+        factory
+            .builder("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
             .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
             .enableAuditLogging()

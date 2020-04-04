@@ -5,7 +5,6 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.*;
-import com.newrelic.telemetry.SimpleSpanBatchSender;
 import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
@@ -28,10 +27,12 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
+    MetricBatchSenderFactory metricFactory = OkHttpPoster::new;
     MetricBatchSender batchSender =
-        SimpleMetricBatchSender.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
-            .build();
-    SpanBatchSender spanBatchSender = SimpleSpanBatchSender.builder(insightsInsertKey).build();
+        metricFactory.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS)).build();
+
+    SpanBatchSenderFactory spanFactory = OkHttpPoster::new;
+    SpanBatchSender spanBatchSender = spanFactory.builder(insightsInsertKey).build();
 
     TelemetryClient telemetryClient = new TelemetryClient(batchSender, spanBatchSender);
 
