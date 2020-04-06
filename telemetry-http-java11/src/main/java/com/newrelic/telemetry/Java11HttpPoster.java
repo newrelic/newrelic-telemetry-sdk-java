@@ -58,5 +58,4 @@ public class Java11HttpPoster implements HttpPoster {
         "" + actual.statusCode(),
         actual.headers().map());
   }
-
 }

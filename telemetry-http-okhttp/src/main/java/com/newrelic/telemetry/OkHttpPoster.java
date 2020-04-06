@@ -44,5 +44,4 @@ public class OkHttpPoster implements HttpPoster {
           response.headers().toMultimap());
     }
   }
-
 }
