@@ -61,7 +61,6 @@ public class SimpleMetricBatchSender {
    *     Relic API Keys</a>
    */
   public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    OkHttpPoster okHttpPoster = new OkHttpPoster(callTimeout);
-    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(okHttpPoster);
+    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(new OkHttpPoster(callTimeout));
   }
 }

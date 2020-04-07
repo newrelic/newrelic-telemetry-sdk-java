@@ -12,12 +12,14 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Value;
 
-@Value
-public class SpanJsonTelemetryBlockWriter {
+public final class SpanJsonTelemetryBlockWriter {
 
   private final AttributesJson attributesJson;
+
+  public SpanJsonTelemetryBlockWriter(AttributesJson attributesJson) {
+    this.attributesJson = attributesJson;
+  }
 
   public void appendTelemetryJson(SpanBatch batch, JsonWriter jsonWriter) {
     try {
@@ -50,5 +52,14 @@ public class SpanJsonTelemetryBlockWriter {
       result.put("error", true);
     }
     return result;
+  }
+
+  public AttributesJson getAttributesJson() {
+    return attributesJson;
+  }
+
+  @Override
+  public String toString() {
+    return "SpanJsonTelemetryBlockWriter{" + "attributesJson=" + attributesJson + '}';
   }
 }
