@@ -4,9 +4,9 @@ The current SDK supports sending dimensional metrics and spans to the Metric and
 
 Why is this cool?
 
-Dimensional Metrics and Spans in New Relic! No agent required. 
+Dimensional metrics and spans in New Relic! No agent required. 
 
-The telemetry SDK tries to be helpful, so your job of sending telemetry data to New Relic can be done in the right way, easily. We've covered all of the basics for you so you can focus on writing feature code directly related to your business need or interest.
+Our [Telemetry SDK](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/new-relic-sdks/telemetry-sdks-send-custom-telemetry-data-new-relic) tries to be helpful, so your job of sending telemetry data to New Relic can be done in the right way, easily. We've covered all of the basics for you so you can focus on writing feature code directly related to your business need or interest.
 
 Why would you want to use the telemetry SDK?
 
@@ -14,11 +14,9 @@ We imagine you (or your customers) are interested in the telemetry data, generat
 
 For the most recently published version, see [Releases](https://github.com/newrelic/newrelic-telemetry-sdk-java/releases)
 
-## Getting Started
+## Get started
 
-In order to send metrics or spans to New Relic, you will need an Insights Insert API Key. 
-Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
-for more information.
+In order to send metrics or spans to New Relic, you will need an [Insights Insert API Key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key).
 
 Maven dependencies:
 
@@ -60,16 +58,27 @@ SDK to product additional logging at `DEBUG` level. This logging includes the de
 *WARNING*: If you enable audit logging, all the data in your spans and metrics will be sent to your logging system. It is recommended that you only enable
 audit logging when absolutely necessary.
 
-## For Developers: 
+## For developers: 
 ### Requirements
 
 * Java 8 or greater
 * For IDEA:
 * Docker & docker-compose must be installed for integration testing
 
+## Find and use your data
+
+Tips on how to find and query your data in New Relic:
+- [Find metric data](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/metric-api/introduction-metric-api#find-data)
+- [Find trace/span data](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/trace-api/introduction-trace-api#view-data)
+
+For general querying information, see:
+- [Query New Relic data](https://docs.newrelic.com/docs/using-new-relic/data/understand-data/query-new-relic-data)
+- [Intro to NRQL](https://docs.newrelic.com/docs/query-data/nrql-new-relic-query-language/getting-started/introduction-nrql)
+
+
 ### Building
 CI builds are run on Azure Pipelines: 
-[![Build Status](https://dev.azure.com/NRAzurePipelines/Java%20CI/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/NRAzurePipelines/Java%20CI/_build/latest?definitionId=6&branchName=master)
+[![Build status](https://dev.azure.com/NRAzurePipelines/Java%20CI/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/NRAzurePipelines/Java%20CI/_build/latest?definitionId=6&branchName=master)
 
 The project uses gradle 5 for building, and the gradle wrapper is provided.
 
@@ -77,7 +86,7 @@ To compile, run the tests and build the jars:
 
 `$ ./gradlew build`
 
-### Integration Testing
+### Integration testing
 
 End-to-end integration tests are included. 
 They are implemented with the testcontainers library; [mock-server](https://github.com/jamesdbloom/mockserver) provides the backend.
@@ -139,4 +148,4 @@ We'd love to get your contributions to improve the Java Telemetry SDK! Keep in m
 To execute our corporate CLA, which is required if your contribution is on behalf of a company, or if you have any questions, please drop us an email at open-source@newrelic.com. 
 
 ### Limitations
-The New Relic Telemetry APIs are rate limited. Please reference the documentation for [New Relic Metrics API](https://docs.newrelic.com/docs/introduction-new-relic-metric-api) and [New Relic Trace API Requirements and Limits](https://docs.newrelic.com/docs/apm/distributed-tracing/trace-api/trace-api-general-requirements-limits) on the specifics of the rate limits.
+The New Relic Telemetry APIs are rate limited. Please reference the documentation for [New Relic Metric API](https://docs.newrelic.com/docs/introduction-new-relic-metric-api) and [New Relic Trace API requirements and limits](https://docs.newrelic.com/docs/apm/distributed-tracing/trace-api/trace-api-general-requirements-limits) on the specifics of the rate limits.
