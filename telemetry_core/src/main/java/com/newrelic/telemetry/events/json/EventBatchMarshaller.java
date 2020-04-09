@@ -21,7 +21,7 @@ public class EventBatchMarshaller {
     logger.debug("Generating json for event batch.");
     StringBuilder builder = new StringBuilder();
 
-    builder.append("[").append("{");
+    builder.append("[");
 
     //    int lengthBefore = builder.length();
     //    commonBlockWriter.appendCommonJson(batch, builder);
@@ -30,7 +30,8 @@ public class EventBatchMarshaller {
     //    }
     telemetryBlockWriter.appendTelemetryJson(batch, builder);
 
-    builder.append("}").append("]");
+    builder.append("]");
+    logger.debug(builder.toString());
     return builder.toString();
   }
 }

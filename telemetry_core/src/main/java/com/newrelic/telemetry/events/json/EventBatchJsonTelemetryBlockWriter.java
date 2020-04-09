@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class EventBatchJsonTelemetryBlockWriter {
 
   public void appendTelemetryJson(EventBatch batch, StringBuilder builder) {
-    builder.append("\"metrics\":").append("[");
+    //    builder.append("\"metrics\":").append("[");
     Collection<Event> metrics = batch.getTelemetry();
 
     Function<Event, Event> decorator = Function.identity();
@@ -24,6 +24,6 @@ public class EventBatchJsonTelemetryBlockWriter {
     builder.append(
         metrics.stream().map(decorator).map(new EventToJson()).collect(Collectors.joining(",")));
 
-    builder.append("]");
+    //    builder.append("]");
   }
 }
