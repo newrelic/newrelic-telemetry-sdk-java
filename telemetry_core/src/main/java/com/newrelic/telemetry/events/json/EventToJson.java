@@ -2,14 +2,12 @@ package com.newrelic.telemetry.events.json;
 
 import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.events.Event;
-import com.newrelic.telemetry.json.AttributesJson;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.function.Function;
 
 public class EventToJson implements Function<Event, String> {
-
-  private final AttributesJson attributeJson = new AttributesJson();
 
   @Override
   public String apply(Event event) {
@@ -21,9 +19,24 @@ public class EventToJson implements Function<Event, String> {
       jsonWriter.name("eventType").value(event.getEventType());
       jsonWriter.name("timestamp").value(event.getTimestamp());
 
-      String attributes = attributeJson.toJson(event.getAttributes().asMap());
-      if (!attributes.isEmpty()) {
-        jsonWriter.name("attributes").jsonValue(attributes);
+      for (Map.Entry<String, Object> entry : event.getAttributes().asMap().entrySet()) {
+        Object value = entry.getValue();
+        if (value instanceof String) {
+          String sValue = (String) value;
+          jsonWriter.name(entry.getKey()).value(sValue);
+        } else if (value instanceof Number) {
+          Number nValue = (Number) value;
+          jsonWriter.name(entry.getKey()).value(nValue);
+        } else if (value instanceof Boolean) {
+          Boolean bValue = (Boolean) value;
+          jsonWriter.name(entry.getKey()).value(bValue);
+        } else {
+          throw new RuntimeException(
+              String.format(
+                  "Failed to generate json type {} encountered with value {}",
+                  value.getClass(),
+                  value));
+        }
       }
 
       jsonWriter.endObject();

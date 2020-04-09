@@ -14,7 +14,7 @@ class EventToJsonTest {
         new Event(
             "jitThing", new Attributes().put("foo", "bar").put("bar", "baz"), eventTimeMillis);
     String expected =
-        "{\"eventType\":\"jitThing\", \"timestamp\":888777666222, \"attributes\": {\"foo\":\"bar\",\"bar\":\"baz\"}}";
+        "{\"eventType\":\"jitThing\", \"timestamp\":888777666222, \"foo\":\"bar\",\"bar\":\"baz\"}";
 
     EventToJson eventToJson = new EventToJson();
 

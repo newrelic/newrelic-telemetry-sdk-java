@@ -16,9 +16,11 @@ public final class Event implements Telemetry {
   }
 
   public Event(String eventType, long timestamp) {
-    this.eventType = eventType;
-    this.attributes = new Attributes();
-    this.timestamp = timestamp;
+    this(eventType, new Attributes(), timestamp);
+  }
+
+  public Event(String eventType, Attributes attributes) {
+    this(eventType, attributes, System.currentTimeMillis());
   }
 
   public String getEventType() {

@@ -32,7 +32,6 @@ public class EventBatchMarshallerTest {
     commonAttributes.put("long", 384949494949499999L);
     commonAttributes.put("boolean", true);
     commonAttributes.put("number", new BigDecimal("55.555"));
-    commonAttributes.put("null", (Number) null);
 
     EventBatch eb =
         new EventBatch(
@@ -42,7 +41,7 @@ public class EventBatchMarshallerTest {
     String json = eventBatchMarshaller.toJson(eb);
 
     String expected =
-        "[{\"metrics\":[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"attributes\":{\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}}]}]";
+        "[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}]";
     JSONAssert.assertEquals(expected, json, false);
   }
 }

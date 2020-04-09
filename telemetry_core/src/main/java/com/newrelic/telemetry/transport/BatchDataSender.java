@@ -116,7 +116,7 @@ public class BatchDataSender {
           "Response from New Relic ingest API: code: {}, body: {}",
           response.getCode(),
           response.getBody());
-      if (response.getCode() == 202) {
+      if (response.getCode() == 202 || response.getCode() == 200) {
         return new Response(response.getCode(), response.getMessage(), responseBody);
       }
       switch (response.getCode()) {
