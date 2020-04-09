@@ -5,11 +5,13 @@ import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.json.AttributesJson;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.function.Function;
 
-public class EventToJson {
+public class EventToJson implements Function<Event, String> {
 
   private final AttributesJson attributeJson = new AttributesJson();
 
+  @Override
   public String apply(Event event) {
     try {
       StringWriter out = new StringWriter();

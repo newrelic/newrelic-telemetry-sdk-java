@@ -15,6 +15,12 @@ public final class Event implements Telemetry {
     this.timestamp = timestamp;
   }
 
+  public Event(String eventType, long timestamp) {
+    this.eventType = eventType;
+    this.attributes = new Attributes();
+    this.timestamp = timestamp;
+  }
+
   public String getEventType() {
     return eventType;
   }

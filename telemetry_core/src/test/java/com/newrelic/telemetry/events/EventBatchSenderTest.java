@@ -23,9 +23,10 @@ public class EventBatchSenderTest {
     List<Event> events = new ArrayList<>();
     events.add(el);
     events.add(el2);
-    EventBatch batch = new EventBatch(events, new Attributes().put("j", "k"));
+    Attributes common = new Attributes().put("j", "k");
+    EventBatch batch = new EventBatch(events, common);
 
-    String json = "{a great document}";
+    String json = "{\"a\":\"great document\"}";
     EventBatchMarshaller marshaller = mock(EventBatchMarshaller.class);
     when(marshaller.toJson(any())).thenReturn(json);
 
