@@ -11,7 +11,7 @@ import java.net.URL;
 
 public class EventBatchSenderBuilder extends AbstractSenderBuilder<EventBatchSenderBuilder> {
 
-  private static final String eventsPath = "/metric/v1";
+  private static final String eventsPath = "/v1/accounts/events";
   private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
 
   public EventBatchSender build() {

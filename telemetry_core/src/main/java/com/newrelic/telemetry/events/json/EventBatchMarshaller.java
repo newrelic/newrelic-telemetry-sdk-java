@@ -23,11 +23,11 @@ public class EventBatchMarshaller {
 
     builder.append("[").append("{");
 
-    int lengthBefore = builder.length();
-    commonBlockWriter.appendCommonJson(batch, builder);
-    if (builder.length() > lengthBefore) {
-      builder.append(",");
-    }
+    //    int lengthBefore = builder.length();
+    //    commonBlockWriter.appendCommonJson(batch, builder);
+    //    if (builder.length() > lengthBefore) {
+    //      builder.append(",");
+    //    }
     telemetryBlockWriter.appendTelemetryJson(batch, builder);
 
     builder.append("}").append("]");

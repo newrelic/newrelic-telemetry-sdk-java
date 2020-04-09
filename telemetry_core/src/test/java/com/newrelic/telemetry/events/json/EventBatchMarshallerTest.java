@@ -42,7 +42,7 @@ public class EventBatchMarshallerTest {
     String json = eventBatchMarshaller.toJson(eb);
 
     String expected =
-        "[{\"common\":{\"attributes\":{\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}},\"metrics\":[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"attributes\":{}}]}]";
+        "[{\"metrics\":[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"attributes\":{\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}}]}]";
     JSONAssert.assertEquals(expected, json, false);
   }
 }

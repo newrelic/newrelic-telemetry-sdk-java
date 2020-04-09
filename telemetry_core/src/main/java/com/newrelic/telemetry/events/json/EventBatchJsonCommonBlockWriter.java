@@ -16,13 +16,13 @@ public class EventBatchJsonCommonBlockWriter {
   }
 
   public void appendCommonJson(EventBatch batch, StringBuilder builder) {
-    if (batch.hasCommonAttributes()) {
-      builder
-          .append("\"common\":")
-          .append("{")
-          .append("\"attributes\":")
-          .append(attributesJson.toJson(batch.getCommonAttributes().asMap()))
-          .append("}");
-    }
+    //    if (batch.hasCommonAttributes()) {
+    //      builder
+    //          .append("\"common\":")
+    //          .append("{")
+    //          .append("\"attributes\":")
+    //          .append(attributesJson.toJson(batch.getCommonAttributes().asMap()))
+    //          .append("}");
+    //    }
   }
 }

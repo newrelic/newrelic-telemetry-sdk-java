@@ -4,6 +4,7 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.events.EventBatch;
 import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
@@ -73,6 +74,15 @@ public class TelemetryClient {
    */
   public void sendBatch(SpanBatch batch) {
     scheduleBatchSend((b) -> spanBatchSender.sendBatch((SpanBatch) b), batch, 0, TimeUnit.SECONDS);
+  }
+
+  /**
+   * Send a batch of metrics, with standard retry logic. This happens on a background thread,
+   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
+   */
+  public void sendBatch(EventBatch batch) {
+    scheduleBatchSend(
+        (b) -> eventBatchSender.sendBatch((EventBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
   private void scheduleBatchSend(
