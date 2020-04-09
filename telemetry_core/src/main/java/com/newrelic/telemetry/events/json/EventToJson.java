@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry.events.json;
 
 import com.google.gson.stream.JsonWriter;
@@ -33,9 +38,8 @@ public class EventToJson implements Function<Event, String> {
         } else {
           throw new RuntimeException(
               String.format(
-                  "Failed to generate json type {} encountered with value {}",
-                  value.getClass(),
-                  value));
+                  "Failed to generate json type %s encountered with value %s",
+                  value.getClass(), value));
         }
       }
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry.events.json;
 
 import com.newrelic.telemetry.events.Event;
@@ -12,10 +17,6 @@ public class EventBatchMarshaller {
 
   private static final Logger logger = LoggerFactory.getLogger(EventBatchMarshaller.class);
 
-  public EventBatchMarshaller(
-      EventBatchJsonCommonBlockWriter commonBlockWriter,
-      EventBatchJsonTelemetryBlockWriter telemetryBlockWriter) {}
-
   public String toJson(EventBatch batch) {
     logger.debug("Generating json for event batch.");
     StringBuilder builder = new StringBuilder();
@@ -26,9 +27,9 @@ public class EventBatchMarshaller {
     Function<Event, Event> decorator = Function.identity();
     if (batch.hasCommonAttributes()) {
       decorator =
-          e -> {
-            e.getAttributes().putAll(batch.getCommonAttributes());
-            return e;
+          event -> {
+            event.getAttributes().putAll(batch.getCommonAttributes());
+            return event;
           };
     }
 

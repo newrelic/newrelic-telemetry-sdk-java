@@ -1,10 +1,12 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry.events;
 
 import com.newrelic.telemetry.AbstractSenderBuilder;
-import com.newrelic.telemetry.events.json.EventBatchJsonCommonBlockWriter;
-import com.newrelic.telemetry.events.json.EventBatchJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
-import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.URL;
@@ -20,10 +22,7 @@ public class EventBatchSenderBuilder extends AbstractSenderBuilder<EventBatchSen
 
     URL url = getOrDefaultSendUrl();
 
-    EventBatchMarshaller marshaller =
-        new EventBatchMarshaller(
-            new EventBatchJsonCommonBlockWriter(new AttributesJson()),
-            new EventBatchJsonTelemetryBlockWriter());
+    EventBatchMarshaller marshaller = new EventBatchMarshaller();
 
     BatchDataSender sender =
         new BatchDataSender(httpPoster, apiKey, url, auditLoggingEnabled, secondaryUserAgent);

@@ -1,24 +1,40 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry.events;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry;
 
-/** An Event is ad hoc data structure, recorded in the New Relic Metric API. */
+/**
+ * An Event is ad hoc set of key-value pairs with an associated timestamp, recorded in the New Relic
+ * Metric API.
+ */
 public final class Event implements Telemetry {
   private final String eventType;
   private final Attributes attributes;
   private final long timestamp; // in epoch ms
 
+  /**
+   * Create an event with the given timestamp as the timestamp, in ms since unix epoch.
+   *
+   * @param eventType The type of event.
+   * @param attributes The key-value pairs that make up the event.
+   */
   public Event(String eventType, Attributes attributes, long timestamp) {
     this.eventType = eventType;
     this.attributes = attributes;
     this.timestamp = timestamp;
   }
 
-  public Event(String eventType, long timestamp) {
-    this(eventType, new Attributes(), timestamp);
-  }
-
+  /**
+   * Create an event with System.currentTimeMillis as the timestamp.
+   *
+   * @param eventType The type of event.
+   * @param attributes The key-value pairs that make up the event.
+   */
   public Event(String eventType, Attributes attributes) {
     this(eventType, attributes, System.currentTimeMillis());
   }

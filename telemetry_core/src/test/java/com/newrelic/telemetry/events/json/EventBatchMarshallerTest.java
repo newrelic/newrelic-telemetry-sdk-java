@@ -1,9 +1,13 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry.events.json;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
-import com.newrelic.telemetry.json.AttributesJson;
 import java.math.BigDecimal;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,22 +20,20 @@ public class EventBatchMarshallerTest {
 
   @BeforeEach
   void setup() {
-    AttributesJson attributesJson = new AttributesJson();
-    eventBatchMarshaller =
-        new EventBatchMarshaller(
-            new EventBatchJsonCommonBlockWriter(attributesJson),
-            new EventBatchJsonTelemetryBlockWriter());
+    eventBatchMarshaller = new EventBatchMarshaller();
   }
 
   @Test
   public void test_simple_serialize() throws Exception {
     Attributes commonAttributes = new Attributes();
-    commonAttributes.put("double", 3.14d);
-    commonAttributes.put("float", 4.32f);
-    commonAttributes.put("int", 5);
-    commonAttributes.put("long", 384949494949499999L);
-    commonAttributes.put("boolean", true);
-    commonAttributes.put("number", new BigDecimal("55.555"));
+    commonAttributes
+        .put("escapeMe", "\"quoted\"")
+        .put("double", 3.14d)
+        .put("float", 4.32f)
+        .put("int", 5)
+        .put("long", 384949494949499999L)
+        .put("boolean", true)
+        .put("number", new BigDecimal("55.555"));
 
     EventBatch eb =
         new EventBatch(
@@ -41,7 +43,7 @@ public class EventBatchMarshallerTest {
     String json = eventBatchMarshaller.toJson(eb);
 
     String expected =
-        "[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}]";
-    JSONAssert.assertEquals(expected, json, false);
+        "[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"escapeMe\":\"\\\"quoted\\\"\",\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}]";
+    JSONAssert.assertEquals(expected, json, true);
   }
 }
