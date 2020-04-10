@@ -42,13 +42,13 @@ public class TelemetryClient {
    * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
    * one of the telemetry types, you can pass in a null value for that sender.
    *
-   * @param spanBatchSender The sender for distributed tracing spans.
    * @param metricBatchSender The sender for dimensional metrics.
+   * @param spanBatchSender The sender for distributed tracing spans.
    * @param eventBatchSender The sender for custom events
    */
   public TelemetryClient(
-      SpanBatchSender spanBatchSender,
       MetricBatchSender metricBatchSender,
+      SpanBatchSender spanBatchSender,
       EventBatchSender eventBatchSender) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;

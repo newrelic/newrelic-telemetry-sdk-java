@@ -45,7 +45,7 @@ public class TelemetryClientExample {
             .enableAuditLogging()
             .build();
     TelemetryClient telemetryClient =
-        new TelemetryClient(spanBatchSender, metricBatchSender, eventBatchSender);
+        new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());
