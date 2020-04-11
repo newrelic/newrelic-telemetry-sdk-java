@@ -61,9 +61,9 @@ public final class EventBuffer {
     Collection<Event> eventsForBatch = new ArrayList<>(this.events.size());
 
     // Drain the Event buffer and return the batch
-    Event ev;
-    while ((ev = this.events.poll()) != null) {
-      eventsForBatch.add(ev);
+    Event event;
+    while ((event = this.events.poll()) != null) {
+      eventsForBatch.add(event);
     }
 
     return new EventBatch(eventsForBatch, this.commonAttributes);
