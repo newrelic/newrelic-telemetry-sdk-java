@@ -11,6 +11,10 @@ public class EventBatch extends TelemetryBatch<Event> {
     super(events, commonAttributes);
   }
 
+  public EventBatch(Collection<Event> events) {
+    super(events, new Attributes());
+  }
+
   @Override
   public TelemetryBatch<Event> createSubBatch(Collection<Event> telemetry) {
     return new EventBatch(telemetry, getCommonAttributes());
