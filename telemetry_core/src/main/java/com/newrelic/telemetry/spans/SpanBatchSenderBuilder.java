@@ -4,7 +4,7 @@
  */
 package com.newrelic.telemetry.spans;
 
-import com.newrelic.telemetry.http.HttpPoster;
+import com.newrelic.telemetry.AbstractSenderBuilder;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.json.SpanBatchMarshaller;
 import com.newrelic.telemetry.spans.json.SpanJsonCommonBlockWriter;
@@ -16,18 +16,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-public class SpanBatchSenderBuilder {
+public class SpanBatchSenderBuilder extends AbstractSenderBuilder<SpanBatchSenderBuilder> {
 
   private static final String spansPath = "/trace/v1";
-  private static final String DEFAULT_TRACE_URL = "https://trace-api.newrelic.com/";
-
-  private String apiKey;
-  private HttpPoster httpPoster;
-
-  private URL traceUrl;
-  private boolean auditLoggingEnabled = false;
-
-  private String secondaryUserAgent;
+  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
 
   /**
    * Build the final {@link SpanBatchSender}.
@@ -50,85 +42,23 @@ public class SpanBatchSenderBuilder {
   }
 
   private URL getOrDefaultTraceUrl() {
-    if (traceUrl != null) {
-      return traceUrl;
+    if (sendUrl != null) {
+      return sendUrl;
     }
     try {
-      return constructSpansUrlWithHost(URI.create(DEFAULT_TRACE_URL));
+      return constructUrlWithHost(URI.create(DEFAULT_URL));
     } catch (MalformedURLException e) {
       throw new UncheckedIOException("Bad hardcoded URL", e);
     }
   }
 
-  /**
-   * Set a URI to override the default ingest endpoint.
-   *
-   * @param uriOverride The scheme, host, and port that should be used for the Spans API endpoint.
-   *     The path component of this parameter is unused.
-   * @return the Builder
-   * @throws MalformedURLException This is thrown when the provided URI is malformed.
-   */
-  public SpanBatchSenderBuilder uriOverride(URI uriOverride) throws MalformedURLException {
-    this.traceUrl = constructSpansUrlWithHost(uriOverride);
-    return this;
+  @Override
+  protected String getDefaultUrl() {
+    return DEFAULT_URL;
   }
 
-  /**
-   * Turns on audit logging. Payloads sent will be logged at the DEBUG level. Please note that if
-   * your payloads contain sensitive information, that information will be logged wherever your logs
-   * are configured.
-   */
-  public SpanBatchSenderBuilder enableAuditLogging() {
-    this.auditLoggingEnabled = true;
-    return this;
-  }
-
-  /**
-   * Provide your New Relic Insights Insert API key
-   *
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
-   */
-  public SpanBatchSenderBuilder apiKey(String apiKey) {
-    this.apiKey = apiKey;
-    return this;
-  }
-
-  /**
-   * Provide an implementation for HTTP POST. {@link #build()} will throw if an implementation is
-   * not provided or this method is not called.
-   */
-  public SpanBatchSenderBuilder httpPoster(HttpPoster httpPoster) {
-    this.httpPoster = httpPoster;
-    return this;
-  }
-
-  /**
-   * By default, {@value #DEFAULT_TRACE_URL} is used. Otherwise uses the provided {@code traceUrl}
-   *
-   * @deprecated Use the {@link #uriOverride(URI)} method instead.
-   */
-  public SpanBatchSenderBuilder traceUrl(URL traceUrl) {
-    this.traceUrl = traceUrl;
-    return this;
-  }
-
-  /**
-   * Provide additional user agent information. The product is required to be non-null and
-   * non-empty. The version is optional, although highly recommended.
-   */
-  public SpanBatchSenderBuilder secondaryUserAgent(String product, String version) {
-    Utils.verifyNonBlank(product, "Product cannot be null or empty in the secondary user-agent.");
-    if (version == null || version.isEmpty()) {
-      secondaryUserAgent = product;
-    } else {
-      secondaryUserAgent = product + "/" + version;
-    }
-    return this;
-  }
-
-  private static URL constructSpansUrlWithHost(URI hostUri) throws MalformedURLException {
-    return hostUri.resolve(spansPath).toURL();
+  @Override
+  protected String getBasePath() {
+    return spansPath;
   }
 }
