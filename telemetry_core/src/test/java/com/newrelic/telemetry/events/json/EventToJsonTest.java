@@ -12,9 +12,16 @@ class EventToJsonTest {
     long eventTimeMillis = 888777666222L;
     Event event =
         new Event(
-            "jitThing", new Attributes().put("foo", "bar").put("bar", "baz"), eventTimeMillis);
+            "jitThing",
+            new Attributes()
+                .put("foo", "bar")
+                .put("bar", "baz")
+                .put("quux", true)
+                .put("zzz", 819)
+                .put("yyy", 2.997),
+            eventTimeMillis);
     String expected =
-        "{\"eventType\":\"jitThing\", \"timestamp\":888777666222, \"foo\":\"bar\",\"bar\":\"baz\"}";
+        "{\"eventType\":\"jitThing\", \"timestamp\":888777666222, \"foo\":\"bar\",\"bar\":\"baz\",\"quux\":true,\"zzz\":819,\"yyy\":2.997}";
 
     EventToJson eventToJson = new EventToJson();
 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -17,11 +18,9 @@ import org.slf4j.LoggerFactory;
  *
  * <p>One instance of this class can collect many {@link Event Events}. To send them to the Events
  * API, call {@link #createBatch()} and then {@link EventBatchSender#sendBatch(EventBatch)}.
- *
- * <p>This class is thread-safe.
  */
 public final class EventBuffer {
-  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EventBuffer.class);
+  private static final Logger logger = LoggerFactory.getLogger(EventBuffer.class);
 
   private final Queue<Event> events = new ConcurrentLinkedQueue<>();
 

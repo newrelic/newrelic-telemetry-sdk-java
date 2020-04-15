@@ -7,7 +7,6 @@ package com.newrelic.telemetry.events.json;
 
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
-import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -19,23 +18,26 @@ public class EventBatchMarshaller {
 
   public String toJson(EventBatch batch) {
     logger.debug("Generating json for event batch.");
-    StringBuilder builder = new StringBuilder();
-
-    builder.append("[");
-    Collection<Event> metrics = batch.getTelemetry();
 
     Function<Event, Event> decorator = Function.identity();
     if (batch.hasCommonAttributes()) {
       decorator =
           event -> {
-            event.getAttributes().putAll(batch.getCommonAttributes());
-            return event;
+            Event out = new Event(event);
+            out.getAttributes().putAll(batch.getCommonAttributes());
+            return out;
           };
     }
 
+    StringBuilder builder = new StringBuilder();
+    builder.append("[");
     builder.append(
-        metrics.stream().map(decorator).map(new EventToJson()).collect(Collectors.joining(",")));
-
+        batch
+            .getTelemetry()
+            .stream()
+            .map(decorator)
+            .map(new EventToJson())
+            .collect(Collectors.joining(",")));
     builder.append("]");
     return builder.toString();
   }
