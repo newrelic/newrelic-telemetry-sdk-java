@@ -30,6 +30,17 @@ public final class Event implements Telemetry {
   }
 
   /**
+   * Copy constructor for events.
+   *
+   * @param other The event to copy
+   */
+  public Event(Event other) {
+    eventType = other.eventType;
+    attributes = new Attributes(other.attributes);
+    timestamp = other.timestamp;
+  }
+
+  /**
    * Create an event with System.currentTimeMillis as the timestamp.
    *
    * @param eventType The type of event.
