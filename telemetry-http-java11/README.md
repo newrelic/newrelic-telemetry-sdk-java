@@ -11,4 +11,4 @@ This library can be consumed via the following maven coordinates:
 `com.newrelic.telemetry:telemetry-http-java11`
 
 [javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry-http-java11.svg
-[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry-http-java11.svg
+[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry-http-java11

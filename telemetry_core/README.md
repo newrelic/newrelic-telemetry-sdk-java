@@ -15,4 +15,4 @@ If you want to consume this module as-is, it is published at the maven coordinat
 `com.newrelic.telemetry:metrics`
 
 [javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry-core.svg
-[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry-core.svg
+[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry-core

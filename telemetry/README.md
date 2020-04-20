@@ -17,4 +17,4 @@ from the `telemetry-http-okhttp` module and library:
 `com.newrelic.telemetry:telemetry-http-okhttp`
 
 [javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry.svg
-[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry.svg
+[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry
