@@ -2,6 +2,8 @@
 
 This module provides high-level APIs for sending telemetry to New Relic.
 
+[![Javadocs][javadoc-image]][javadoc-url]
+
 See the `telemetry-examples` module for sample usage.
 
 This library can be consumed via the following maven coordinates:
@@ -13,3 +15,6 @@ you can get our reference implementations of the `HttpPoster` interface
 from the `telemetry-http-okhttp` module and library:
 
 `com.newrelic.telemetry:telemetry-http-okhttp`
+
+[javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry.svg
+[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry
