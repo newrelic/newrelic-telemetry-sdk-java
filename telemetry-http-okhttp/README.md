@@ -1,6 +1,6 @@
 This module contains an implementation of the required http client interface for the SDK to function.
 
-[![Javadocs][javadoc-image]][javadoc-url]
+Javadoc can be found here: [![Javadocs][javadoc-image]][javadoc-url]
 
 * `OkHttpPoster` : Implements the `HttpPoster` interface, using okhttp.
 
