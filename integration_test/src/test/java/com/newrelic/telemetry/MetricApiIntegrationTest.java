@@ -75,7 +75,8 @@ class MetricApiIntegrationTest {
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
-    MetricBatchSenderFactory factory = timeout -> new OkHttpPoster(timeout);
+    MetricBatchSenderFactory factory =
+        MetricBatchSenderFactory.ofSender(timeout -> new OkHttpPoster(timeout));
     metricBatchSender =
         factory
             .builder("fakeKey", Duration.ofMillis(1500))

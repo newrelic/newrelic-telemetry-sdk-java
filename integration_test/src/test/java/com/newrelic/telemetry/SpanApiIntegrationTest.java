@@ -59,7 +59,7 @@ class SpanApiIntegrationTest {
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
-    SpanBatchSenderFactory factory = d -> new OkHttpPoster(d);
+    SpanBatchSenderFactory factory = SpanBatchSenderFactory.ofSender(d -> new OkHttpPoster(d));
     spanBatchSender =
         factory
             .builder("fakeKey")

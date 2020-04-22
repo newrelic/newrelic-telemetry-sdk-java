@@ -8,6 +8,7 @@ import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
 import java.time.Duration;
+import java.util.function.Function;
 
 /**
  * A factory interface for creating a MetricBatchSender.
@@ -64,4 +65,8 @@ public interface MetricBatchSenderFactory {
   }
 
   HttpPoster getPoster(Duration callTimeout);
+
+  static MetricBatchSenderFactory ofSender(Function<Duration, HttpPoster> lambda) {
+    return duration -> lambda.apply(duration);
+  }
 }

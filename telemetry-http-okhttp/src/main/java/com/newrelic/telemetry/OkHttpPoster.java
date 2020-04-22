@@ -44,4 +44,12 @@ public class OkHttpPoster implements HttpPoster {
           response.headers().toMultimap());
     }
   }
+
+  public static SpanBatchSenderFactory spanSenderFactory() {
+    return SpanBatchSenderFactory.ofSender(d -> new OkHttpPoster(d));
+  }
+
+  public static MetricBatchSenderFactory metricSenderFactory() {
+    return MetricBatchSenderFactory.ofSender(d -> new OkHttpPoster(d));
+  }
 }

@@ -58,4 +58,12 @@ public class Java11HttpPoster implements HttpPoster {
         "" + actual.statusCode(),
         actual.headers().map());
   }
+
+  public static SpanBatchSenderFactory spanSenderFactory() {
+    return SpanBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+  }
+
+  public static MetricBatchSenderFactory metricSenderFactory() {
+    return MetricBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+  }
 }

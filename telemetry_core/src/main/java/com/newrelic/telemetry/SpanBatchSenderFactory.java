@@ -8,6 +8,7 @@ import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.spans.SpanBatchSender;
 import com.newrelic.telemetry.spans.SpanBatchSenderBuilder;
 import java.time.Duration;
+import java.util.function.Function;
 
 /**
  * A factory interface for creating a SpanBatchSender.
@@ -64,4 +65,8 @@ public interface SpanBatchSenderFactory {
   }
 
   HttpPoster getPoster(Duration callTimeout);
+
+  static SpanBatchSenderFactory ofSender(Function<Duration, HttpPoster> lambda) {
+    return duration -> lambda.apply(duration);
+  }
 }
