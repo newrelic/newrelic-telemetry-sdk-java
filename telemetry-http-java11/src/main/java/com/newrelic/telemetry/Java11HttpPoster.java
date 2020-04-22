@@ -67,11 +67,15 @@ public class Java11HttpPoster implements HttpPoster {
         actual.headers().map());
   }
 
+  public static MetricBatchSenderFactory metricSenderFactory() {
+    return MetricBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+  }
+
   public static SpanBatchSenderFactory spanSenderFactory() {
     return SpanBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
   }
 
-  public static MetricBatchSenderFactory metricSenderFactory() {
-    return MetricBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+  public static EventBatchSenderFactory eventSenderFactory() {
+    return EventBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
   }
 }

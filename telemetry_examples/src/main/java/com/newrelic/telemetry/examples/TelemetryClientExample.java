@@ -40,13 +40,10 @@ public class TelemetryClientExample {
         SpanBatchSenderFactory.ofSender(duration -> new OkHttpPoster(duration));
     SpanBatchSender spanBatchSender = spanFactory.builder(insightsInsertKey).build();
 
-    // todo: make a simple version of this.
-    EventBatchSender eventBatchSender =
-        EventBatchSender.builder()
-            .apiKey(insightsInsertKey)
-            .httpPoster(new OkHttpPoster(Duration.ofSeconds(1)))
-            .enableAuditLogging()
-            .build();
+    EventBatchSenderFactory eventFactory =
+        EventBatchSenderFactory.ofSender(duration -> new OkHttpPoster(duration));
+    EventBatchSender eventBatchSender = eventFactory.builder(insightsInsertKey).build();
+
     TelemetryClient telemetryClient =
         new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
 
