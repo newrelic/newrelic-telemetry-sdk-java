@@ -2,7 +2,7 @@
 
 This module provides high-level APIs for sending telemetry to New Relic.
 
-[![Javadocs][javadoc-image]][javadoc-url]
+Javadoc can be found here: [![Javadocs][javadoc-image]][javadoc-url]
 
 See the `telemetry-examples` module for sample usage.
 

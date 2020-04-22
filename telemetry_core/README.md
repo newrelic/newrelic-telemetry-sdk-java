@@ -2,7 +2,7 @@
 
 This module contains the low-level APIs to send dimensional metrics and spans to New Relic.
 
-[![Javadocs][javadoc-image]][javadoc-url]
+Javadoc can be found here: [![Javadocs][javadoc-image]][javadoc-url]
 
 Since it is intended to have minimal dependencies, it requires an HTTP implementation
 in order to function. Implementation of the following interface is required:
