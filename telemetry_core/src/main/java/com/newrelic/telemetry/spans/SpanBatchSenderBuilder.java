@@ -16,7 +16,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-public class SpanBatchSenderBuilder extends AbstractSenderBuilder<SpanBatchSenderBuilder> {
+public class SpanBatchSenderBuilder
+    extends AbstractSenderBuilder<SpanBatchSenderBuilder, SpanBatchSender> {
 
   private static final String spansPath = "/trace/v1";
   private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";

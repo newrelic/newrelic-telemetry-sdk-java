@@ -14,7 +14,8 @@ import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.URL;
 
-public class MetricBatchSenderBuilder extends AbstractSenderBuilder<MetricBatchSenderBuilder> {
+public class MetricBatchSenderBuilder
+    extends AbstractSenderBuilder<MetricBatchSenderBuilder, MetricBatchSender> {
 
   private static final String metricsPath = "/metric/v1";
   private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";

@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> {
+public abstract class AbstractSenderBuilder<TB extends AbstractSenderBuilder<TB, T>, T> {
 
   protected String apiKey;
   protected HttpPoster httpPoster;
@@ -42,16 +42,16 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
    * @return the Builder
    * @throws MalformedURLException This is thrown when the provided URI is malformed.
    */
-  public B uriOverride(URI uriOverride) throws MalformedURLException {
+  public TB uriOverride(URI uriOverride) throws MalformedURLException {
     sendUrl = constructUrlWithHost(uriOverride);
     return self();
   }
 
-  public abstract Object build();
+  public abstract T build();
 
   @SuppressWarnings("unchecked")
-  protected final B self() {
-    return (B) this;
+  protected final TB self() {
+    return (TB) this;
   }
 
   /**
@@ -59,7 +59,7 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
    * your payloads contain sensitive information, that information will be logged wherever your logs
    * are configured.
    */
-  public B enableAuditLogging() {
+  public TB enableAuditLogging() {
     this.auditLoggingEnabled = true;
     return self();
   }
@@ -71,7 +71,7 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public B apiKey(String apiKey) {
+  public TB apiKey(String apiKey) {
     this.apiKey = apiKey;
     return self();
   }
@@ -80,7 +80,7 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
    * Provide an implementation for HTTP POST. {@link #build()} will throw if an implementation is
    * not provided or this method is not called.
    */
-  public B httpPoster(HttpPoster httpPoster) {
+  public TB httpPoster(HttpPoster httpPoster) {
     this.httpPoster = httpPoster;
     return self();
   }
@@ -91,7 +91,7 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
    *
    * @deprecated Use the {@link #uriOverride(URI)} method instead.
    */
-  public B traceUrl(URL traceUrl) {
+  public TB traceUrl(URL traceUrl) {
     sendUrl = traceUrl;
     return self();
   }
@@ -100,7 +100,7 @@ public abstract class AbstractSenderBuilder<B extends AbstractSenderBuilder<B>> 
    * Provide additional user agent information. The product is required to be non-null and
    * non-empty. The version is optional, although highly recommended.
    */
-  public B secondaryUserAgent(String product, String version) {
+  public TB secondaryUserAgent(String product, String version) {
     Utils.verifyNonBlank(product, "Product cannot be null or empty in the secondary user-agent.");
     if (version == null || version.isEmpty()) {
       secondaryUserAgent = product;

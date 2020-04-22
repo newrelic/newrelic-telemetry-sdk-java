@@ -11,7 +11,8 @@ import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.URL;
 
-public class EventBatchSenderBuilder extends AbstractSenderBuilder<EventBatchSenderBuilder> {
+public class EventBatchSenderBuilder
+    extends AbstractSenderBuilder<EventBatchSenderBuilder, EventBatchSender> {
 
   private static final String EVENTS_PATH = "/v1/accounts/events";
   private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
