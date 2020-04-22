@@ -15,12 +15,20 @@ import java.util.Map;
 public class Java11HttpPoster implements HttpPoster {
   private final HttpClient httpClient;
 
-  /** Create a Java11HttpPoster with your own object. */
+  /**
+   * Create a Java11HttpPoster with your own object.
+   *
+   * @param httpClient - the preconstructed HTTP client object
+   */
   public Java11HttpPoster(HttpClient httpClient) {
     this.httpClient = httpClient;
   }
 
-  /** Create a default Java11HttpPoster with a custom call timeout. */
+  /**
+   * Create a default Java11HttpPoster with a custom call timeout.
+   *
+   * @param callTimeout - the timeout for HTTP calls
+   */
   public Java11HttpPoster(Duration callTimeout) {
     this.httpClient = HttpClient.newBuilder().connectTimeout(callTimeout).build();
   }

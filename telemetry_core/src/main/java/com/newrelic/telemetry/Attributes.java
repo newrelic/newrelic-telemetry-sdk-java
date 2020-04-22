@@ -31,6 +31,11 @@ public class Attributes {
     return new Attributes(this);
   }
 
+  public Attributes putAll(Attributes incoming) {
+    rawAttributes.putAll(incoming.rawAttributes);
+    return this;
+  }
+
   /**
    * Add a string-valued attribute.
    *

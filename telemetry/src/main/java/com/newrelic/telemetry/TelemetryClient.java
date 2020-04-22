@@ -4,6 +4,8 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.events.EventBatch;
+import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
@@ -31,6 +33,7 @@ public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
 
+  private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -41,10 +44,15 @@ public class TelemetryClient {
    *
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
+   * @param eventBatchSender The sender for custom events
    */
-  public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
+  public TelemetryClient(
+      MetricBatchSender metricBatchSender,
+      SpanBatchSender spanBatchSender,
+      EventBatchSender eventBatchSender) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
+    this.eventBatchSender = eventBatchSender;
   }
 
   private interface BatchSender {
@@ -66,6 +74,15 @@ public class TelemetryClient {
    */
   public void sendBatch(SpanBatch batch) {
     scheduleBatchSend((b) -> spanBatchSender.sendBatch((SpanBatch) b), batch, 0, TimeUnit.SECONDS);
+  }
+
+  /**
+   * Send a batch of events, with standard retry logic. This happens on a background thread,
+   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
+   */
+  public void sendBatch(EventBatch batch) {
+    scheduleBatchSend(
+        (b) -> eventBatchSender.sendBatch((EventBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
   private void scheduleBatchSend(
