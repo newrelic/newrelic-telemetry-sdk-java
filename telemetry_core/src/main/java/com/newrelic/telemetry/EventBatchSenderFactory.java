@@ -1,11 +1,13 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.events.EventBatchSender;
-import com.newrelic.telemetry.events.EventBatchSenderBuilder;
 import com.newrelic.telemetry.http.HttpPoster;
 import java.time.Duration;
 import java.util.function.Function;
@@ -25,19 +27,8 @@ public interface EventBatchSenderFactory {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  default EventBatchSender build(String apiKey) {
-    return builder(apiKey).build();
-  }
-
-  /**
-   * Create a new EventBatchSenderBuilder with your New Relic Insights Insert API key.
-   *
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
-   */
-  default EventBatchSenderBuilder builder(String apiKey) {
-    return builder(apiKey, Duration.ofSeconds(2));
+  default EventBatchSender createBatchSender(String apiKey) {
+    return createBatchSender(apiKey, Duration.of(2, SECONDS));
   }
 
   /**
@@ -48,25 +39,40 @@ public interface EventBatchSenderFactory {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  default EventBatchSender build(String apiKey, Duration callTimeout) {
-    return builder(apiKey, callTimeout).build();
+  default EventBatchSender createBatchSender(String apiKey, Duration callTimeout) {
+    SenderConfigurationBuilder configuration =
+        EventBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+    return EventBatchSender.create(configuration.build());
   }
 
   /**
-   * Create a new EventBatchSenderBuilder with your New Relic Insights Insert API key and a custom
-   * http timeout.
+   * Create a new {@link SenderConfigurationBuilder} with your New Relic Insights Insert API key.
    *
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  default EventBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    return EventBatchSender.builder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+  default SenderConfigurationBuilder configureWith(String apiKey) {
+    return EventBatchSender.configurationBuilder().apiKey(apiKey);
+  }
+
+  /**
+   * Create a new {@link SenderConfigurationBuilder} with your New Relic Insights Insert API key and
+   * a custom http timeout.
+   *
+   * @see <a
+   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
+   *     Relic API Keys</a>
+   */
+  default SenderConfigurationBuilder configureWith(String apiKey, Duration callTimeout) {
+    return EventBatchSender.configurationBuilder()
+        .apiKey(apiKey)
+        .httpPoster(getPoster(callTimeout));
   }
 
   HttpPoster getPoster(Duration callTimeout);
 
-  static EventBatchSenderFactory ofSender(Function<Duration, HttpPoster> lambda) {
-    return duration -> lambda.apply(duration);
+  static EventBatchSenderFactory withHttpImplementation(Function<Duration, HttpPoster> lambda) {
+    return lambda::apply;
   }
 }

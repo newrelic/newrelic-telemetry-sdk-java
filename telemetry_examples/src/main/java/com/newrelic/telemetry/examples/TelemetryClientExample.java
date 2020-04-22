@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.examples;
@@ -31,18 +31,23 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSenderFactory metricFactory =
-        MetricBatchSenderFactory.ofSender(duration -> new OkHttpPoster(duration));
+    MetricBatchSenderFactory metricFactory = MetricBatchSenderFactory.ofSender(OkHttpPoster::new);
     MetricBatchSender metricBatchSender =
         metricFactory.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS)).build();
 
-    SpanBatchSenderFactory spanFactory =
-        SpanBatchSenderFactory.ofSender(duration -> new OkHttpPoster(duration));
+    SpanBatchSenderFactory spanFactory = SpanBatchSenderFactory.ofSender(OkHttpPoster::new);
     SpanBatchSender spanBatchSender = spanFactory.builder(insightsInsertKey).build();
 
-    EventBatchSenderFactory eventFactory =
-        EventBatchSenderFactory.ofSender(duration -> new OkHttpPoster(duration));
-    EventBatchSender eventBatchSender = eventFactory.builder(insightsInsertKey).build();
+    // a fully customized example
+    EventBatchSenderFactory eventBatchSenderFactory =
+        EventBatchSenderFactory.withHttpImplementation(OkHttpPoster::new);
+    SenderConfiguration senderConfiguration =
+        eventBatchSenderFactory.configureWith(insightsInsertKey).auditLoggingEnabled(true).build();
+
+    // the simplest possible application
+    EventBatchSender simplestSender = eventBatchSenderFactory.createBatchSender(insightsInsertKey);
+
+    EventBatchSender eventBatchSender = EventBatchSender.create(senderConfiguration);
 
     TelemetryClient telemetryClient =
         new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);

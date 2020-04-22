@@ -1,11 +1,20 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry.events;
 
 import com.newrelic.telemetry.Response;
+import com.newrelic.telemetry.SenderConfiguration;
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.TelemetryBatch;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import com.newrelic.telemetry.util.Utils;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -13,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EventBatchSender {
+  private static final String EVENTS_PATH = "/v1/accounts/events";
+  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
 
   private static final Logger logger = LoggerFactory.getLogger(EventBatchSender.class);
 
@@ -22,10 +33,6 @@ public class EventBatchSender {
   public EventBatchSender(EventBatchMarshaller marshaller, BatchDataSender sender) {
     this.marshaller = marshaller;
     this.sender = sender;
-  }
-
-  public static EventBatchSenderBuilder builder() {
-    return new EventBatchSenderBuilder();
   }
 
   /**
@@ -89,5 +96,28 @@ public class EventBatchSender {
     }
 
     return response;
+  }
+
+  public static EventBatchSender create(SenderConfiguration configuration) {
+    Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
+    Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
+
+    URL url = configuration.getEndpointUrl();
+
+    EventBatchMarshaller marshaller1 = new EventBatchMarshaller();
+
+    BatchDataSender sender1 =
+        new BatchDataSender(
+            configuration.getHttpPoster(),
+            configuration.getApiKey(),
+            url,
+            configuration.isAuditLoggingEnabled(),
+            configuration.getSecondaryUserAgent());
+
+    return new EventBatchSender(marshaller1, sender1);
+  }
+
+  public static SenderConfigurationBuilder configurationBuilder() {
+    return SenderConfiguration.builder(DEFAULT_URL, EVENTS_PATH);
   }
 }

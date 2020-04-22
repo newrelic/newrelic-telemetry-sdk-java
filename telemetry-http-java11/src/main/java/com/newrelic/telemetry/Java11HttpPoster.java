@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry;
 
 import com.newrelic.telemetry.http.HttpPoster;
@@ -45,7 +50,7 @@ public class Java11HttpPoster implements HttpPoster {
     try {
       var builder =
           HttpRequest.newBuilder(url.toURI()).POST(HttpRequest.BodyPublishers.ofByteArray(body));
-      headers.forEach((k, v) -> builder.header(k, v));
+      headers.forEach(builder::header);
       builder.header("Content-Type", mediaType);
       var req = builder.build();
 
@@ -68,14 +73,14 @@ public class Java11HttpPoster implements HttpPoster {
   }
 
   public static MetricBatchSenderFactory metricSenderFactory() {
-    return MetricBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+    return MetricBatchSenderFactory.ofSender(Java11HttpPoster::new);
   }
 
   public static SpanBatchSenderFactory spanSenderFactory() {
-    return SpanBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+    return SpanBatchSenderFactory.ofSender(Java11HttpPoster::new);
   }
 
   public static EventBatchSenderFactory eventSenderFactory() {
-    return EventBatchSenderFactory.ofSender(d -> new Java11HttpPoster(d));
+    return EventBatchSenderFactory.withHttpImplementation(Java11HttpPoster::new);
   }
 }
