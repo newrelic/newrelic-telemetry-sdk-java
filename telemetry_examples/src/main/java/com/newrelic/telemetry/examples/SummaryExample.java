@@ -35,8 +35,10 @@ public class SummaryExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSenderFactory factory = OkHttpPoster::new;
-    MetricBatchSender sender = factory.builder(insightsInsertKey).build();
+    MetricBatchSenderFactory factory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    MetricBatchSender sender =
+        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
     for (int i = 0; i < 10; i++) {

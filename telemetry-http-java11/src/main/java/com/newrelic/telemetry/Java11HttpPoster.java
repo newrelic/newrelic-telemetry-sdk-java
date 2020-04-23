@@ -50,7 +50,7 @@ public class Java11HttpPoster implements HttpPoster {
     try {
       var builder =
           HttpRequest.newBuilder(url.toURI()).POST(HttpRequest.BodyPublishers.ofByteArray(body));
-      headers.forEach(builder::header);
+      headers.forEach((name, value) -> builder.header(name, value));
       builder.header("Content-Type", mediaType);
       var req = builder.build();
 
@@ -73,14 +73,14 @@ public class Java11HttpPoster implements HttpPoster {
   }
 
   public static MetricBatchSenderFactory metricSenderFactory() {
-    return MetricBatchSenderFactory.ofSender(Java11HttpPoster::new);
+    return MetricBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new);
   }
 
   public static SpanBatchSenderFactory spanSenderFactory() {
-    return SpanBatchSenderFactory.ofSender(Java11HttpPoster::new);
+    return SpanBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new);
   }
 
   public static EventBatchSenderFactory eventSenderFactory() {
-    return EventBatchSenderFactory.withHttpImplementation(Java11HttpPoster::new);
+    return EventBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new);
   }
 }

@@ -46,14 +46,14 @@ public class OkHttpPoster implements HttpPoster {
   }
 
   public static MetricBatchSenderFactory metricSenderFactory() {
-    return MetricBatchSenderFactory.ofSender(d -> new OkHttpPoster(d));
+    return MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
   }
 
   public static SpanBatchSenderFactory spanSenderFactory() {
-    return SpanBatchSenderFactory.ofSender(d -> new OkHttpPoster(d));
+    return SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
   }
 
   public static EventBatchSenderFactory eventSenderFactory() {
-    return EventBatchSenderFactory.withHttpImplementation(d -> new OkHttpPoster(d));
+    return EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
   }
 }

@@ -72,7 +72,7 @@ public interface EventBatchSenderFactory {
 
   HttpPoster getPoster(Duration callTimeout);
 
-  static EventBatchSenderFactory withHttpImplementation(Function<Duration, HttpPoster> lambda) {
+  static EventBatchSenderFactory fromHttpImplementation(Function<Duration, HttpPoster> lambda) {
     return lambda::apply;
   }
 }

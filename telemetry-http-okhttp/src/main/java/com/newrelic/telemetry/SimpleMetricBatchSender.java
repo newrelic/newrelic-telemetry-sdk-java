@@ -4,6 +4,7 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
 import java.time.Duration;
@@ -62,6 +63,10 @@ public class SimpleMetricBatchSender {
    *     Relic API Keys</a>
    */
   public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(new OkHttpPoster(callTimeout));
+    SenderConfigurationBuilder configurationBuilder =
+        MetricBatchSender.configurationBuilder()
+            .apiKey(apiKey)
+            .httpPoster(new OkHttpPoster(callTimeout));
+    return new MetricBatchSenderBuilder(configurationBuilder);
   }
 }

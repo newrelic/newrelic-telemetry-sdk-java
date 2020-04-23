@@ -34,8 +34,10 @@ public class BoundaryExample {
   public static void main(String[] args) throws ResponseException {
     String insightsInsertKey = args[0];
 
-    MetricBatchSenderFactory factory = OkHttpPoster::new;
-    MetricBatchSender sender = factory.builder(insightsInsertKey).build();
+    MetricBatchSenderFactory factory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    MetricBatchSender sender =
+        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
 
     MetricBuffer metricBuffer =
         new MetricBuffer(new Attributes().put("exampleName", "BoundaryExample"));

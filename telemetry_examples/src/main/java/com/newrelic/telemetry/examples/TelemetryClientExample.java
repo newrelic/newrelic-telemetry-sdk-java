@@ -31,16 +31,23 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSenderFactory metricFactory = MetricBatchSenderFactory.ofSender(OkHttpPoster::new);
-    MetricBatchSender metricBatchSender =
-        metricFactory.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS)).build();
+    MetricBatchSenderFactory metricFactory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
 
-    SpanBatchSenderFactory spanFactory = SpanBatchSenderFactory.ofSender(OkHttpPoster::new);
-    SpanBatchSender spanBatchSender = spanFactory.builder(insightsInsertKey).build();
+    MetricBatchSender metricBatchSender =
+        MetricBatchSender.create(
+            metricFactory
+                .configureWith(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
+                .build());
+
+    SpanBatchSenderFactory spanFactory =
+        SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    SpanBatchSender spanBatchSender =
+        SpanBatchSender.create(spanFactory.configureWith(insightsInsertKey).build());
 
     // a fully customized example
     EventBatchSenderFactory eventBatchSenderFactory =
-        EventBatchSenderFactory.withHttpImplementation(OkHttpPoster::new);
+        EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration senderConfiguration =
         eventBatchSenderFactory.configureWith(insightsInsertKey).auditLoggingEnabled(true).build();
 

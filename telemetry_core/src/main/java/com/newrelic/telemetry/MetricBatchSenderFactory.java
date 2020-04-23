@@ -4,9 +4,12 @@
  */
 package com.newrelic.telemetry;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
+import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
 import java.time.Duration;
 import java.util.function.Function;
 
@@ -25,19 +28,8 @@ public interface MetricBatchSenderFactory {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  default MetricBatchSender build(String apiKey) {
-    return builder(apiKey).build();
-  }
-
-  /**
-   * Create a new MetricBatchSenderBuilder with your New Relic Insights Insert API key.
-   *
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
-   */
-  default MetricBatchSenderBuilder builder(String apiKey) {
-    return builder(apiKey, Duration.ofSeconds(2));
+  default MetricBatchSender createBatchSender(String apiKey) {
+    return createBatchSender(apiKey, Duration.of(2, SECONDS));
   }
 
   /**
@@ -48,8 +40,21 @@ public interface MetricBatchSenderFactory {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  default MetricBatchSender build(String apiKey, Duration callTimeout) {
-    return builder(apiKey, callTimeout).build();
+  default MetricBatchSender createBatchSender(String apiKey, Duration callTimeout) {
+    SenderConfigurationBuilder configuration =
+        EventBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+    return MetricBatchSender.create(configuration.build());
+  }
+
+  /**
+   * Create a new MetricBatchSenderBuilder with your New Relic Insights Insert API key.
+   *
+   * @see <a
+   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
+   *     Relic API Keys</a>
+   */
+  default SenderConfigurationBuilder configureWith(String apiKey) {
+    return configureWith(apiKey, Duration.ofSeconds(2));
   }
 
   /**
@@ -60,13 +65,15 @@ public interface MetricBatchSenderFactory {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  default MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+  default SenderConfigurationBuilder configureWith(String apiKey, Duration callTimeout) {
+    return MetricBatchSender.configurationBuilder()
+        .apiKey(apiKey)
+        .httpPoster(getPoster(callTimeout));
   }
 
   HttpPoster getPoster(Duration callTimeout);
 
-  static MetricBatchSenderFactory ofSender(Function<Duration, HttpPoster> lambda) {
+  static MetricBatchSenderFactory fromHttpImplementation(Function<Duration, HttpPoster> lambda) {
     return duration -> lambda.apply(duration);
   }
 }

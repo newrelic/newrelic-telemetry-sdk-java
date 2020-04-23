@@ -104,9 +104,9 @@ public class EventBatchSender {
 
     URL url = configuration.getEndpointUrl();
 
-    EventBatchMarshaller marshaller1 = new EventBatchMarshaller();
+    EventBatchMarshaller marshaller = new EventBatchMarshaller();
 
-    BatchDataSender sender1 =
+    BatchDataSender sender =
         new BatchDataSender(
             configuration.getHttpPoster(),
             configuration.getApiKey(),
@@ -114,7 +114,7 @@ public class EventBatchSender {
             configuration.isAuditLoggingEnabled(),
             configuration.getSecondaryUserAgent());
 
-    return new EventBatchSender(marshaller1, sender1);
+    return new EventBatchSender(marshaller, sender);
   }
 
   public static SenderConfigurationBuilder configurationBuilder() {

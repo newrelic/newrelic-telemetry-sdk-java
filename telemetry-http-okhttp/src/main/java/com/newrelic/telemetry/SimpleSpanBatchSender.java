@@ -4,6 +4,7 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.spans.SpanBatchSender;
 import com.newrelic.telemetry.spans.SpanBatchSenderBuilder;
 import java.time.Duration;
@@ -62,6 +63,10 @@ public class SimpleSpanBatchSender {
    *     Relic API Keys</a>
    */
   public static SpanBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    return SpanBatchSender.builder().apiKey(apiKey).httpPoster(new OkHttpPoster(callTimeout));
+    SenderConfigurationBuilder configurationBuilder =
+        SpanBatchSender.configurationBuilder()
+            .apiKey(apiKey)
+            .httpPoster(new OkHttpPoster(callTimeout));
+    return new SpanBatchSenderBuilder(configurationBuilder);
   }
 }

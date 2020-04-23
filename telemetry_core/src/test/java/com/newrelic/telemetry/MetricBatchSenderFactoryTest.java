@@ -18,9 +18,9 @@ class MetricBatchSenderFactoryTest {
     HttpPoster h = (url, headers, body, mediaType) -> null;
     MetricBatchSenderFactory f = d -> h;
 
-    assertNotNull(f.builder("abc123", ofSeconds(5)));
-    assertNotNull(f.builder("abc123"));
-    assertNotNull(f.build("abc123"));
-    assertNotNull(f.build("abc123", Duration.ofSeconds(5)));
+    assertNotNull(f.configureWith("abc123", ofSeconds(5)));
+    assertNotNull(f.configureWith("abc123"));
+    assertNotNull(f.createBatchSender("abc123"));
+    assertNotNull(f.createBatchSender("abc123", Duration.ofSeconds(5)));
   }
 }
