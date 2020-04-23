@@ -9,11 +9,9 @@ import static java.util.Collections.singleton;
 import com.newrelic.telemetry.*;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
-import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
-import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -40,24 +38,7 @@ public class TelemetryClientExample {
                 .configureWith(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
                 .build());
 
-    SpanBatchSenderFactory spanFactory =
-        SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
-    SpanBatchSender spanBatchSender =
-        SpanBatchSender.create(spanFactory.configureWith(insightsInsertKey).build());
-
-    // a fully customized example
-    EventBatchSenderFactory eventBatchSenderFactory =
-        EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
-    SenderConfiguration senderConfiguration =
-        eventBatchSenderFactory.configureWith(insightsInsertKey).auditLoggingEnabled(true).build();
-
-    // the simplest possible application
-    EventBatchSender simplestSender = eventBatchSenderFactory.createBatchSender(insightsInsertKey);
-
-    EventBatchSender eventBatchSender = EventBatchSender.create(senderConfiguration);
-
-    TelemetryClient telemetryClient =
-        new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
+    TelemetryClient telemetryClient = new TelemetryClient(metricBatchSender, null, null);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());
