@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -55,8 +55,9 @@ class MetricApiIntegrationTest {
   private static String containerIpAddress;
   private static MockServerClient mockServerClient;
 
-  private static final GenericContainer container =
-      new GenericContainer("jamesdbloom/mockserver:mockserver-5.5.1")
+  private static final GenericContainer<?> container =
+      new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
+          .withLogConsumer(outputFrame -> System.out.print(outputFrame.getUtf8String()))
           .withExposedPorts(SERVICE_PORT);
 
   private MetricBatchSender metricBatchSender;
@@ -76,12 +77,12 @@ class MetricApiIntegrationTest {
   void setUp() throws Exception {
     mockServerClient.reset();
     MetricBatchSenderFactory factory =
-        MetricBatchSenderFactory.fromHttpImplementation(timeout -> new OkHttpPoster(timeout));
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration config =
         factory
             .configureWith("fakeKey", Duration.ofMillis(1500))
             .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
-            .secondaryUserAgent("testApplication")
+            .secondaryUserAgent("testApplication/1.0.0")
             .build();
     metricBatchSender = MetricBatchSender.create(config);
   }

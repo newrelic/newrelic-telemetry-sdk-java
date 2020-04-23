@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -7,7 +7,6 @@ package com.newrelic.telemetry;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
-import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import java.time.Duration;
@@ -42,7 +41,7 @@ public interface MetricBatchSenderFactory {
    */
   default MetricBatchSender createBatchSender(String apiKey, Duration callTimeout) {
     SenderConfigurationBuilder configuration =
-        EventBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+        MetricBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
     return MetricBatchSender.create(configuration.build());
   }
 
