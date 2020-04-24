@@ -6,30 +6,35 @@ package com.newrelic.telemetry.spans;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
-import com.newrelic.telemetry.http.HttpPoster;
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import org.junit.jupiter.api.Test;
 
 class SpanBatchSenderBuilderTest {
 
   @Test
   void testBuild() {
-    SpanBatchSender result =
-        new SpanBatchSenderBuilder().apiKey("123").httpPoster(mock(HttpPoster.class)).build();
+    SenderConfigurationBuilder dummy = new SenderConfigurationBuilder("http://fake.com", "/");
+    dummy.apiKey("123");
+    dummy.httpPoster((url, headers, body, mediaType) -> null);
+
+    SpanBatchSender result = new SpanBatchSenderBuilder(dummy).build();
     assertNotNull(result);
   }
 
   @Test
   void testMissingApiKey() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new SpanBatchSenderBuilder().httpPoster(mock(HttpPoster.class)).build());
+    SenderConfigurationBuilder dummy = new SenderConfigurationBuilder("http://fake.com", "/");
+    dummy.httpPoster((url, headers, body, mediaType) -> null);
+
+    assertThrows(IllegalArgumentException.class, () -> new SpanBatchSenderBuilder(dummy).build());
   }
 
   @Test
   void testMissingHttpPoster() {
-    assertThrows(
-        IllegalArgumentException.class, () -> new SpanBatchSenderBuilder().apiKey("123").build());
+    SenderConfigurationBuilder dummy = new SenderConfigurationBuilder("http://fake.com", "/");
+    dummy.apiKey("123");
+
+    assertThrows(IllegalArgumentException.class, () -> new SpanBatchSenderBuilder(dummy).build());
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.examples;
@@ -7,14 +7,11 @@ package com.newrelic.telemetry.examples;
 import static java.util.Collections.singleton;
 
 import com.newrelic.telemetry.*;
-import com.newrelic.telemetry.SimpleSpanBatchSender;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
-import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
-import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -32,20 +29,16 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSender metricBatchSender =
-        SimpleMetricBatchSender.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
-            .build();
-    SpanBatchSender spanBatchSender = SimpleSpanBatchSender.builder(insightsInsertKey).build();
+    MetricBatchSenderFactory metricFactory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
 
-    // todo: make a simple version of this.
-    EventBatchSender eventBatchSender =
-        EventBatchSender.builder()
-            .apiKey(insightsInsertKey)
-            .httpPoster(new OkHttpPoster(Duration.ofSeconds(1)))
-            .enableAuditLogging()
-            .build();
-    TelemetryClient telemetryClient =
-        new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
+    MetricBatchSender metricBatchSender =
+        MetricBatchSender.create(
+            metricFactory
+                .configureWith(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
+                .build());
+
+    TelemetryClient telemetryClient = new TelemetryClient(metricBatchSender, null, null);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());

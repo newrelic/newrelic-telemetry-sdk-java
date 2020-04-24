@@ -5,14 +5,23 @@
 package com.newrelic.telemetry.spans;
 
 import com.newrelic.telemetry.Response;
+import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.exceptions.ResponseException;
+import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.json.SpanBatchMarshaller;
+import com.newrelic.telemetry.spans.json.SpanJsonCommonBlockWriter;
+import com.newrelic.telemetry.spans.json.SpanJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import com.newrelic.telemetry.util.Utils;
+import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Manages the sending of {@link SpanBatch} instances to the New Relic Spans API. */
 public class SpanBatchSender {
+
+  private static final String SPANS_PATH = "/trace/v1";
+  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
 
   private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
@@ -52,8 +61,33 @@ public class SpanBatchSender {
     return sender.send(json);
   }
 
-  /** Creates a builder for {@link SpanBatchSender} */
-  public static SpanBatchSenderBuilder builder() {
-    return new SpanBatchSenderBuilder();
+  /**
+   * Build the final {@link SpanBatchSender}.
+   *
+   * @return the fully configured SpanBatchSender object
+   */
+  public static SpanBatchSender create(SenderConfiguration configuration) {
+    Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
+    Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
+
+    URL url = configuration.getEndpointUrl();
+
+    SpanBatchMarshaller marshaller =
+        new SpanBatchMarshaller(
+            new SpanJsonCommonBlockWriter(new AttributesJson()),
+            new SpanJsonTelemetryBlockWriter(new AttributesJson()));
+    BatchDataSender sender =
+        new BatchDataSender(
+            configuration.getHttpPoster(),
+            configuration.getApiKey(),
+            url,
+            configuration.isAuditLoggingEnabled(),
+            configuration.getSecondaryUserAgent());
+
+    return new SpanBatchSender(marshaller, sender);
+  }
+
+  public static SenderConfiguration.SenderConfigurationBuilder configurationBuilder() {
+    return SenderConfiguration.builder(DEFAULT_URL, SPANS_PATH);
   }
 }

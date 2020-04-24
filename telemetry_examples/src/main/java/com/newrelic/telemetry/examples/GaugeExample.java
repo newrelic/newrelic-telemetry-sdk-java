@@ -5,7 +5,8 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.MetricBatchSenderFactory;
+import com.newrelic.telemetry.OkHttpPoster;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBuffer;
@@ -34,7 +35,11 @@ public class GaugeExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSender sender = SimpleMetricBatchSender.builder(insightsInsertKey).build();
+    MetricBatchSenderFactory factory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    MetricBatchSender sender =
+        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
+
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
     for (int i = 0; i < 10; i++) {

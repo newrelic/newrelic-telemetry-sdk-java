@@ -4,20 +4,20 @@
  */
 package com.newrelic.telemetry;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-import com.newrelic.telemetry.spans.SpanBatchSenderBuilder;
 import java.time.Duration;
+import java.util.function.Function;
 
 /**
- * A builder class for creating a SpanBatchSender that uses okhttp as the underlying http client
- * implementation.
+ * A factory interface for creating a SpanBatchSender.
  *
- * <p>Note: This class is deprecated and will be removed in the next major version - you should move
- * to the factories in telemetry-core
+ * <p>Concrete implementations use different HTTP providers.
  */
-@Deprecated
-public class SimpleSpanBatchSender {
+public interface SpanBatchSenderFactory {
 
   /**
    * Create a new SpanBatchSender with your New Relic Insights Insert API key, and otherwise default
@@ -27,19 +27,8 @@ public class SimpleSpanBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static SpanBatchSender build(String apiKey) {
-    return build(apiKey, Duration.ofSeconds(2));
-  }
-
-  /**
-   * Create a new SpanBatchSenderBuilder with your New Relic Insights Insert API key.
-   *
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
-   */
-  public static SpanBatchSenderBuilder builder(String apiKey) {
-    return builder(apiKey, Duration.ofSeconds(2));
+  default SpanBatchSender createBatchSender(String apiKey) {
+    return createBatchSender(apiKey, Duration.ofSeconds(2));
   }
 
   /**
@@ -50,8 +39,19 @@ public class SimpleSpanBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static SpanBatchSender build(String apiKey, Duration callTimeout) {
-    return builder(apiKey, callTimeout).build();
+  default SpanBatchSender createBatchSender(String apiKey, Duration callTimeout) {
+    return createBatchSender(apiKey, Duration.of(2, SECONDS));
+  }
+
+  /**
+   * Create a new SpanBatchSenderBuilder with your New Relic Insights Insert API key.
+   *
+   * @see <a
+   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
+   *     Relic API Keys</a>
+   */
+  default SenderConfigurationBuilder configureWith(String apiKey) {
+    return configureWith(apiKey, Duration.ofSeconds(2));
   }
 
   /**
@@ -62,11 +62,13 @@ public class SimpleSpanBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    */
-  public static SpanBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    SenderConfigurationBuilder configurationBuilder =
-        SpanBatchSender.configurationBuilder()
-            .apiKey(apiKey)
-            .httpPoster(new OkHttpPoster(callTimeout));
-    return new SpanBatchSenderBuilder(configurationBuilder);
+  default SenderConfigurationBuilder configureWith(String apiKey, Duration callTimeout) {
+    return SpanBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+  }
+
+  HttpPoster getPoster(Duration callTimeout);
+
+  static SpanBatchSenderFactory fromHttpImplementation(Function<Duration, HttpPoster> lambda) {
+    return duration -> lambda.apply(duration);
   }
 }

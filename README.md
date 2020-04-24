@@ -123,6 +123,12 @@ The `telemetry` library is published under the maven coordinates:
 
 `com.newrelic.telemetry:telemetry`
 
+#### `telemetry-http-java11`
+This is an implementation of the required http client interface using Java 11 JDK classes as the underlying library.
+The `telemetry-http-java11` library is published under the maven coordinates:
+
+`com.newrelic.telemetry:telemetry-http-java11`
+
 #### `telemetry-http-okhttp`
 This is an implementation of the required http client interface using okhttp as the underlying library.
 The `telemetry-http-okhttp` library is published under the maven coordinates:

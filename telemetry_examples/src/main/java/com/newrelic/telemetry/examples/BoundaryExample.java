@@ -5,8 +5,9 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.MetricBatchSenderFactory;
+import com.newrelic.telemetry.OkHttpPoster;
 import com.newrelic.telemetry.Response;
-import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
@@ -33,7 +34,10 @@ public class BoundaryExample {
   public static void main(String[] args) throws ResponseException {
     String insightsInsertKey = args[0];
 
-    MetricBatchSender sender = SimpleMetricBatchSender.builder(insightsInsertKey).build();
+    MetricBatchSenderFactory factory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    MetricBatchSender sender =
+        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
 
     MetricBuffer metricBuffer =
         new MetricBuffer(new Attributes().put("exampleName", "BoundaryExample"));

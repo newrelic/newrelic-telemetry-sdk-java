@@ -4,6 +4,7 @@
  */
 package com.newrelic.telemetry;
 
+import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
 import java.time.Duration;
@@ -12,9 +13,10 @@ import java.time.Duration;
  * A builder class for creating a MetricBatchSender that uses okhttp as the underlying http client
  * implementation.
  *
- * <p>Note: This class will be deprecated in the near future and be replaced with something named
- * more succinctly.
+ * <p>Note: This class is deprecated and will be removed in the next major version - you should move
+ * to the factories in telemetry-core
  */
+@Deprecated
 public class SimpleMetricBatchSender {
 
   /**
@@ -61,6 +63,10 @@ public class SimpleMetricBatchSender {
    *     Relic API Keys</a>
    */
   public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
-    return MetricBatchSender.builder().apiKey(apiKey).httpPoster(new OkHttpPoster(callTimeout));
+    SenderConfigurationBuilder configurationBuilder =
+        MetricBatchSender.configurationBuilder()
+            .apiKey(apiKey)
+            .httpPoster(new OkHttpPoster(callTimeout));
+    return new MetricBatchSenderBuilder(configurationBuilder);
   }
 }

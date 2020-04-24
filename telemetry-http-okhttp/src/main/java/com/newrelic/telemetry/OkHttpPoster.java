@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -43,5 +43,17 @@ public class OkHttpPoster implements HttpPoster {
           response.message(),
           response.headers().toMultimap());
     }
+  }
+
+  public static MetricBatchSenderFactory metricSenderFactory() {
+    return MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+  }
+
+  public static SpanBatchSenderFactory spanSenderFactory() {
+    return SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+  }
+
+  public static EventBatchSenderFactory eventSenderFactory() {
+    return EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
   }
 }

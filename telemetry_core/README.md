@@ -8,7 +8,10 @@ Since it is intended to have minimal dependencies, it requires an HTTP implement
 in order to function. Implementation of the following interface is required:
 
 `HttpPoster` : a very simple interface for sending an HTTP Post and returning a response.
+
 A reference implementation based on `okhttp` is provided in the `telemetry-http-okhttp` module.
+A reference implementation based on Java 11 `HttpClient` is provided in the `telemetry-http-java11` module.
+
 
 If you want to consume this module as-is, it is published at the maven coordinate:
 

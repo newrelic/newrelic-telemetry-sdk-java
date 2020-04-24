@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -40,8 +40,9 @@ class SpanApiIntegrationTest {
   private static final int SERVICE_PORT = 1080 + new Random().nextInt(900);
   private static String containerIpAddress;
   private static MockServerClient mockServerClient;
-  private static final GenericContainer container =
-      new GenericContainer("jamesdbloom/mockserver:mockserver-5.5.1")
+  private static final GenericContainer<?> container =
+      new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
+          .withLogConsumer(outputFrame -> System.out.print(outputFrame.getUtf8String()))
           .withExposedPorts(SERVICE_PORT);
   private SpanBatchSender spanBatchSender;
 
@@ -59,14 +60,17 @@ class SpanApiIntegrationTest {
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
-    spanBatchSender =
-        SpanBatchSender.builder()
-            .apiKey("fakeKey")
+    SpanBatchSenderFactory factory =
+        SpanBatchSenderFactory.fromHttpImplementation(d -> new OkHttpPoster(d));
+    SenderConfiguration config =
+        factory
+            .configureWith("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
-            .enableAuditLogging()
-            .secondaryUserAgent("myTestApp", null)
+            .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
+            .auditLoggingEnabled(true)
+            .secondaryUserAgent("myTestApp")
             .build();
+    spanBatchSender = SpanBatchSender.create(config);
   }
 
   @Test

@@ -4,8 +4,7 @@
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.SimpleSpanBatchSender;
+import com.newrelic.telemetry.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
@@ -38,10 +37,14 @@ public class SpanExample {
     logger.info("Starting the SpanExample");
     String insightsInsertKey = args[0];
 
-    SpanBatchSender sender =
-        SimpleSpanBatchSender.builder(insightsInsertKey, Duration.ofSeconds(5))
-            .enableAuditLogging()
+    MetricBatchSenderFactory factory =
+        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    SenderConfiguration configuration =
+        factory
+            .configureWith(insightsInsertKey, Duration.ofSeconds(5))
+            .auditLoggingEnabled(true)
             .build();
+    SpanBatchSender sender = SpanBatchSender.create(configuration);
 
     List<Span> spans = new ArrayList<>();
     String traceId = UUID.randomUUID().toString();
