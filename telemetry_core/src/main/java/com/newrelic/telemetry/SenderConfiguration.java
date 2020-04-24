@@ -9,6 +9,7 @@ import com.newrelic.telemetry.http.HttpPoster;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class SenderConfiguration {
@@ -102,13 +103,15 @@ public class SenderConfiguration {
     }
 
     private URL getOrDefaultSendUrl() {
-      if (endpointUrl != null) {
-        return endpointUrl;
-      }
       try {
+        if (endpointUrl != null) {
+          return endpointUrl.toURI().resolve(basePath).toURL();
+        }
         return constructUrlWithHost(URI.create(defaultUrl));
       } catch (MalformedURLException e) {
-        throw new UncheckedIOException("Bad hardcoded URL", e);
+        throw new UncheckedIOException("Bad Hardcoded URL " + defaultUrl, e);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException("Bad URL", e);
       }
     }
 
