@@ -6,7 +6,6 @@ package com.newrelic.telemetry.spans.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.Span;
@@ -17,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
+import vendored.com.google.gson.stream.JsonWriter;
 
 class SpanJsonTelemetryBlockWriterTest {
 

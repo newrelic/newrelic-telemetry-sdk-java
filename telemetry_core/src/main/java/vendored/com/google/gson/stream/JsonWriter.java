@@ -17,15 +17,15 @@
  * Note: this code is originally from the gson project at https://github.com/google/gson
  */
 
-package com.google.gson.stream;
+package vendored.com.google.gson.stream;
 
-import static com.google.gson.stream.JsonScope.DANGLING_NAME;
-import static com.google.gson.stream.JsonScope.EMPTY_ARRAY;
-import static com.google.gson.stream.JsonScope.EMPTY_DOCUMENT;
-import static com.google.gson.stream.JsonScope.EMPTY_OBJECT;
-import static com.google.gson.stream.JsonScope.NONEMPTY_ARRAY;
-import static com.google.gson.stream.JsonScope.NONEMPTY_DOCUMENT;
-import static com.google.gson.stream.JsonScope.NONEMPTY_OBJECT;
+import static vendored.com.google.gson.stream.JsonScope.DANGLING_NAME;
+import static vendored.com.google.gson.stream.JsonScope.EMPTY_ARRAY;
+import static vendored.com.google.gson.stream.JsonScope.EMPTY_DOCUMENT;
+import static vendored.com.google.gson.stream.JsonScope.EMPTY_OBJECT;
+import static vendored.com.google.gson.stream.JsonScope.NONEMPTY_ARRAY;
+import static vendored.com.google.gson.stream.JsonScope.NONEMPTY_DOCUMENT;
+import static vendored.com.google.gson.stream.JsonScope.NONEMPTY_OBJECT;
 
 import java.io.Closeable;
 import java.io.Flushable;

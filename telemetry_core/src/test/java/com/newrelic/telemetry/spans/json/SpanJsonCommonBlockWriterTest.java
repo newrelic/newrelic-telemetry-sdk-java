@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.SpanBatch;
@@ -17,6 +16,7 @@ import java.io.StringWriter;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import vendored.com.google.gson.stream.JsonWriter;
 
 class SpanJsonCommonBlockWriterTest {
 

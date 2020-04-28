@@ -4,12 +4,12 @@
  */
 package com.newrelic.telemetry.json;
 
-import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import vendored.com.google.gson.stream.JsonWriter;
 
 public class AttributesJson {
 

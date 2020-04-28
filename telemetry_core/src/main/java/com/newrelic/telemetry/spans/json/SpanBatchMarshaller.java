@@ -4,12 +4,12 @@
  */
 package com.newrelic.telemetry.spans.json;
 
-import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.spans.SpanBatch;
 import java.io.IOException;
 import java.io.StringWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vendored.com.google.gson.stream.JsonWriter;
 
 public class SpanBatchMarshaller {
 

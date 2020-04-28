@@ -16,7 +16,7 @@
  *
  * Note: this code is originally from the gson project at https://github.com/google/gson
  */
-package com.google.gson.stream;
+package vendored.com.google.gson.stream;
 
 final class JsonScope {
 

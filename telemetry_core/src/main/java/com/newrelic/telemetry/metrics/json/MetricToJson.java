@@ -4,13 +4,13 @@
  */
 package com.newrelic.telemetry.metrics.json;
 
-import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.Summary;
 import java.io.IOException;
 import java.io.StringWriter;
+import vendored.com.google.gson.stream.JsonWriter;
 
 /** This class turns Metrics into JSON via an embedded JsonWriter from the gson project. */
 public class MetricToJson {

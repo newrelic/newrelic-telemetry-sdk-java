@@ -4,7 +4,6 @@
  */
 package com.newrelic.telemetry.spans.json;
 
-import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import vendored.com.google.gson.stream.JsonWriter;
 
 public final class SpanJsonTelemetryBlockWriter {
 

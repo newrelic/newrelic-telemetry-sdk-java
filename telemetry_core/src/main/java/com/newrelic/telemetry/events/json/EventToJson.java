@@ -5,12 +5,12 @@
 
 package com.newrelic.telemetry.events.json;
 
-import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.events.Event;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.function.Function;
+import vendored.com.google.gson.stream.JsonWriter;
 
 public class EventToJson implements Function<Event, String> {
 
