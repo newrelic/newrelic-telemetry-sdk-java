@@ -43,7 +43,9 @@ public class EventBatchSender {
    * @return The response from the ingest API.
    * @throws ResponseException In cases where the batch is unable to be successfully sent, one of
    *     the subclasses of {@link ResponseException} will be thrown. See the documentation on that
-   *     hierarchy for details on the recommended ways to respond to those exceptions.
+   *     hierarchy for details on the recommended ways to respond to those exceptions. This method
+   *     will never throw RetryWithSplitException as it automatically handles splitting and retrying
+   *     outsize batches.
    */
   public Response sendBatch(EventBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {
