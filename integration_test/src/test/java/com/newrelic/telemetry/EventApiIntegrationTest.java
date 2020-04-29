@@ -143,10 +143,11 @@ class EventApiIntegrationTest {
 
   private static Stream<Arguments> codesAndExpectedExceptions() {
     return Stream.of(
-        Arguments.of(
-            413,
-            RetryWithSplitException.class,
-            "Batch was too large. Please try splitting and resending smaller sized batches."),
+        //        Arguments.of(
+        //            413,
+        //            RetryWithSplitException.class,
+        //            "Batch was too large. Please try splitting and resending smaller sized
+        // batches."),
         Arguments.of(
             420,
             RetryWithBackoffException.class,
