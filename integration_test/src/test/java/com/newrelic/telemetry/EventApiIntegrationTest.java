@@ -87,14 +87,9 @@ class EventApiIntegrationTest {
         new EventPayload(
             Arrays.asList(
                 ImmutableMap.<String, Object>builder()
-                    .put("name", "myEvent")
+                    .put("eventType", "myEvent")
                     .put("key1", "val1")
                     .put("timestamp", 350)
-                    .build(),
-                ImmutableMap.<String, Object>builder()
-                    .put("name", "myEvent")
-                    .put("key2", "val2")
-                    .put("timestamp", 351)
                     .build()));
     mockServerClient
         .when(
@@ -116,10 +111,6 @@ class EventApiIntegrationTest {
     EventBuffer eventBuffer = new EventBuffer(new Attributes());
     eventBuffer.addEvent(
         new Event("myEvent", new Attributes().put("key1", "val1"), currentTimeMillis));
-
-    currentTimeMillis = currentTimeMillis + 1;
-    eventBuffer.addEvent(
-        new Event("myEvent", new Attributes().put("key2", "val2"), currentTimeMillis));
 
     Response response = eventBatchSender.sendBatch(eventBuffer.createBatch());
 
