@@ -39,7 +39,7 @@ tasks {
         dependencies {
             exclude(dependency("org.slf4j:slf4j-api:${Versions.slf4j}"))
         }
-        relocate("com.google.gson", "a")
+        relocate("com.google.gson", "com.newrelic.relocated")
         minimize()
     }
     build {
