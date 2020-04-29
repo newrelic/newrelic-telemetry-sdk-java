@@ -104,7 +104,7 @@ class SpanApiIntegrationTest {
                     json(
                         new SpanPayload[] {expectedPayload},
                         MediaType.JSON_UTF_8,
-                        MatchType.ONLY_MATCHING_FIELDS))
+                        MatchType.STRICT))
                 .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* myTestApp")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
                 .withHeader("Content-Length", ".*"))
@@ -142,6 +142,14 @@ class SpanApiIntegrationTest {
     public SpanPayload(ImmutableMap<String, Object> of, List<Map<String, Object>> singletonList) {
       common = of;
       spans = singletonList;
+    }
+
+    public Map<String, Object> getCommon() {
+      return common;
+    }
+
+    public List<Map<String, Object>> getSpans() {
+      return spans;
     }
   }
 }
