@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for Events data type
 - Add Java 11 HTTP provider
 - Add javadoc.io
+- Use Gradle shadowing to remove C&P GSON code (Thanks wpoch)
 - Remove Lombok dependency
 - Miscellaneous cleanups/enhancements
 
