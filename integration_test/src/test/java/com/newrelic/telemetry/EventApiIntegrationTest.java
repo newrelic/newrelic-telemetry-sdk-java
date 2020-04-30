@@ -36,6 +36,7 @@ import org.mockserver.matchers.MatchType;
 import org.mockserver.model.Delay;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.JsonBody;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
@@ -83,24 +84,21 @@ class EventApiIntegrationTest {
   @Test
   @DisplayName("Low Level SDK can send a metric batch and returns a successful response")
   void testSuccessfulMetricSend() throws Exception {
-    EventPayload expectedPayload =
-        new EventPayload(
-            Arrays.asList(
-                ImmutableMap.<String, Object>builder()
-                    .put("eventType", "myEvent")
-                    .put("key1", "val1")
-                    .put("timestamp", 350)
-                    .build()));
+    List<Map<String, Object>> expectedPayload =
+        Arrays.asList(
+            ImmutableMap.<String, Object>builder()
+                .put("eventType", "myEvent")
+                .put("key1", "val1")
+                .put("timestamp", 350)
+                .build());
+    JsonBody json = json(expectedPayload, MediaType.JSON_UTF_8, MatchType.STRICT);
+
     mockServerClient
         .when(
             new HttpRequest()
                 .withMethod("POST")
                 .withPath("/v1/accounts/events")
-                .withBody(
-                    json(
-                        new EventPayload[] {expectedPayload},
-                        MediaType.JSON_UTF_8,
-                        MatchType.ONLY_MATCHING_FIELDS))
+                .withBody(json)
                 .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* testApplication/1.0.0")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
                 .withHeader("Content-Length", ".*"))
@@ -197,16 +195,5 @@ class EventApiIntegrationTest {
         exceptionClass,
         () -> eventBatchSender.sendBatch(eventBuffer.createBatch()),
         exceptionMessage);
-  }
-
-  //
-  // [{\"common\":{\"attributes\":{\"key1\":\"val1\"}},\"metrics\":[{\"name\":\"myEvent\",\"type\":\"count\",\"value\":1.0,\"timestamp\":1557180766612,\"interval.ms\":42,\"attributes\":{\"key2\":\"val2\"}}]}]"
-
-  private static class EventPayload {
-    private final List<Map<String, Object>> metrics;
-
-    public EventPayload(List<Map<String, Object>> asList) {
-      metrics = asList;
-    }
   }
 }
