@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -39,8 +39,8 @@ public class TelemetryClient {
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
   /**
-   * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
-   * one of the telemetry types, you can pass in a null value for that sender.
+   * Create a new TelemetryClient instance, with three senders. Note that if you don't intend to
+   * send one of the telemetry types, you can pass in a null value for that sender.
    *
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
@@ -53,6 +53,20 @@ public class TelemetryClient {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;
+  }
+
+  /**
+   * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
+   * one of the telemetry types, you can pass in a null value for that sender.
+   *
+   * @deprecated Use the constructor with all there senders, passing in null to the ones you don't
+   *     care about.
+   * @param metricBatchSender The sender for dimensional metrics.
+   * @param spanBatchSender The sender for distributed tracing spans.
+   */
+  @Deprecated
+  public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
+    this(metricBatchSender, spanBatchSender, null);
   }
 
   private interface BatchSender {
