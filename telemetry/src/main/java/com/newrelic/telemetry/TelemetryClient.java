@@ -59,7 +59,7 @@ public class TelemetryClient {
    * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
    * one of the telemetry types, you can pass in a null value for that sender.
    *
-   * @deprecated Use the constructor with all there senders, passing in null to the ones you don't
+   * @deprecated Use the constructor with all three senders, passing in null to the ones you don't
    *     care about.
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
