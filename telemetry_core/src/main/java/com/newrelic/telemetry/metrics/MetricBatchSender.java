@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.metrics;
@@ -33,6 +33,16 @@ public class MetricBatchSender {
   MetricBatchSender(MetricBatchMarshaller marshaller, BatchDataSender sender) {
     this.marshaller = marshaller;
     this.sender = sender;
+  }
+
+  /**
+   * Creates a builder for {@link MetricBatchSender}
+   *
+   * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
+   */
+  @Deprecated
+  public static MetricBatchSenderBuilder builder() {
+    return new MetricBatchSenderBuilder(MetricBatchSender.configurationBuilder());
   }
 
   /**
