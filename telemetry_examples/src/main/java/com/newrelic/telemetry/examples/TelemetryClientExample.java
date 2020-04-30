@@ -9,9 +9,11 @@ import static java.util.Collections.singleton;
 import com.newrelic.telemetry.*;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
+import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.metrics.*;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -38,7 +40,14 @@ public class TelemetryClientExample {
                 .configureWith(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
                 .build());
 
-    TelemetryClient telemetryClient = new TelemetryClient(metricBatchSender, null, null);
+    // Span and Event Batch sender also need to be configured in a similar way to the above
+    // if you want to use them. Eliding the details here for brevity
+    //
+    SpanBatchSender spanBatchSender = null;
+    EventBatchSender eventBatchSender = null;
+
+    TelemetryClient telemetryClient =
+        new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());
