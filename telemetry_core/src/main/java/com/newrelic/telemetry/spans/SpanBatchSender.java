@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.spans;
@@ -37,6 +37,16 @@ public class SpanBatchSender {
   SpanBatchSender(SpanBatchMarshaller marshaller, BatchDataSender sender) {
     this.marshaller = marshaller;
     this.sender = sender;
+  }
+
+  /**
+   * Creates a builder for {@link SpanBatchSender}
+   *
+   * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
+   */
+  @Deprecated
+  public static SpanBatchSenderBuilder builder() {
+    return new SpanBatchSenderBuilder(configurationBuilder());
   }
 
   /**

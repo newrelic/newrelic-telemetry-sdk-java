@@ -115,7 +115,7 @@ public class SenderConfiguration {
       }
     }
 
-    protected URL constructUrlWithHost(URI hostUri) throws MalformedURLException {
+    public URL constructUrlWithHost(URI hostUri) throws MalformedURLException {
       return hostUri.resolve(basePath).toURL();
     }
   }
