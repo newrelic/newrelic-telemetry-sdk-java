@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Coming soon
 - Enable adding additional user agent information to the HTTP requests made by the SDK.
 
+## [0.5.1] - 2020-04-30
+- Restore methods that were deleted from deprecated classes.
+
 ## [0.5.0] - 2020-04-30
 - Add support for Events data type
 - Add Java 11 HTTP provider
