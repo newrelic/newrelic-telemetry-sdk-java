@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Coming soon
 - Enable adding additional user agent information to the HTTP requests made by the SDK.
 
+## [0.5.0] - 2020-04-30
+- Add support for Events data type
+- Add Java 11 HTTP provider
+- Add javadoc.io
+- Remove Lombok dependency
+- Miscellaneous cleanups/enhancements
+
 ## [0.4.0] - 2020-03-04
 - Additional documentation for logging
 - Improved details in log messages, including number of metrics dropped
