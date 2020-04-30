@@ -108,12 +108,14 @@ class MetricApiIntegrationTest {
                     .put("value", ImmutableMap.of("count", 5, "sum", 33.5, "min", 1.0, "max", 10.0))
                     .put("timestamp", 1111111)
                     .put("interval.ms", 1111111)
+                    .put("attributes", singletonMap("key3", "val3"))
                     .build(),
                 ImmutableMap.<String, Object>builder()
                     .put("name", "myGauge")
                     .put("type", "gauge")
                     .put("value", 22.554d)
                     .put("timestamp", 4444444)
+                    .put("attributes", singletonMap("key4", "val4"))
                     .build()));
     mockServerClient
         .when(
@@ -124,13 +126,15 @@ class MetricApiIntegrationTest {
                     json(
                         new MetricPayload[] {expectedPayload},
                         MediaType.JSON_UTF_8,
-                        MatchType.ONLY_MATCHING_FIELDS))
+                        MatchType.STRICT))
                 .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* testApplication/1.0.0")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
                 .withHeader("Content-Length", ".*"))
         .respond(new HttpResponse().withStatusCode(202));
 
     Attributes countAttributes = new Attributes().put("key2", "val2");
+    Attributes summaryAttributes = new Attributes().put("key3", "val3");
+    Attributes gaugeAttributes = new Attributes().put("key4", "val4");
 
     long currentTimeMillis = 350;
 
@@ -138,8 +142,8 @@ class MetricApiIntegrationTest {
     metricBuffer.addMetric(
         new Count("myCounter", 1, currentTimeMillis, currentTimeMillis + 42, countAttributes));
     metricBuffer.addMetric(
-        new Summary("mySummary", 5, 33.5d, 1.0d, 10d, 1111111, 2222222, new Attributes()));
-    metricBuffer.addMetric(new Gauge("myGauge", 22.554d, 4444444, new Attributes()));
+        new Summary("mySummary", 5, 33.5d, 1.0d, 10d, 1111111, 2222222, summaryAttributes));
+    metricBuffer.addMetric(new Gauge("myGauge", 22.554d, 4444444, gaugeAttributes));
     Response response = metricBatchSender.sendBatch(metricBuffer.createBatch());
 
     assertEquals(202, response.getStatusCode());
@@ -238,6 +242,14 @@ class MetricApiIntegrationTest {
     public MetricPayload(Map<String, Object> singletonMap, List<Map<String, Object>> asList) {
       common = singletonMap;
       metrics = asList;
+    }
+
+    public Map<String, Object> getCommon() {
+      return common;
+    }
+
+    public List<Map<String, Object>> getMetrics() {
+      return metrics;
     }
   }
 }
