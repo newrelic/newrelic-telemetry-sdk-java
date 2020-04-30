@@ -24,20 +24,20 @@ Maven dependencies:
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry</artifactId>
-      <version>0.4.0</version>
+      <version>0.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry-http-okhttp</artifactId>
-      <version>0.4.0</version>
+      <version>0.5.0</version>
     </dependency>
 ```
 
 Gradle dependencies: 
 
 ```
-compile("com.newrelic.telemetry:telemetry:0.4.0")
-compile("com.newrelic.telemetry:telemetry-http-okhttp:0.4.0")
+compile("com.newrelic.telemetry:telemetry:0.5.0")
+compile("com.newrelic.telemetry:telemetry-http-okhttp:0.5.0")
 ```
 
 Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
@@ -152,6 +152,36 @@ third party notices document.
 Full details are available in our [CONTRIBUTING.md](CONTRIBUTING.md) file. 
 We'd love to get your contributions to improve the Java Telemetry SDK! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 To execute our corporate CLA, which is required if your contribution is on behalf of a company, or if you have any questions, please drop us an email at opensource@newrelic.com. 
+
+### Release Process
+
+#### Publish to Staging Repo
+
+To stage the release simply submit and merge a PR to update the [build.gradle.kts](build.gradle.kts) file with the version to be released (e.g. `version := "0.5.0"`).
+
+Results of the job can be viewed here: https://dev.azure.com/NRAzurePipelines/Java%20CI/_build
+After the staging release job has run successfully it will publish the new artifact to a staging repository on Sonatype at: https://oss.sonatype.org/#stagingRepositories.
+
+#### Manually Release Staging Repo
+
+1. Find the staging repo on Sonatype, which should be named similar to `comnewrelic-nnnn`, and validate that the contents and version look correct.
+2. If the contents look correct, select the staging repo and choose `close`, leaving a comment such as `releasing 0.5.0`.
+3. When the staging repo is finished closing, select the staging repo and choose `release`, keeping the `Automatically Drop` checkbox checked, and leave a comment such as `releasing 0.5.0`.
+4. Verify that the artifacts were published on Maven Central at: https://repo1.maven.org/maven2/com/newrelic/telemetry/telemetry 
+
+#### Post Release
+
+Submit and merge a PR with the following:
+* Update the [build.gradle.kts](build.gradle.kts) file with to a snapshot version of a potential future release (e.g. `version  := "0.5.1-SNAPSHOT"`).
+* Update the [CHANGELOG](CHANGELOG.md) with details of the new release:
+  ```markdown
+  ## [0.5.0]
+  - Miscellaneous bug fixes and tweaks
+  ```
+* Update the [Usage](#usage) example in the [README](README.md) with the newly released version (e.g. `implementation("com.newrelic.telemetry:telemetry:0.5.0")`).
+
+[javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry.svg
+[javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry
 
 ### Limitations
 The New Relic Telemetry APIs are rate limited. Please reference the documentation for [New Relic Metric API](https://docs.newrelic.com/docs/introduction-new-relic-metric-api) and [New Relic Trace API requirements and limits](https://docs.newrelic.com/docs/apm/distributed-tracing/trace-api/trace-api-general-requirements-limits) on the specifics of the rate limits.
