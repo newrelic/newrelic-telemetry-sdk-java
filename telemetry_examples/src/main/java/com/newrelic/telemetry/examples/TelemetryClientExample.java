@@ -6,14 +6,18 @@ package com.newrelic.telemetry.examples;
 
 import static java.util.Collections.singleton;
 
-import com.newrelic.telemetry.*;
+import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.TelemetryClient;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
-import com.newrelic.telemetry.events.EventBatchSender;
-import com.newrelic.telemetry.metrics.*;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.Summary;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
-import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -31,23 +35,10 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSenderFactory metricFactory =
-        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
-
-    MetricBatchSender metricBatchSender =
-        MetricBatchSender.create(
-            metricFactory
-                .configureWith(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
-                .build());
-
-    // Span and Event Batch sender also need to be configured in a similar way to the above
-    // if you want to use them. Eliding the details here for brevity
-    //
-    SpanBatchSender spanBatchSender = null;
-    EventBatchSender eventBatchSender = null;
-
+    // create a TelemetryClient with an http connect timeout of 10 seconds.
     TelemetryClient telemetryClient =
-        new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
+        TelemetryClient.create(
+            () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), insightsInsertKey);
 
     Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
     commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());

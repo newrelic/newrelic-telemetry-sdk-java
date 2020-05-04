@@ -20,6 +20,11 @@ import okhttp3.RequestBody;
 public class OkHttpPoster implements HttpPoster {
   private final OkHttpClient okHttpClient;
 
+  /** Create an OkHttpPoster with a default OkHttpClient, and a connect timeout of 2 seconds. */
+  public OkHttpPoster() {
+    this(Duration.ofSeconds(2));
+  }
+
   /** Create an OkHttpPoster with a default OkHttpClient, with only a custom call timeout. */
   public OkHttpPoster(Duration callTimeout) {
     this(new OkHttpClient.Builder().callTimeout(callTimeout).build());

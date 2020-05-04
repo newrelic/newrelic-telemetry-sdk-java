@@ -80,7 +80,7 @@ class MetricApiIntegrationTest {
         MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration config =
         factory
-            .configureWith("fakeKey", Duration.ofMillis(1500))
+            .configureWith("fakeKey")
             .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
             .secondaryUserAgent("testApplication/1.0.0")
             .build();

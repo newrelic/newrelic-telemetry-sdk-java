@@ -1,14 +1,16 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.*;
+import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.MetricBatchSenderFactory;
+import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,10 +42,7 @@ public class SpanExample {
     MetricBatchSenderFactory factory =
         MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration configuration =
-        factory
-            .configureWith(insightsInsertKey, Duration.ofSeconds(5))
-            .auditLoggingEnabled(true)
-            .build();
+        factory.configureWith(insightsInsertKey).auditLoggingEnabled(true).build();
     SpanBatchSender sender = SpanBatchSender.create(configuration);
 
     List<Span> spans = new ArrayList<>();

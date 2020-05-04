@@ -61,7 +61,7 @@ class SpanApiIntegrationTest {
   void setUp() throws Exception {
     mockServerClient.reset();
     SpanBatchSenderFactory factory =
-        SpanBatchSenderFactory.fromHttpImplementation(d -> new OkHttpPoster(d));
+        SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration config =
         factory
             .configureWith("fakeKey")

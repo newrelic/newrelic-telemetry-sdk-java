@@ -38,9 +38,9 @@ public class Java11HttpPoster implements HttpPoster {
     this.httpClient = HttpClient.newBuilder().connectTimeout(callTimeout).build();
   }
 
-  /** Create a default Java11HttpPoster. */
+  /** Create a default Java11HttpPoster with a connect timeout set to 2 seconds. */
   public Java11HttpPoster() {
-    this.httpClient = HttpClient.newBuilder().build();
+    this(Duration.ofSeconds(2));
   }
 
   @Override
@@ -50,7 +50,7 @@ public class Java11HttpPoster implements HttpPoster {
     try {
       var builder =
           HttpRequest.newBuilder(url.toURI()).POST(HttpRequest.BodyPublishers.ofByteArray(body));
-      headers.forEach((name, value) -> builder.header(name, value));
+      headers.forEach(builder::header);
       builder.header("Content-Type", mediaType);
       var req = builder.build();
 

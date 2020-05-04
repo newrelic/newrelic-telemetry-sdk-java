@@ -10,6 +10,7 @@ import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.SpanBatch;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,5 +172,35 @@ public class TelemetryClient {
   public void shutdown() {
     LOG.info("Shutting down the TelemetryClient background Executor");
     executor.shutdown();
+  }
+
+  /**
+   * Create a fully operational {@link TelemetryClient} with all default options.
+   *
+   * @param httpPosterCreator A {@link Supplier} used to create an {@link HttpPoster} instance.
+   * @param insertApiKey The New Relic Insert API to use.
+   * @return A fully operational TelemetryClient instance.
+   */
+  public static TelemetryClient create(
+      Supplier<HttpPoster> httpPosterCreator, String insertApiKey) {
+    MetricBatchSender metricBatchSender =
+        MetricBatchSender.create(
+            MetricBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+                .configureWith(insertApiKey)
+                .build());
+
+    SpanBatchSender spanBatchSender =
+        SpanBatchSender.create(
+            SpanBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+                .configureWith(insertApiKey)
+                .build());
+
+    EventBatchSender eventBatchSender =
+        EventBatchSender.create(
+            EventBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+                .configureWith(insertApiKey)
+                .build());
+
+    return new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
   }
 }
