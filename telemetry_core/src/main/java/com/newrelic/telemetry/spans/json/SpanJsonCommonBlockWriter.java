@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.spans.json;
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class SpanJsonCommonBlockWriter {
 
-  private AttributesJson attributesJson;
+  private final AttributesJson attributesJson;
 
   public SpanJsonCommonBlockWriter(AttributesJson attributesJson) {
     this.attributesJson = attributesJson;
