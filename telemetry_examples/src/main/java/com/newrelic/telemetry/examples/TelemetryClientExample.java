@@ -11,6 +11,8 @@ import com.newrelic.telemetry.OkHttpPoster;
 import com.newrelic.telemetry.TelemetryClient;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatch;
+import com.newrelic.telemetry.logs.Log;
+import com.newrelic.telemetry.logs.LogBatch;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.MetricBatch;
@@ -40,17 +42,33 @@ public class TelemetryClientExample {
         TelemetryClient.create(
             () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), insightsInsertKey);
 
-    Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
-    commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());
-    commonAttributes.put("environment", "staging");
+    Attributes commonAttributes =
+        new Attributes()
+            .put("exampleName", "TelemetryClientExample")
+            .put("service.name", "TelemetryClientExampleService")
+            .put("host.hostname", InetAddress.getLocalHost().getHostName())
+            .put("environment", "staging");
 
-    sendSampleSpan(telemetryClient, commonAttributes);
+    Span span = sendSampleSpan(telemetryClient, commonAttributes);
     sendSampleMetrics(telemetryClient, commonAttributes);
     sendSampleEvent(telemetryClient, commonAttributes);
+    sendSampleLogEntry(telemetryClient, commonAttributes, span);
 
     // make sure to shutdown the client, else the background Executor will stop the program from
     // exiting.
     telemetryClient.shutdown();
+  }
+
+  private static void sendSampleLogEntry(
+      TelemetryClient telemetryClient, Attributes commonAttributes, Span span) {
+    Log log =
+        Log.builder()
+            .level("INFO")
+            .message("Logging a message here about a span.")
+            .attributes(
+                new Attributes().put("span.id", span.getId()).put("trace.id", span.getTraceId()))
+            .build();
+    telemetryClient.sendBatch(new LogBatch(singleton(log), commonAttributes));
   }
 
   private static void sendSampleEvent(
@@ -65,7 +83,6 @@ public class TelemetryClientExample {
 
     MetricBuffer metricBuffer =
         MetricBuffer.builder()
-            .serviceName("Sample Service")
             .instrumentationProvider("Manual instrumentation")
             .attributes(commonAttributes)
             .build();
@@ -96,16 +113,17 @@ public class TelemetryClientExample {
     telemetryClient.sendBatch(batch);
   }
 
-  private static void sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
+  private static Span sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
     Span sampleSpan =
         Span.builder(UUID.randomUUID().toString())
             .timestamp(System.currentTimeMillis())
+            .traceId(UUID.randomUUID().toString())
             .durationMs(150d)
-            .serviceName("Test Service")
             .name("testSpan")
             .build();
     String traceId = UUID.randomUUID().toString();
     SpanBatch spanBatch = new SpanBatch(singleton(sampleSpan), commonAttributes, traceId);
     telemetryClient.sendBatch(spanBatch);
+    return sampleSpan;
   }
 }

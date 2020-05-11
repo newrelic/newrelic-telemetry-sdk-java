@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -53,7 +53,7 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(metricBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -66,7 +66,7 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(spanBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(null, batchSender, null);
+    TelemetryClient testClass = new TelemetryClient(null, batchSender, null, logBatchSender);
 
     testClass.sendBatch(spanBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -79,7 +79,7 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(eventBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(null, null, batchSender);
+    TelemetryClient testClass = new TelemetryClient(null, null, batchSender, logBatchSender);
 
     testClass.sendBatch(eventBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -101,7 +101,7 @@ class TelemetryClientTest {
         .thenAnswer(requestRetry)
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(10, TimeUnit.SECONDS);
@@ -119,7 +119,7 @@ class TelemetryClientTest {
             })
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -153,7 +153,7 @@ class TelemetryClientTest {
               return null;
             });
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
 
     testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);

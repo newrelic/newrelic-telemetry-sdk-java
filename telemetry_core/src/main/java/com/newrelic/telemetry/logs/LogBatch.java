@@ -9,6 +9,7 @@ import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.TelemetryBatch;
 import java.util.Collection;
 
+/** Represents a set of {@link Log} instances, to be sent up to the New Relic Logging API. */
 public class LogBatch extends TelemetryBatch<Log> {
   public LogBatch(Collection<Log> telemetry, Attributes commonAttributes) {
     super(telemetry, commonAttributes);

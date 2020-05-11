@@ -11,6 +11,8 @@ import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
+import com.newrelic.telemetry.logs.LogBatch;
+import com.newrelic.telemetry.logs.LogBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.SpanBatch;
@@ -38,6 +40,8 @@ public class TelemetryClient {
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
+  private final LogBatchSender logBatchSender;
+
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
   /**
@@ -46,15 +50,18 @@ public class TelemetryClient {
    *
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
-   * @param eventBatchSender The sender for custom events
+   * @param eventBatchSender The sender for custom events.
+   * @param logBatchSender The sender for log entries.
    */
   public TelemetryClient(
       MetricBatchSender metricBatchSender,
       SpanBatchSender spanBatchSender,
-      EventBatchSender eventBatchSender) {
+      EventBatchSender eventBatchSender,
+      LogBatchSender logBatchSender) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;
+    this.logBatchSender = logBatchSender;
   }
 
   /**
@@ -68,7 +75,7 @@ public class TelemetryClient {
    */
   @Deprecated
   public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
-    this(metricBatchSender, spanBatchSender, null);
+    this(metricBatchSender, spanBatchSender, null, null);
   }
 
   private interface BatchSender {
@@ -76,8 +83,9 @@ public class TelemetryClient {
   }
 
   /**
-   * Send a batch of metrics, with standard retry logic. This happens on a background thread,
-   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
+   * Send a batch of {@link com.newrelic.telemetry.metrics.Metric} instances, with standard retry
+   * logic. This happens on a background thread, asynchronously, so currently there will be no
+   * feedback to the caller outside of the logs.
    */
   public void sendBatch(MetricBatch batch) {
     scheduleBatchSend(
@@ -85,20 +93,31 @@ public class TelemetryClient {
   }
 
   /**
-   * Send a batch of spans, with standard retry logic. This happens on a background thread,
-   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
+   * Send a batch of {@link com.newrelic.telemetry.spans.Span} instances, with standard retry logic.
+   * This happens on a background thread, asynchronously, so currently there will be no feedback to
+   * the caller outside of the logs.
    */
   public void sendBatch(SpanBatch batch) {
     scheduleBatchSend((b) -> spanBatchSender.sendBatch((SpanBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
   /**
-   * Send a batch of events, with standard retry logic. This happens on a background thread,
-   * asynchronously, so currently there will be no feedback to the caller outside of the logs.
+   * Send a batch of {@link com.newrelic.telemetry.events.Event} instances, with standard retry
+   * logic. This happens on a background thread, asynchronously, so currently there will be no
+   * feedback to the caller outside of the logs.
    */
   public void sendBatch(EventBatch batch) {
     scheduleBatchSend(
         (b) -> eventBatchSender.sendBatch((EventBatch) b), batch, 0, TimeUnit.SECONDS);
+  }
+
+  /**
+   * Send a batch of {@link com.newrelic.telemetry.logs.Log} entries, with standard retry logic.
+   * This happens on a background thread, asynchronously, so currently there will be no feedback to
+   * the caller outside of the logs.
+   */
+  public void sendBatch(LogBatch batch) {
+    scheduleBatchSend((b) -> logBatchSender.sendBatch((LogBatch) b), batch, 0, TimeUnit.SECONDS);
   }
 
   private void scheduleBatchSend(
@@ -201,6 +220,12 @@ public class TelemetryClient {
                 .configureWith(insertApiKey)
                 .build());
 
-    return new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
+    LogBatchSender logBatchSender =
+        LogBatchSender.create(
+            LogBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+                .configureWith(insertApiKey)
+                .build());
+    return new TelemetryClient(
+        metricBatchSender, spanBatchSender, eventBatchSender, logBatchSender);
   }
 }
