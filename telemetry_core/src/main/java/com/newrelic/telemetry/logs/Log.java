@@ -119,7 +119,7 @@ public class Log implements Telemetry {
   }
 
   /**
-   * A class for holding the variables associated with a Span object and creating a new Span object
+   * A class for holding the variables associated with a Log object and creating a new Log object
    * with those variables
    */
   public static class LogBuilder {
