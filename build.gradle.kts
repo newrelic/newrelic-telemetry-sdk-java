@@ -3,14 +3,11 @@ import com.newrelic.telemetry.gradle.configuredPom
 
 plugins {
     java
+    id("java-library")
+    id("maven-publish")
+    id("signing")
+    id("com.github.sherter.google-java-format") version "0.8"
 }
-
-apply(plugin = "java")
-apply(plugin = "java-library")
-apply(plugin = "maven-publish")
-apply(plugin = "signing")
-
-apply(plugin = "com.github.sherter.google-java-format")
 
 allprojects {
     group = "com.newrelic.telemetry"
@@ -50,8 +47,12 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11").forEach
 
             val jar: Jar by taskScope
             jar.apply {
-                manifest.attributes["Implementation-Version"] = project.version
-                manifest.attributes["Implementation-Vendor"] = "New Relic, Inc"
+                manifest {
+                    attributes(mapOf(
+                            "Implementation-Version" to project.version,
+                            "Implementation-Vendor" to "New Relic, Inc."
+                    ))
+                }
             }
         }
         val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
