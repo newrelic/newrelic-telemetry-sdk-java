@@ -4,10 +4,10 @@ import com.newrelic.telemetry.gradle.configuredPom
 
 plugins {
     java
+    id("java-library")
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
-apply(plugin = "java-library")
 apply(plugin = "maven-publish")
 apply(plugin = "signing")
 
@@ -25,9 +25,11 @@ configure<JavaPluginConvention> {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+configurations["shadow"].extendsFrom(configurations["api"])
+
 dependencies {
-    "api"("org.slf4j:slf4j-api:${Versions.slf4j}")
-    compile("com.google.code.gson:gson:${Versions.gson}")
+    api("org.slf4j:slf4j-api:${Versions.slf4j}")
+    implementation("com.google.code.gson:gson:${Versions.gson}")
 
     testImplementation("org.slf4j:slf4j-simple:${Versions.slf4j}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
@@ -50,9 +52,12 @@ val sourcesJar by tasks.creating(Jar::class) {
 
 tasks {
     "shadowJar"(ShadowJar::class) {
-        classifier = ""
+        archiveClassifier.set("")
         dependencies {
             exclude(dependency("org.slf4j:slf4j-api:${Versions.slf4j}"))
+        }
+        manifest {
+            attributes(mapOf("Implementation-Version" to project.version, "Implementation-Vendor" to "New Relic, Inc."))
         }
         relocate("com.google.gson", "com.newrelic.relocated")
         minimize()
