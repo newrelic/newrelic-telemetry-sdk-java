@@ -1,10 +1,15 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.newrelic.telemetry.gradle.configureRepositories
+import com.newrelic.telemetry.gradle.configuredPom
 
 plugins {
-    id("com.github.johnrengelman.shadow") version "5.1.0"
+    java
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
-apply(plugin = "com.github.johnrengelman.shadow")
+apply(plugin = "java-library")
+apply(plugin = "maven-publish")
+apply(plugin = "signing")
 
 private object Versions {
     const val junit = "5.3.1"
@@ -30,7 +35,17 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
     testImplementation("com.google.guava:guava:${Versions.guava}")
     testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
+}
 
+val javadocJar by tasks.creating(Jar::class) {
+    from(tasks["javadoc"])
+    archiveClassifier.set("javadoc")
+}
+
+val sourcesJar by tasks.creating(Jar::class) {
+    dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+    from(sourceSets["main"].allJava)
+    archiveClassifier.set("sources")
 }
 
 tasks {
@@ -45,4 +60,18 @@ tasks {
     build {
         dependsOn(shadowJar)
     }
+}
+
+val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
+
+configure<PublishingExtension> {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            project.shadow.component(this)
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            configuredPom(project)
+        }
+    }
+    configureRepositories(project, useLocalSonatype, "mavenJava")
 }
