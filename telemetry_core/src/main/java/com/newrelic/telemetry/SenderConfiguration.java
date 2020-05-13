@@ -83,11 +83,6 @@ public class SenderConfiguration {
       return this;
     }
 
-    /**
-     * Configure the {@link HttpPoster} implementation to use.
-     *
-     * @return this builder
-     */
     public SenderConfigurationBuilder httpPoster(HttpPoster httpPoster) {
       this.httpPoster = httpPoster;
       return this;
