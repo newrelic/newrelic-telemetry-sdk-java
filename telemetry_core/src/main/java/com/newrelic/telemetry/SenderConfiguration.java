@@ -57,7 +57,6 @@ public class SenderConfiguration {
     return new SenderConfigurationBuilder(defaultUrl, basePath);
   }
 
-  /** A builder for SenderConfiguration instances. */
   public static class SenderConfigurationBuilder {
 
     private final String defaultUrl;
