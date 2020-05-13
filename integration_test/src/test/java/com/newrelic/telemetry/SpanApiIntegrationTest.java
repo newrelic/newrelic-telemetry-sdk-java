@@ -15,7 +15,6 @@ import com.google.common.net.MediaType;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,7 @@ class SpanApiIntegrationTest {
         factory
             .configureWith("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
+            .endpoint("http", containerIpAddress, SERVICE_PORT)
             .auditLoggingEnabled(true)
             .secondaryUserAgent("myTestApp")
             .build();

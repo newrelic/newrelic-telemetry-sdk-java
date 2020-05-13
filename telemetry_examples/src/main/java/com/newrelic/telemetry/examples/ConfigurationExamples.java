@@ -15,7 +15,6 @@ import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -73,7 +72,7 @@ public class ConfigurationExamples {
                                 // configure custom stuff here, like proxies, etc.
                                 .build()))
                 .configureWith(insightsInsertKey)
-                .endpoint(URI.create("http://special-metrics.com"))
+                .endpoint("http", "special-metrics.com", 80)
                 .build());
 
     // Configure your span sender:
@@ -81,7 +80,7 @@ public class ConfigurationExamples {
         SpanBatchSender.create(
             SpanBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(insightsInsertKey)
-                .endpoint(URI.create("http://special-spans.com"))
+                .endpoint("https", "special-spans.com", 443)
                 .build());
 
     // Configure your event sender:
@@ -89,7 +88,7 @@ public class ConfigurationExamples {
         EventBatchSender.create(
             EventBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(insightsInsertKey)
-                .endpointUrl(new URL("http://special-spans.com/my-endpoint-rocks/v1/api"))
+                .endpointWithPath(new URL("http://special-events.com/my-endpoint-rocks/v1/api"))
                 .build());
 
     // Build your TelemetryClient with the 3 senders.

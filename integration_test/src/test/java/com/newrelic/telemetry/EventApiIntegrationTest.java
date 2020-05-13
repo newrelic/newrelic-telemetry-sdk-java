@@ -19,7 +19,6 @@ import com.newrelic.telemetry.exceptions.DiscardBatchException;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
-import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +77,7 @@ class EventApiIntegrationTest {
     SenderConfiguration config =
         factory
             .configureWith("fakeKey")
-            .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
+            .endpoint("http", containerIpAddress, SERVICE_PORT)
             .secondaryUserAgent("testApplication/1.0.0")
             .build();
     eventBatchSender = EventBatchSender.create(config);

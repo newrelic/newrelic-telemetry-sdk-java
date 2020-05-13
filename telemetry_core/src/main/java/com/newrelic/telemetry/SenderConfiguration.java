@@ -9,7 +9,6 @@ import com.newrelic.telemetry.http.HttpPoster;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 /** Configuration options for the various classes that send data to the New Relic ingest APIs. */
@@ -91,24 +90,26 @@ public class SenderConfiguration {
     /**
      * Configure the *full* endpoint URL for data to be sent to, including the path.
      *
-     * @param sendUrl A full {@link URL}, including the path.
+     * @param endpointUrl A full {@link URL}, including the path.
      * @return this builder.
      */
-    public SenderConfigurationBuilder endpointUrl(URL sendUrl) {
-      this.endpointUrl = sendUrl;
+    public SenderConfigurationBuilder endpointWithPath(URL endpointUrl) {
+      this.endpointUrl = endpointUrl;
       return this;
     }
 
     /**
-     * Configure the endpoint URL for data to be sent to, not including the path. If the path is
-     * provided, it will be replaced with the default path.
+     * Configure the endpoint for data to be sent to. The default path will be used.
      *
-     * @param endpointUri A {@link URI}, path will be ignored.
+     * @param scheme A valid URL scheme, such as "https"
+     * @param host The host portion of the URL.
+     * @param port The port portion of the URL.
      * @return this builder.
+     * @throws MalformedURLException If a valid URL cannot be constructed from the pieces provided.
      */
-    public SenderConfigurationBuilder endpoint(URI endpointUri) throws MalformedURLException {
-      this.endpointUrl = constructUrlWithHost(endpointUri);
-      return this;
+    public SenderConfigurationBuilder endpoint(String scheme, String host, int port)
+        throws MalformedURLException {
+      return endpointWithPath(new URL(scheme, host, port, basePath));
     }
 
     /**
@@ -123,7 +124,9 @@ public class SenderConfiguration {
     }
 
     /**
-     * Configure a secondary User-Agent value to use when sending data.
+     * Configure a secondary User-Agent value to use when sending data. This will be appended to the
+     * default User-Agent that the SDK sends, and is useful for monitoring various sources of data
+     * coming into the New Relic systems.
      *
      * @return this builder.
      */
@@ -140,13 +143,11 @@ public class SenderConfiguration {
     private URL getOrDefaultSendUrl() {
       try {
         if (endpointUrl != null) {
-          return endpointUrl.toURI().resolve(basePath).toURL();
+          return endpointUrl;
         }
         return constructUrlWithHost(URI.create(defaultUrl));
       } catch (MalformedURLException e) {
         throw new UncheckedIOException("Bad Hardcoded URL " + defaultUrl, e);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException("Bad URL", e);
       }
     }
 
