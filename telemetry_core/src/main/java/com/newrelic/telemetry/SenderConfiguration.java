@@ -68,7 +68,6 @@ public class SenderConfiguration {
     private boolean auditLoggingEnabled = false;
     private String secondaryUserAgent;
 
-    /** Create a new Builder, with the default URL and base path. */
     public SenderConfigurationBuilder(String defaultUrl, String basePath) {
       this.defaultUrl = defaultUrl;
       this.basePath = basePath;
