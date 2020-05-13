@@ -132,7 +132,6 @@ public class SenderConfiguration {
       return this;
     }
 
-    /** Create the resulting SenderConfiguration. */
     public SenderConfiguration build() {
       return new SenderConfiguration(
           apiKey, httpPoster, getOrDefaultSendUrl(), auditLoggingEnabled, secondaryUserAgent);
