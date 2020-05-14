@@ -41,7 +41,7 @@ public class SpanBatchSenderBuilder {
    * @throws MalformedURLException This is thrown when the provided URI is malformed.
    */
   public SpanBatchSenderBuilder uriOverride(URI uriOverride) throws MalformedURLException {
-    configBuilder.endpointUrl(configBuilder.constructUrlWithHost(uriOverride));
+    configBuilder.endpointWithPath(configBuilder.constructUrlWithHost(uriOverride));
     return this;
   }
 

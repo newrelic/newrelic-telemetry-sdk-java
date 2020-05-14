@@ -40,7 +40,7 @@ public class MetricBatchSenderBuilder {
    * @throws MalformedURLException This is thrown when the provided URI is malformed.
    */
   public MetricBatchSenderBuilder uriOverride(URI uriOverride) throws MalformedURLException {
-    configBuilder.endpointUrl(configBuilder.constructUrlWithHost(uriOverride));
+    configBuilder.endpointWithPath(configBuilder.constructUrlWithHost(uriOverride));
     return this;
   }
 

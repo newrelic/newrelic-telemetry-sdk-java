@@ -23,7 +23,6 @@ import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBuffer;
 import com.newrelic.telemetry.metrics.Summary;
-import java.net.URI;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -80,8 +79,8 @@ class MetricApiIntegrationTest {
         MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration config =
         factory
-            .configureWith("fakeKey", Duration.ofMillis(1500))
-            .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
+            .configureWith("fakeKey")
+            .endpoint("http", containerIpAddress, SERVICE_PORT)
             .secondaryUserAgent("testApplication/1.0.0")
             .build();
     metricBatchSender = MetricBatchSender.create(config);

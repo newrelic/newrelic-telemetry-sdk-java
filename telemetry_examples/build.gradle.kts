@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import com.newrelic.telemetry.gradle.exampleClassTask
 
 private object Versions {
@@ -13,6 +18,7 @@ apply(plugin = "java-library")
 dependencies {
     implementation(project(":telemetry"))
     implementation(project(":telemetry-http-okhttp"))
+    implementation(project(":telemetry-http-java11"))
     runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
 }
 

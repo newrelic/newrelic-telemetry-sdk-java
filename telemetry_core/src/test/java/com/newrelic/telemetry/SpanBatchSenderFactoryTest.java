@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.newrelic.telemetry.http.HttpPoster;
 import org.junit.jupiter.api.Test;
 
-class MetricBatchSenderFactoryTest {
+class SpanBatchSenderFactoryTest {
 
   @Test
   void testBuilders() {
     HttpPoster h = (url, headers, body, mediaType) -> null;
-    MetricBatchSenderFactory f = () -> h;
+    SpanBatchSenderFactory f = () -> h;
 
     assertNotNull(f.configureWith("abc123"));
     assertNotNull(f.createBatchSender("abc123"));

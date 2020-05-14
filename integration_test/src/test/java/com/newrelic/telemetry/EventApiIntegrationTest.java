@@ -15,8 +15,10 @@ import com.google.common.net.MediaType;
 import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.events.EventBuffer;
-import com.newrelic.telemetry.exceptions.*;
-import java.net.URI;
+import com.newrelic.telemetry.exceptions.DiscardBatchException;
+import com.newrelic.telemetry.exceptions.ResponseException;
+import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
+import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -74,8 +76,8 @@ class EventApiIntegrationTest {
         EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     SenderConfiguration config =
         factory
-            .configureWith("fakeKey", Duration.ofMillis(1500))
-            .endpointUrl(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT).toURL())
+            .configureWith("fakeKey")
+            .endpoint("http", containerIpAddress, SERVICE_PORT)
             .secondaryUserAgent("testApplication/1.0.0")
             .build();
     eventBatchSender = EventBatchSender.create(config);

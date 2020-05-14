@@ -4,13 +4,10 @@
  */
 package com.newrelic.telemetry;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
-import java.time.Duration;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * A factory interface for creating a MetricBatchSender.
@@ -28,20 +25,8 @@ public interface MetricBatchSenderFactory {
    *     Relic API Keys</a>
    */
   default MetricBatchSender createBatchSender(String apiKey) {
-    return createBatchSender(apiKey, Duration.of(2, SECONDS));
-  }
-
-  /**
-   * Create a new MetricBatchSender with your New Relic Insights Insert API key and a custom http
-   * timeout; Otherwise default settings. (audit logging off and with the default endpoint URL)
-   *
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
-   */
-  default MetricBatchSender createBatchSender(String apiKey, Duration callTimeout) {
     SenderConfigurationBuilder configuration =
-        MetricBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster(callTimeout));
+        MetricBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster());
     return MetricBatchSender.create(configuration.build());
   }
 
@@ -53,26 +38,18 @@ public interface MetricBatchSenderFactory {
    *     Relic API Keys</a>
    */
   default SenderConfigurationBuilder configureWith(String apiKey) {
-    return configureWith(apiKey, Duration.ofSeconds(2));
+    return MetricBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster());
   }
+
+  HttpPoster getPoster();
 
   /**
-   * Create a new MetricBatchSenderBuilder with your New Relic Insights Insert API key and a custom
-   * http timeout.
+   * Create an {@link MetricBatchSenderFactory} with an HTTP implementation.
    *
-   * @see <a
-   *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
-   *     Relic API Keys</a>
+   * @param creator A {@link Supplier} that returns an {@link HttpPoster} implementation.
+   * @return A Factory configured for use.
    */
-  default SenderConfigurationBuilder configureWith(String apiKey, Duration callTimeout) {
-    return MetricBatchSender.configurationBuilder()
-        .apiKey(apiKey)
-        .httpPoster(getPoster(callTimeout));
-  }
-
-  HttpPoster getPoster(Duration callTimeout);
-
-  static MetricBatchSenderFactory fromHttpImplementation(Function<Duration, HttpPoster> lambda) {
-    return duration -> lambda.apply(duration);
+  static MetricBatchSenderFactory fromHttpImplementation(Supplier<HttpPoster> creator) {
+    return creator::get;
   }
 }

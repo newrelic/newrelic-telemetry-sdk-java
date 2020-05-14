@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.examples;
@@ -7,6 +7,7 @@ package com.newrelic.telemetry.examples;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.MetricBatchSenderFactory;
 import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBuffer;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * The purpose of this example is to demonstrate sending Gauge metrics to New Relic.
@@ -36,7 +38,7 @@ public class GaugeExample {
     String insightsInsertKey = args[0];
 
     MetricBatchSenderFactory factory =
-        MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+        MetricBatchSenderFactory.fromHttpImplementation((Supplier<HttpPoster>) OkHttpPoster::new);
     MetricBatchSender sender =
         MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
 

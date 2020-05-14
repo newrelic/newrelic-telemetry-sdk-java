@@ -9,9 +9,9 @@ import com.newrelic.telemetry.http.HttpPoster;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
+/** Configuration options for the various classes that send data to the New Relic ingest APIs. */
 public class SenderConfiguration {
   private final String apiKey;
   private final HttpPoster httpPoster;
@@ -72,6 +72,11 @@ public class SenderConfiguration {
       this.basePath = basePath;
     }
 
+    /**
+     * Configure the New Relic Insert API key to use.
+     *
+     * @return this builder;
+     */
     public SenderConfigurationBuilder apiKey(String apiKey) {
       this.apiKey = apiKey;
       return this;
@@ -82,16 +87,49 @@ public class SenderConfiguration {
       return this;
     }
 
-    public SenderConfigurationBuilder endpointUrl(URL sendUrl) {
-      this.endpointUrl = sendUrl;
+    /**
+     * Configure the *full* endpoint URL for data to be sent to, including the path.
+     *
+     * @param endpointUrl A full {@link URL}, including the path.
+     * @return this builder.
+     */
+    public SenderConfigurationBuilder endpointWithPath(URL endpointUrl) {
+      this.endpointUrl = endpointUrl;
       return this;
     }
 
+    /**
+     * Configure the endpoint for data to be sent to. The default path will be used.
+     *
+     * @param scheme A valid URL scheme, such as "https"
+     * @param host The host portion of the URL.
+     * @param port The port portion of the URL.
+     * @return this builder.
+     * @throws MalformedURLException If a valid URL cannot be constructed from the pieces provided.
+     */
+    public SenderConfigurationBuilder endpoint(String scheme, String host, int port)
+        throws MalformedURLException {
+      return endpointWithPath(new URL(scheme, host, port, basePath));
+    }
+
+    /**
+     * Configure whether audit logging is enabled. Note: audit logging will log all data payloads
+     * sent to New Relic at DEBUG level, in plain text.
+     *
+     * @return this builder.
+     */
     public SenderConfigurationBuilder auditLoggingEnabled(boolean auditLoggingEnabled) {
       this.auditLoggingEnabled = auditLoggingEnabled;
       return this;
     }
 
+    /**
+     * Configure a secondary User-Agent value to use when sending data. This will be appended to the
+     * default User-Agent that the SDK sends, and is useful for monitoring various sources of data
+     * coming into the New Relic systems.
+     *
+     * @return this builder.
+     */
     public SenderConfigurationBuilder secondaryUserAgent(String secondaryUserAgent) {
       this.secondaryUserAgent = secondaryUserAgent;
       return this;
@@ -105,13 +143,11 @@ public class SenderConfiguration {
     private URL getOrDefaultSendUrl() {
       try {
         if (endpointUrl != null) {
-          return endpointUrl.toURI().resolve(basePath).toURL();
+          return endpointUrl;
         }
         return constructUrlWithHost(URI.create(defaultUrl));
       } catch (MalformedURLException e) {
         throw new UncheckedIOException("Bad Hardcoded URL " + defaultUrl, e);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException("Bad URL", e);
       }
     }
 
