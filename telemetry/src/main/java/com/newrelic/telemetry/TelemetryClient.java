@@ -45,8 +45,8 @@ public class TelemetryClient {
   private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
   /**
-   * Create a new TelemetryClient instance, with three senders. Note that if you don't intend to
-   * send one of the telemetry types, you can pass in a null value for that sender.
+   * Create a new TelemetryClient instance, with four senders. Note that if you don't intend to send
+   * one of the telemetry types, you can pass in a null value for that sender.
    *
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
@@ -204,25 +204,25 @@ public class TelemetryClient {
       Supplier<HttpPoster> httpPosterCreator, String insertApiKey) {
     MetricBatchSender metricBatchSender =
         MetricBatchSender.create(
-            MetricBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+            MetricBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
                 .configureWith(insertApiKey)
                 .build());
 
     SpanBatchSender spanBatchSender =
         SpanBatchSender.create(
-            SpanBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+            SpanBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
                 .configureWith(insertApiKey)
                 .build());
 
     EventBatchSender eventBatchSender =
         EventBatchSender.create(
-            EventBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+            EventBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
                 .configureWith(insertApiKey)
                 .build());
 
     LogBatchSender logBatchSender =
         LogBatchSender.create(
-            LogBatchSenderFactory.fromHttpImplementation(httpPosterCreator::get)
+            LogBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
                 .configureWith(insertApiKey)
                 .build());
     return new TelemetryClient(
