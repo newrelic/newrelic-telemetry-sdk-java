@@ -16,6 +16,9 @@ import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.logs.Log;
+import com.newrelic.telemetry.logs.LogBatch;
+import com.newrelic.telemetry.logs.LogBatchSender;
 import com.newrelic.telemetry.metrics.Count;
 import com.newrelic.telemetry.metrics.Metric;
 import com.newrelic.telemetry.metrics.MetricBatch;
@@ -39,12 +42,14 @@ class TelemetryClientTest {
   private MetricBatch metricBatch;
   private SpanBatch spanBatch;
   private EventBatch eventBatch;
+  private LogBatch logBatch;
 
   @BeforeEach
   void setup() {
     metricBatch = makeBatch(singleton(makeMetric()));
     spanBatch = new SpanBatch(singleton(makeSpan()), new Attributes().put("foo", "bar"));
     eventBatch = new EventBatch(singleton(makeEvent()));
+    logBatch = new LogBatch(singleton(makeLog()), new Attributes().put("foo", "bar"));
   }
 
   @Test
@@ -53,7 +58,7 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(metricBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, null);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -66,7 +71,7 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(spanBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(null, batchSender, null, logBatchSender);
+    TelemetryClient testClass = new TelemetryClient(null, batchSender, null, null);
 
     testClass.sendBatch(spanBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -79,9 +84,22 @@ class TelemetryClientTest {
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(eventBatch)).thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(null, null, batchSender, logBatchSender);
+    TelemetryClient testClass = new TelemetryClient(null, null, batchSender, null);
 
     testClass.sendBatch(eventBatch);
+    boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    assertTrue(result);
+  }
+
+  @Test
+  void sendLogsHappyPath() throws Exception {
+    LogBatchSender batchSender = mock(LogBatchSender.class);
+    CountDownLatch sendLatch = new CountDownLatch(1);
+    when(batchSender.sendBatch(logBatch)).thenAnswer(countDown(sendLatch));
+
+    TelemetryClient testClass = new TelemetryClient(null, null, null, batchSender);
+
+    testClass.sendBatch(logBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
     assertTrue(result);
   }
@@ -101,7 +119,7 @@ class TelemetryClientTest {
         .thenAnswer(requestRetry)
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, null);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(10, TimeUnit.SECONDS);
@@ -119,7 +137,7 @@ class TelemetryClientTest {
             })
         .thenAnswer(countDown(sendLatch));
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, null);
 
     testClass.sendBatch(metricBatch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -153,7 +171,7 @@ class TelemetryClientTest {
               return null;
             });
 
-    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, logBatchSender);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, null);
 
     testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
@@ -192,6 +210,10 @@ class TelemetryClientTest {
 
   private static Event makeEvent() {
     return new Event("JITStuff", new Attributes().put("class", "my.Foo"));
+  }
+
+  private Log makeLog() {
+    return Log.builder().message("starting").build();
   }
 
   private MetricBatch makeBatch(Collection<Metric> metrics) {
