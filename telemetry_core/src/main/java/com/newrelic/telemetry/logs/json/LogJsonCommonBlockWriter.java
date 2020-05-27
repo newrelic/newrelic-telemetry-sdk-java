@@ -28,7 +28,7 @@ public class LogJsonCommonBlockWriter {
       jsonWriter.jsonValue(attributesJson.toJson(batch.getCommonAttributes().asMap()));
       jsonWriter.endObject();
     } catch (IOException e) {
-      throw new RuntimeException("Failed to create span common block json", e);
+      throw new RuntimeException("Failed to create log common block json", e);
     }
   }
 
