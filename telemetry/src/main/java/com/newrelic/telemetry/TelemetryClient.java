@@ -38,7 +38,11 @@ public class TelemetryClient {
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
-  private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+  private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> {
+    Thread thread = new Thread(r);
+    thread.setDaemon(true);
+    return thread;
+  });
 
   /**
    * Create a new TelemetryClient instance, with three senders. Note that if you don't intend to
