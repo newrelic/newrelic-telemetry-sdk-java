@@ -62,8 +62,9 @@ public class LogExample {
         logs.add(
             Log.builder()
                 .attributes(attributes)
+                .message("Failed to process " + item)
                 .level("ERROR")
-                .stackTrace(makeException(item))
+                .throwable(makeException(item))
                 .build());
       }
       logs.add(

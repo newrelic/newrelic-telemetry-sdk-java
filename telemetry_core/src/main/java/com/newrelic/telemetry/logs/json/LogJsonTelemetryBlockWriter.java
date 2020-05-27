@@ -8,7 +8,9 @@ import com.google.gson.stream.JsonWriter;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.logs.Log;
 import com.newrelic.telemetry.logs.LogBatch;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,16 +45,17 @@ public final class LogJsonTelemetryBlockWriter {
     Map<String, Object> result = new HashMap<>(log.getAttributes().asMap());
     result.putIfAbsent("service.name", log.getServiceName());
     if (log.getLevel() != null) {
-      result.put("level", log.getLevel());
+      result.put("log.level", log.getLevel());
     }
-    if (log.getLogType() != null) {
-      result.put("logtype", log.getLogType());
+    Throwable throwable = log.getThrowable();
+    if (throwable != null) {
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      throwable.printStackTrace(new PrintStream(bytes));
+      result.put("error.message", throwable.getMessage());
+      result.put("error.class", throwable.getClass().getName());
+      result.put("error.stack", bytes.toString());
     }
     return result;
-  }
-
-  public AttributesJson getAttributesJson() {
-    return attributesJson;
   }
 
   @Override

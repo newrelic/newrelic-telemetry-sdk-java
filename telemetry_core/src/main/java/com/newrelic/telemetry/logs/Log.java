@@ -8,8 +8,6 @@ package com.newrelic.telemetry.logs;
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.util.Utils;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 /** A Log instance represents a single entry in a log. */
 public class Log implements Telemetry {
@@ -17,16 +15,16 @@ public class Log implements Telemetry {
   private final String message;
   private final Attributes attributes;
   private final String serviceName; // service.name <- goes in attributes
-  private final String logType;
   private final String level;
+  private final Throwable throwable;
 
-  private Log(LogBuilder builder) {
+  private Log(LogBuilder builder, Throwable throwable) {
     this.timestamp = builder.timestamp;
     this.message = builder.message;
     this.attributes = builder.attributes;
     this.serviceName = builder.serviceName;
-    this.logType = builder.logType;
     this.level = builder.level;
+    this.throwable = throwable;
   }
 
   /** The point in time (ms since UNIX epoch) that the log entry was created. */
@@ -47,11 +45,6 @@ public class Log implements Telemetry {
   /** The name of the service which produced this log entry. */
   public String getServiceName() {
     return serviceName;
-  }
-
-  /** The type of log entry. This can be helpful for querying your log entries in New Relic. */
-  public String getLogType() {
-    return logType;
   }
 
   /** The log level (eg. INFO, DEBUG, etc) for the log entry. */
@@ -87,10 +80,10 @@ public class Log implements Telemetry {
     if (serviceName != null ? !serviceName.equals(log.serviceName) : log.serviceName != null) {
       return false;
     }
-    if (logType != null ? !logType.equals(log.logType) : log.logType != null) {
+    if (level != null ? !level.equals(log.level) : log.level != null) {
       return false;
     }
-    return level != null ? level.equals(log.level) : log.level == null;
+    return throwable != null ? throwable.equals(log.throwable) : log.throwable == null;
   }
 
   @Override
@@ -99,8 +92,8 @@ public class Log implements Telemetry {
     result = 31 * result + (message != null ? message.hashCode() : 0);
     result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
     result = 31 * result + (serviceName != null ? serviceName.hashCode() : 0);
-    result = 31 * result + (logType != null ? logType.hashCode() : 0);
     result = 31 * result + (level != null ? level.hashCode() : 0);
+    result = 31 * result + (throwable != null ? throwable.hashCode() : 0);
     return result;
   }
 
@@ -117,13 +110,16 @@ public class Log implements Telemetry {
         + ", serviceName='"
         + serviceName
         + '\''
-        + ", logType='"
-        + logType
-        + '\''
         + ", level='"
         + level
         + '\''
+        + ", throwable="
+        + throwable
         + '}';
+  }
+
+  public Throwable getThrowable() {
+    return throwable;
   }
 
   /**
@@ -135,8 +131,8 @@ public class Log implements Telemetry {
     private String message;
     private Attributes attributes = new Attributes();
     private String serviceName; // service.name <- goes in attributes
-    private String logType; // logtype <- goes in attributes
     private String level;
+    private Throwable throwable;
 
     /** The point in time (ms since UNIX epoch) that the log entry was created. */
     public LogBuilder timestamp(long timestamp) {
@@ -168,28 +164,15 @@ public class Log implements Telemetry {
       return this;
     }
 
-    /** The type of log entry. This can be helpful for querying your log entries in New Relic. */
-    public LogBuilder logType(String type) {
-      this.logType = type;
-      return this;
-    }
-
     /** Create the new {@link Log} entry. */
     public Log build() {
-      Utils.verifyNonBlank(message, "A message is required for a log entry");
-      return new Log(this);
+      return new Log(this, throwable);
     }
 
-    /**
-     * Will fill in the {@link #message(String)} with the stack trace from the Throwable. This will
-     * also set the {@link #logType(String)} to be "stackTrace".
-     */
-    public LogBuilder stackTrace(Throwable e) {
+    /** Will assign a throwable to the log entry. */
+    public LogBuilder throwable(Throwable e) {
       Utils.verifyNonNull(e);
-      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      e.printStackTrace(new PrintStream(bytes));
-      this.message = bytes.toString();
-      this.logType = "stackTrace";
+      this.throwable = e;
       return this;
     }
 
@@ -206,6 +189,11 @@ public class Log implements Telemetry {
           + ", serviceName='"
           + serviceName
           + '\''
+          + ", level='"
+          + level
+          + '\''
+          + ", throwable="
+          + throwable
           + '}';
     }
   }
