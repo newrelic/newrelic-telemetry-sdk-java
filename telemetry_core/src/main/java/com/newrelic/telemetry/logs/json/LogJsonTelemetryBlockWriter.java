@@ -32,7 +32,9 @@ public final class LogJsonTelemetryBlockWriter {
         jsonWriter.beginObject();
         jsonWriter.name("timestamp").value(log.getTimestamp());
         jsonWriter.name("attributes").jsonValue(attributesJson.toJson(enhanceAttributes(log)));
-        jsonWriter.name("message").value(log.getMessage());
+        if (log.getMessage() != null) {
+          jsonWriter.name("message").value(log.getMessage());
+        }
         jsonWriter.endObject();
       }
       jsonWriter.endArray();
