@@ -30,7 +30,7 @@ public class EventBatchSender {
   private final EventBatchMarshaller marshaller;
   private final BatchDataSender sender;
 
-  public EventBatchSender(EventBatchMarshaller marshaller, BatchDataSender sender) {
+  EventBatchSender(EventBatchMarshaller marshaller, BatchDataSender sender) {
     this.marshaller = marshaller;
     this.sender = sender;
   }
