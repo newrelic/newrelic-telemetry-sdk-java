@@ -6,12 +6,14 @@ package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.EventBatchSenderFactory;
 import com.newrelic.telemetry.Java11HttpPoster;
+import com.newrelic.telemetry.LogBatchSenderFactory;
 import com.newrelic.telemetry.MetricBatchSenderFactory;
 import com.newrelic.telemetry.OkHttpPoster;
 import com.newrelic.telemetry.SimpleMetricBatchSender;
 import com.newrelic.telemetry.SpanBatchSenderFactory;
 import com.newrelic.telemetry.TelemetryClient;
 import com.newrelic.telemetry.events.EventBatchSender;
+import com.newrelic.telemetry.logs.LogBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.MalformedURLException;
@@ -32,7 +34,7 @@ public class ConfigurationExamples {
             .apiKey(insightsInsertKey)
             .httpPoster(new OkHttpPoster(Duration.ofSeconds(2)))
             .build();
-    new TelemetryClient(sender, null, null);
+    new TelemetryClient(sender, null, null, null);
 
     // new configuration methods:
     /////////////////////////////////////////////////////////////////////
@@ -91,7 +93,14 @@ public class ConfigurationExamples {
                 .endpointWithPath(new URL("http://special-events.com/my-endpoint-rocks/v1/api"))
                 .build());
 
+    // Configure your log sender:
+    LogBatchSender logBatchSender =
+        LogBatchSender.create(
+            LogBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
+                .configureWith(insightsInsertKey)
+                .build());
+
     // Build your TelemetryClient with the 3 senders.
-    new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender);
+    new TelemetryClient(metricBatchSender, spanBatchSender, eventBatchSender, logBatchSender);
   }
 }
