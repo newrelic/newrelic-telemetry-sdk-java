@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enable adding additional user agent information to the HTTP requests made by the SDK.
 
 ## [0.6.0] - 2020-05-28
-- Add support for Logs data type
+- Add initial preliminary support for Logs data type
 - Simplified creation TelemetryClient and friends
 - Remove hard gson dependency in a way that is compatible with other versions of gson
 
