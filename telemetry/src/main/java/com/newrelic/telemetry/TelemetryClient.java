@@ -46,6 +46,7 @@ public class TelemetryClient {
     thread.setDaemon(true);
     return thread;
   });
+  private final long shutdownSeconds = 3;
 
   /**
    * Create a new TelemetryClient instance, with four senders. Note that if you don't intend to send
@@ -194,6 +195,14 @@ public class TelemetryClient {
   public void shutdown() {
     LOG.info("Shutting down the TelemetryClient background Executor");
     executor.shutdown();
+    try {
+      if (!executor.awaitTermination(shutdownSeconds, TimeUnit.SECONDS)) {
+        LOG.warn("couldn't shutdown within timeout");
+        executor.shutdownNow();
+      }
+    } catch (InterruptedException e) {
+        LOG.error("interrupted graceful shutdown", e);
+    }
   }
 
   /**
