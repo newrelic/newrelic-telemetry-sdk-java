@@ -22,6 +22,12 @@ dependencies {
     runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")
 }
 
+tasks {
+    javadoc {
+        options.encoding = "UTF-8"
+    }
+}
+
 exampleClassTask("com.newrelic.telemetry.count.CountExample")
 exampleClassTask("com.newrelic.telemetry.gauge.GaugeExample")
 exampleClassTask("com.newrelic.telemetry.summary.SummaryExample")
