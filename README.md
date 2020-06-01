@@ -1,10 +1,17 @@
 # New Relic Java Telemetry SDK 
-The New Relic Java Telemetry SDK for sending telemetry data to New Relic.
-The current SDK supports sending dimensional metrics and spans to the Metric and Trace API, respectively.
+The New Relic Java Telemetry SDK is an easy way to send data to New Relic.
+The SDK currently supports sending the MELT telemetry data types 
+(Metrics, Events, Logs, and Traces) 
+via the following APIs:
+
+* [Metric API](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/metric-api/report-metrics-metric-api) - for dimensional metrics 
+* [Trace API](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/trace-api/introduction-trace-api) - for building up traces with spans
+* [Events API](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/introduction-event-api) - for custom events
+* [Log API](https://docs.newrelic.com/docs/logs/new-relic-logs/log-api/introduction-log-api) - for log data
 
 Why is this cool?
 
-Dimensional metrics and spans in New Relic! No agent required. 
+Send data to New Relic! No agent required. 
 
 Our [Telemetry SDK](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/new-relic-sdks/telemetry-sdks-send-custom-telemetry-data-new-relic) tries to be helpful, so your job of sending telemetry data to New Relic can be done in the right way, easily. We've covered all of the basics for you so you can focus on writing feature code directly related to your business need or interest.
 
