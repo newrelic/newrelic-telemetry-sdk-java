@@ -1,7 +1,7 @@
 # New Relic Java Telemetry SDK 
 The New Relic Java Telemetry SDK is an easy way to send data to New Relic.
 The SDK currently supports sending the MELT telemetry data types 
-(metrics, events, logs, and traces) 
+(Metrics, Events, Logs, and Traces) 
 via the following APIs:
 
 * [Metric API](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/metric-api/report-metrics-metric-api) - for dimensional metrics 
