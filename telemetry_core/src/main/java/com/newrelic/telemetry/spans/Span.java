@@ -253,8 +253,7 @@ public final class Span implements Telemetry {
     }
 
     /**
-     * Call this to indicate that the span contains an error condition
-     * with the given message.
+     * Call this to indicate that the span contains an error condition with the given message.
      *
      * @param errorMessage The error message to be placed into the "error.message" attribute
      * @return The SpanBuilder instance with the error field set to true
@@ -264,8 +263,8 @@ public final class Span implements Telemetry {
     }
 
     /**
-     * Call this to indicate that the span contains an error condition
-     * with the given message and class.
+     * Call this to indicate that the span contains an error condition with the given message and
+     * class.
      *
      * @param errorMessage The error message to be placed into the "error.message" attribute
      * @param errorClass The error class to be placed into the "error.class" attribute
@@ -273,10 +272,10 @@ public final class Span implements Telemetry {
      */
     public SpanBuilder withError(String errorMessage, String errorClass) {
       this.error = true;
-      if(errorMessage != null) {
+      if (errorMessage != null) {
         attributes.put("error.message", errorMessage);
       }
-      if(errorClass != null){
+      if (errorClass != null) {
         attributes.put("error.class", errorClass);
       }
       return this;
