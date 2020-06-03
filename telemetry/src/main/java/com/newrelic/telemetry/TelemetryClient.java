@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
+  private static final long DEFAULT_SHUTDOWN_SECONDS = 3L;
 
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
@@ -62,11 +63,12 @@ public class TelemetryClient {
       SpanBatchSender spanBatchSender,
       EventBatchSender eventBatchSender,
       LogBatchSender logBatchSender) {
-    this.metricBatchSender = metricBatchSender;
-    this.spanBatchSender = spanBatchSender;
-    this.eventBatchSender = eventBatchSender;
-    this.logBatchSender = logBatchSender;
-    this.shutdownSeconds = 3L;
+    this(
+        metricBatchSender,
+        spanBatchSender,
+        eventBatchSender,
+        logBatchSender,
+        DEFAULT_SHUTDOWN_SECONDS);
   }
 
   /**
@@ -223,7 +225,8 @@ public class TelemetryClient {
         executor.shutdownNow();
       }
     } catch (InterruptedException e) {
-        LOG.error("interrupted graceful shutdown", e);
+      Thread.currentThread().interrupt();
+      LOG.error("interrupted graceful shutdown", e);
     }
   }
 
