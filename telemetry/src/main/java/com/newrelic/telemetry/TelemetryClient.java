@@ -37,17 +37,14 @@ public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
   private static final long DEFAULT_SHUTDOWN_SECONDS = 3L;
+  private static final boolean DEFAULT_IS_DAEMON = true;
 
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
-  private final LogBatchSender logBatchSender;
-  private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> {
-    Thread thread = new Thread(r);
-    thread.setDaemon(true);
-    return thread;
-  });
+  private final ScheduledExecutorService executor;
   private final long shutdownSeconds;
+  private final LogBatchSender logBatchSender;
 
   /**
    * Create a new TelemetryClient instance, with four senders. Note that if you don't intend to send
@@ -68,7 +65,8 @@ public class TelemetryClient {
         spanBatchSender,
         eventBatchSender,
         logBatchSender,
-        DEFAULT_SHUTDOWN_SECONDS);
+        DEFAULT_SHUTDOWN_SECONDS,
+        DEFAULT_IS_DAEMON);
   }
 
   /**
@@ -78,18 +76,21 @@ public class TelemetryClient {
    * @param spanBatchSender The sender for distributed tracing spans.
    * @param eventBatchSender The sender for custom events
    * @param shutdownSeconds num of seconds to wait for graceful shutdown of its executor
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
    */
   public TelemetryClient(
       MetricBatchSender metricBatchSender,
       SpanBatchSender spanBatchSender,
       EventBatchSender eventBatchSender,
       LogBatchSender logBatchSender,
-      long shutdownSeconds) {
+      long shutdownSeconds,
+      boolean useDaemonThread) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;
     this.logBatchSender = logBatchSender;
     this.shutdownSeconds = shutdownSeconds;
+    this.executor = buildExecutorService(useDaemonThread);
   }
 
   /**
@@ -264,5 +265,20 @@ public class TelemetryClient {
                 .build());
     return new TelemetryClient(
         metricBatchSender, spanBatchSender, eventBatchSender, logBatchSender);
+  }
+
+
+  /**
+   * Create ScheduledExecutorService from a parameter given by constructor
+   *
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   * @return ScheduledExecutorService
+   */
+  private static ScheduledExecutorService buildExecutorService(boolean useDaemonThread) {
+    return Executors.newSingleThreadScheduledExecutor(r -> {
+      Thread thread = new Thread(r);
+      thread.setDaemon(useDaemonThread);
+      return thread;
+    });
   }
 }
