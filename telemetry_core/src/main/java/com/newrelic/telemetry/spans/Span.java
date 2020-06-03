@@ -178,7 +178,8 @@ public final class Span implements Telemetry {
 
     /**
      * @param attributes Dimensional attributes as key-value pairs, associated with the Span object
-     *     to be created. See {@link Attributes}
+     *     to be created. See {@link Attributes}. Note: This replaces all attributes that exist on
+     *     the builder, including those that may have been set via the withError() methods.
      * @return The SpanBuilder object with its attributes variable set to the given attributes
      *     object
      */
@@ -253,7 +254,8 @@ public final class Span implements Telemetry {
     }
 
     /**
-     * Call this to indicate that the span contains an error condition with the given message.
+     * Call this to indicate that the span contains an error condition with the given message. If
+     * attributes() has already set the error.message attribute, this will overwrite it.
      *
      * @param errorMessage The error message to be placed into the "error.message" attribute
      * @return The SpanBuilder instance with the error field set to true
@@ -264,7 +266,8 @@ public final class Span implements Telemetry {
 
     /**
      * Call this to indicate that the span contains an error condition with the given message and
-     * class.
+     * class. If attributes() has already set the error.message or error.class attributes, they will
+     * be overwritten.
      *
      * @param errorMessage The error message to be placed into the "error.message" attribute
      * @param errorClass The error class to be placed into the "error.class" attribute
