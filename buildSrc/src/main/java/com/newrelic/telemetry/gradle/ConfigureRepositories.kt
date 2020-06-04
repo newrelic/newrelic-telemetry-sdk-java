@@ -2,9 +2,9 @@ package com.newrelic.telemetry.gradle
 
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
-import org.gradle.plugins.signing.SigningExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
+import org.gradle.plugins.signing.SigningExtension
 
 fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype: Boolean, publicationName: String) {
     val publishing = this;
@@ -24,8 +24,14 @@ fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype
                 }
             }
             credentials {
-                username = project.properties["sonatypeUsername"] as String?
-                password = project.properties["sonatypePassword"] as String?
+                username = System.getenv("SONATYPE_USERNAME")
+                if (username == null) {
+                    username = project.properties["sonatypeUsername"] as String?
+                }
+                password = System.getenv("SONATYPE_PASSWORD")
+                if (password == null) {
+                    password = project.properties["sonatypePassword"] as String?
+                }
             }
         }
     }
