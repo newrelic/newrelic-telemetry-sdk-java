@@ -20,6 +20,10 @@ fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype
                 val snapshotsRepoUrl = project.uri("https://oss.sonatype.org/content/repositories/snapshots/")
                 url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
                 project.configure<SigningExtension> {
+                    val signingKey : String? = project.properties["signingKey"] as String
+                    val signingKeyId: String? = project.properties["signingKeyId"] as String
+                    val signingPassword: String? = project.properties["signingPassword"] as String
+                    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
                     this.sign(publishing.publications[publicationName])
                 }
             }

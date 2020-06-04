@@ -30,11 +30,6 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11").forEach
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
         apply(plugin = "signing")
-        signing {
-            val signingKey: String? by project
-            val signingPassword: String? by project
-            useInMemoryPgpKeys(signingKey, signingPassword)
-        }
         tasks {
             val taskScope = this
             val sources = sourceSets
