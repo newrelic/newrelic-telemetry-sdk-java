@@ -267,7 +267,6 @@ public class TelemetryClient {
         metricBatchSender, spanBatchSender, eventBatchSender, logBatchSender);
   }
 
-
   /**
    * Create ScheduledExecutorService from a parameter given by constructor
    *
@@ -275,10 +274,11 @@ public class TelemetryClient {
    * @return ScheduledExecutorService
    */
   private static ScheduledExecutorService buildExecutorService(boolean useDaemonThread) {
-    return Executors.newSingleThreadScheduledExecutor(r -> {
-      Thread thread = new Thread(r);
-      thread.setDaemon(useDaemonThread);
-      return thread;
-    });
+    return Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(useDaemonThread);
+          return thread;
+        });
   }
 }
