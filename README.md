@@ -148,6 +148,13 @@ Example code for using the metrics and telemetry APIs.
 #### `integration_test`
 Integration test module. Uses docker-compose based tests to test the SDK end-to-end.
 
+### Retries
+
+As [described here](https://github.com/newrelic/newrelic-telemetry-sdk-specs/blob/master/communication.md#graceful-degradation),
+the `TelemetryClient` makes use of a default backoff strategy when data ingest errors are encountered.
+Specifically, 
+
+
 ### Licensing
 The New Relic Java Telemetry SDK is licensed under the Apache 2.0 License.
 
