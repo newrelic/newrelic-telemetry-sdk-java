@@ -25,11 +25,12 @@ fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype
             }
             credentials {
                 username = System.getenv("SONATYPE_USERNAME")
-                if (username == null) {
+
+                if ((username?.length ?: 0) == 0){
                     username = project.properties["sonatypeUsername"] as String?
                 }
                 password = System.getenv("SONATYPE_PASSWORD")
-                if (password == null) {
+                if ((password?.length ?: 0) == 0) {
                     password = project.properties["sonatypePassword"] as String?
                 }
             }
