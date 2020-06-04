@@ -50,6 +50,7 @@ val sourcesJar by tasks.creating(Jar::class) {
     archiveClassifier.set("sources")
 }
 
+
 tasks {
     "shadowJar"(ShadowJar::class) {
         archiveClassifier.set("")
