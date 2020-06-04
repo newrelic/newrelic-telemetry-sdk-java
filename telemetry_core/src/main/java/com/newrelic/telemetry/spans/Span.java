@@ -178,7 +178,8 @@ public final class Span implements Telemetry {
 
     /**
      * @param attributes Dimensional attributes as key-value pairs, associated with the Span object
-     *     to be created. See {@link Attributes}
+     *     to be created. See {@link Attributes}. Note: This replaces all attributes that exist on
+     *     the builder, including those that may have been set via the withError() methods.
      * @return The SpanBuilder object with its attributes variable set to the given attributes
      *     object
      */
@@ -249,7 +250,37 @@ public final class Span implements Telemetry {
      * @return The SpanBuilder instance with the error field set to true
      */
     public SpanBuilder withError() {
+      return withError(null, null);
+    }
+
+    /**
+     * Call this to indicate that the span contains an error condition with the given message. If
+     * attributes() has already set the error.message attribute, this will overwrite it.
+     *
+     * @param errorMessage The error message to be placed into the "error.message" attribute
+     * @return The SpanBuilder instance with the error field set to true
+     */
+    public SpanBuilder withError(String errorMessage) {
+      return withError(errorMessage, null);
+    }
+
+    /**
+     * Call this to indicate that the span contains an error condition with the given message and
+     * class. If attributes() has already set the error.message or error.class attributes, they will
+     * be overwritten.
+     *
+     * @param errorMessage The error message to be placed into the "error.message" attribute
+     * @param errorClass The error class to be placed into the "error.class" attribute
+     * @return The SpanBuilder instance with the error field set to true
+     */
+    public SpanBuilder withError(String errorMessage, String errorClass) {
       this.error = true;
+      if (errorMessage != null) {
+        attributes.put("error.message", errorMessage);
+      }
+      if (errorClass != null) {
+        attributes.put("error.class", errorClass);
+      }
       return this;
     }
 
