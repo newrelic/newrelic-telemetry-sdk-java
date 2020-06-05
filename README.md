@@ -84,10 +84,10 @@ For general querying information, see:
 
 
 ### Building
-CI builds are run on Azure Pipelines: 
-[![Build status](https://dev.azure.com/NRAzurePipelines/Java%20CI/_apis/build/status/PR%20build%20for%20java%20telemetry?branchName=master)](https://dev.azure.com/NRAzurePipelines/Java%20CI/_build/latest?definitionId=6&branchName=master)
+CI builds are run on Github Actions: 
+![build badge](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/master%20build/badge.svg)
 
-The project uses gradle 5 for building, and the gradle wrapper is provided.
+The project uses gradle 6 for building, and the gradle wrapper is provided.
 
 To compile, run the tests and build the jars:
 
@@ -178,7 +178,7 @@ To execute our corporate CLA, which is required if your contribution is on behal
 
 To stage the release simply submit and merge a PR to update the [build.gradle.kts](build.gradle.kts) file with the version to be released (e.g. `version := "0.6.0"`).
 
-Results of the job can be viewed here: https://dev.azure.com/NRAzurePipelines/Java%20CI/_build
+Results of the job can be viewed here: https://github.com/newrelic/newrelic-telemetry-sdk-java/actions
 After the staging release job has run successfully it will publish the new artifact to a staging repository on Sonatype at: https://oss.sonatype.org/#stagingRepositories.
 
 #### Manually Release Staging Repo
