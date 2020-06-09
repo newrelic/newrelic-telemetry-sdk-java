@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
-  private static final long DEFAULT_SHUTDOWN_SECONDS = 3L;
+  private static final int DEFAULT_SHUTDOWN_SECONDS = 3;
   private static final boolean DEFAULT_IS_DAEMON = true;
 
   private final EventBatchSender eventBatchSender;
@@ -70,7 +70,7 @@ public class TelemetryClient {
   }
 
   /**
-   * Create a new TelemetryClient instance, with three senders and seconds to wait for shutdown.
+   * Create a new TelemetryClient instance, with four senders and seconds to wait for shutdown.
    *
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
@@ -83,7 +83,7 @@ public class TelemetryClient {
       SpanBatchSender spanBatchSender,
       EventBatchSender eventBatchSender,
       LogBatchSender logBatchSender,
-      long shutdownSeconds,
+      int shutdownSeconds,
       boolean useDaemonThread) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
