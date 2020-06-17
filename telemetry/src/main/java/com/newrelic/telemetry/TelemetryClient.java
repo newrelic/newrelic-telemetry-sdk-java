@@ -36,13 +36,15 @@ import org.slf4j.LoggerFactory;
 public class TelemetryClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
+  private static final int DEFAULT_SHUTDOWN_SECONDS = 3;
+  private static final boolean DEFAULT_IS_DAEMON = true;
 
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
+  private final ScheduledExecutorService executor;
+  private final int shutdownSeconds;
   private final LogBatchSender logBatchSender;
-
-  private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
   /**
    * Create a new TelemetryClient instance, with four senders. Note that if you don't intend to send
@@ -58,10 +60,38 @@ public class TelemetryClient {
       SpanBatchSender spanBatchSender,
       EventBatchSender eventBatchSender,
       LogBatchSender logBatchSender) {
+    this(
+        metricBatchSender,
+        spanBatchSender,
+        eventBatchSender,
+        logBatchSender,
+        DEFAULT_SHUTDOWN_SECONDS,
+        DEFAULT_IS_DAEMON);
+  }
+
+  /**
+   * Create a new TelemetryClient instance, with four senders and seconds to wait for shutdown.
+   *
+   * @param metricBatchSender The sender for dimensional metrics.
+   * @param spanBatchSender The sender for distributed tracing spans.
+   * @param eventBatchSender The sender for custom events
+   * @param logBatchSender The sender for log entries.
+   * @param shutdownSeconds num of seconds to wait for graceful shutdown of its executor
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   */
+  public TelemetryClient(
+      MetricBatchSender metricBatchSender,
+      SpanBatchSender spanBatchSender,
+      EventBatchSender eventBatchSender,
+      LogBatchSender logBatchSender,
+      int shutdownSeconds,
+      boolean useDaemonThread) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;
     this.logBatchSender = logBatchSender;
+    this.shutdownSeconds = shutdownSeconds;
+    this.executor = buildExecutorService(useDaemonThread);
   }
 
   /**
@@ -191,6 +221,15 @@ public class TelemetryClient {
   public void shutdown() {
     LOG.info("Shutting down the TelemetryClient background Executor");
     executor.shutdown();
+    try {
+      if (!executor.awaitTermination(shutdownSeconds, TimeUnit.SECONDS)) {
+        LOG.warn("couldn't shutdown within timeout");
+        executor.shutdownNow();
+      }
+    } catch (InterruptedException e) {
+      LOG.error("interrupted graceful shutdown", e);
+      Thread.currentThread().interrupt();
+    }
   }
 
   /**
@@ -227,5 +266,20 @@ public class TelemetryClient {
                 .build());
     return new TelemetryClient(
         metricBatchSender, spanBatchSender, eventBatchSender, logBatchSender);
+  }
+
+  /**
+   * Create ScheduledExecutorService from a parameter given by constructor
+   *
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   * @return ScheduledExecutorService
+   */
+  private static ScheduledExecutorService buildExecutorService(boolean useDaemonThread) {
+    return Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(useDaemonThread);
+          return thread;
+        });
   }
 }
