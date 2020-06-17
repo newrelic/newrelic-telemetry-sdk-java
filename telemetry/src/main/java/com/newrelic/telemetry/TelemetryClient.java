@@ -43,7 +43,7 @@ public class TelemetryClient {
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
   private final ScheduledExecutorService executor;
-  private final long shutdownSeconds;
+  private final int shutdownSeconds;
   private final LogBatchSender logBatchSender;
 
   /**
@@ -75,6 +75,7 @@ public class TelemetryClient {
    * @param metricBatchSender The sender for dimensional metrics.
    * @param spanBatchSender The sender for distributed tracing spans.
    * @param eventBatchSender The sender for custom events
+   * @param logBatchSender The sender for log entries.
    * @param shutdownSeconds num of seconds to wait for graceful shutdown of its executor
    * @param useDaemonThread A flag to decide user-threads or daemon-threads
    */
