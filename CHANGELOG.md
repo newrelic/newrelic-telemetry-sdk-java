@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Coming soon
 - Enable adding additional user agent information to the HTTP requests made by the SDK.
 
+## [0.6.1] - 2020-06-18
+- Fix the default metric API URL to point at the metric API
+
 ## [0.6.0] - 2020-05-28
 - Add initial preliminary support for Logs data type
 - Simplified creation TelemetryClient and friends
