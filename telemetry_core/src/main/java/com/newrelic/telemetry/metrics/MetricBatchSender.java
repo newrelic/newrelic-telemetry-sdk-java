@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class MetricBatchSender {
 
   private static final String METRICS_PATH = "/metric/v1";
-  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
+  private static final String DEFAULT_URL = "https://metric-api.newrelic.com/";
 
   private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
 
