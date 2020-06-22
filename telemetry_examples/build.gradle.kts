@@ -28,7 +28,12 @@ tasks {
     }
 }
 
-exampleClassTask("com.newrelic.telemetry.count.CountExample")
-exampleClassTask("com.newrelic.telemetry.gauge.GaugeExample")
-exampleClassTask("com.newrelic.telemetry.summary.SummaryExample")
-exampleClassTask("com.newrelic.telemetry.boundaries.BoundaryExample")
+exampleClassTask("com.newrelic.telemetry.examples.BoundaryExample")
+exampleClassTask("com.newrelic.telemetry.examples.ConfigurationExamples")
+exampleClassTask("com.newrelic.telemetry.examples.CountExample")
+exampleClassTask("com.newrelic.telemetry.examples.EventExample")
+exampleClassTask("com.newrelic.telemetry.examples.GaugeExample")
+exampleClassTask("com.newrelic.telemetry.examples.LogExample")
+exampleClassTask("com.newrelic.telemetry.examples.SpanExample")
+exampleClassTask("com.newrelic.telemetry.examples.SummaryExample")
+exampleClassTask("com.newrelic.telemetry.examples.TelemetryClientExample")
