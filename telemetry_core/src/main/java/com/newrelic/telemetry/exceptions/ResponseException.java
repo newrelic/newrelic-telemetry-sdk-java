@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.exceptions;
@@ -30,5 +30,9 @@ public abstract class ResponseException extends Exception {
 
   ResponseException(String message) {
     super(message);
+  }
+
+  ResponseException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.transport;
@@ -149,8 +149,13 @@ public class BatchDataSender {
       }
     } catch (IOException e) {
       logger.warn(
-          "IOException while trying to send data to New Relic. Batch retry recommended.", e);
-      throw new RetryWithBackoffException();
+          "IOException (message: {}) while trying to send data to New Relic. Batch retry recommended.",
+          e.getMessage());
+      throw new RetryWithBackoffException(
+          "IOException (message: {"
+              + e.getMessage()
+              + "}) while trying to send data to New Relic. Batch retry recommended.",
+          e);
     }
   }
 
