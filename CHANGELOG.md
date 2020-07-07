@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Coming soon
-- Enable adding additional user agent information to the HTTP requests made by the SDK.
+- Quieter logging when IOExceptions occur during data transmission.
 
 ## [0.6.1] - 2020-06-18
 - Fix the default metric API URL to point at the metric API

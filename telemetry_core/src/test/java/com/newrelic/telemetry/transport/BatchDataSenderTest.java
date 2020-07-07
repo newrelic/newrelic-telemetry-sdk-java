@@ -28,7 +28,7 @@ class BatchDataSenderTest {
 
   @Test
   void testSend_noSecondaryUserAgent() throws Exception {
-    URL endpointURl = new URL("http://foo.com");
+    URL endpointURl = new URL("http://example.com");
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
@@ -50,7 +50,7 @@ class BatchDataSenderTest {
 
   @Test
   void testSecondaryUserAgent() throws Exception {
-    URL endpointURl = new URL("http://foo.com");
+    URL endpointURl = new URL("http://example.com");
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
@@ -72,7 +72,7 @@ class BatchDataSenderTest {
 
   @Test
   void testCapturingCaseOfIoException() throws Exception {
-    URL endpointURl = new URL("http://foo.com");
+    URL endpointURl = new URL("http://example.com");
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(

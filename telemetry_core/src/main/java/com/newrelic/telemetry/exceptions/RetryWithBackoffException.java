@@ -14,7 +14,7 @@ public class RetryWithBackoffException extends ResponseException {
     super("The New Relic API suggests backing off exponentially on this request.");
   }
 
-  public RetryWithBackoffException(Throwable cause) {
-    super("The New Relic API suggests backing off exponentially on this request.", cause);
+  public RetryWithBackoffException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

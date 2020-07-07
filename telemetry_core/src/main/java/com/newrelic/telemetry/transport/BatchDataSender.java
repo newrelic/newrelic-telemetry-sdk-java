@@ -151,7 +151,11 @@ public class BatchDataSender {
       logger.warn(
           "IOException (message: {}) while trying to send data to New Relic. Batch retry recommended.",
           e.getMessage());
-      throw new RetryWithBackoffException(e);
+      throw new RetryWithBackoffException(
+          "IOException (message: {"
+              + e.getMessage()
+              + "}) while trying to send data to New Relic. Batch retry recommended.",
+          e);
     }
   }
 
