@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.exceptions;
@@ -12,5 +12,9 @@ public class RetryWithBackoffException extends ResponseException {
 
   public RetryWithBackoffException() {
     super("The New Relic API suggests backing off exponentially on this request.");
+  }
+
+  public RetryWithBackoffException(Throwable cause) {
+    super("The New Relic API suggests backing off exponentially on this request.", cause);
   }
 }
