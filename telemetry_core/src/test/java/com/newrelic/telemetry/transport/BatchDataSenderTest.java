@@ -5,18 +5,6 @@
 
 package com.newrelic.telemetry.transport;
 
-import com.google.common.collect.ImmutableMap;
-import com.newrelic.telemetry.Response;
-import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
-import com.newrelic.telemetry.http.HttpPoster;
-import com.newrelic.telemetry.http.HttpResponse;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +12,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import com.google.common.collect.ImmutableMap;
+import com.newrelic.telemetry.Response;
+import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
+import com.newrelic.telemetry.http.HttpPoster;
+import com.newrelic.telemetry.http.HttpResponse;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 class BatchDataSenderTest {
 
@@ -55,7 +54,7 @@ class BatchDataSenderTest {
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
-            "User-Agent", "NewRelic-Java-TelemetrySDK/UnknownVersion mySpecialUserAgent/1.0",
+            "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE + " mySpecialUserAgent/1.0",
             "Api-Key", "api-key",
             "Content-Encoding", "gzip");
     // note: not testing the gzipping here
@@ -77,7 +76,7 @@ class BatchDataSenderTest {
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
-            "User-Agent", "New Relic-Java-TelemetrySDK/UnknownVersion",
+            "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
             "Api-Key", "api-key",
             "Content-Encoding", "gzip");
     // note: not testing the gzipping here
