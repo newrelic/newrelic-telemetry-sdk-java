@@ -76,7 +76,7 @@ class BatchDataSenderTest {
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
-            "User-Agent", "NewRelic-Java-TelemetrySDK/UnknownVersion",
+            "User-Agent", "New Relic-Java-TelemetrySDK/UnknownVersion",
             "Api-Key", "api-key",
             "Content-Encoding", "gzip");
     // note: not testing the gzipping here
