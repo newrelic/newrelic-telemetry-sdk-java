@@ -63,9 +63,24 @@ tasks {
         relocate("com.google.gson", "com.newrelic.relocated")
         minimize()
     }
+    val propertiesDir = "build/generated/properties"
+    val versionFilename = "telemetry.sdk.version.properties"
+    sourceSets.get("main").output.dir(mapOf("builtBy" to "generateVersionResource"), propertiesDir)
+    register("generateVersionResource") {
+        outputs.file(File("$propertiesDir/$versionFilename"))
+        doLast {
+            val folder = file(propertiesDir)
+            folder.mkdirs()
+            val propertiesFile = File(folder.getAbsolutePath(), versionFilename)
+            propertiesFile.writeText("${project.version}")
+        }
+    }
+
     build {
         dependsOn(shadowJar)
+        dependsOn("generateVersionResource")
     }
+
 }
 
 val useLocalSonatype = project.properties["useLocalSonatype"] == "true"

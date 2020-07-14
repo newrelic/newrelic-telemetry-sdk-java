@@ -13,14 +13,16 @@ import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
@@ -31,7 +33,7 @@ public class BatchDataSender {
   private static final Logger logger = LoggerFactory.getLogger(BatchDataSender.class);
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
 
-  private static final String BASE_USER_AGENT_VALUE;
+  static final String BASE_USER_AGENT_VALUE;
 
   private final HttpPoster client;
   private final String apiKey;
@@ -40,9 +42,7 @@ public class BatchDataSender {
   private final String userAgent;
 
   static {
-    Package thisPackage = BatchDataSender.class.getPackage();
-    String implementationVersion =
-        Optional.ofNullable(thisPackage.getImplementationVersion()).orElse("UnknownVersion");
+    String implementationVersion = readVersion();
     BASE_USER_AGENT_VALUE = "NewRelic-Java-TelemetrySDK/" + implementationVersion;
   }
 
@@ -202,5 +202,18 @@ public class BatchDataSender {
         responseBody,
         retryAfterSeconds);
     throw new RetryWithRequestedWaitException(retryAfterSeconds, TimeUnit.SECONDS);
+  }
+
+  private static String readVersion() {
+    try {
+      InputStream in =
+          BatchDataSender.class
+              .getClassLoader()
+              .getResourceAsStream("telemetry.sdk.version.properties");
+      return new BufferedReader(new InputStreamReader(in)).readLine().trim();
+    } catch (Exception e) {
+      logger.error("Error reading version. Defaulting to 'UnknownVersion'", e);
+      return "UnknownVersion";
+    }
   }
 }
