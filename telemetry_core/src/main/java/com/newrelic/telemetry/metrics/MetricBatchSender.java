@@ -38,6 +38,8 @@ public class MetricBatchSender {
   /**
    * Creates a builder for {@link MetricBatchSender}
    *
+   * <p>To be removed in 0.8.0
+   *
    * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
    */
   @Deprecated

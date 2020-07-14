@@ -14,6 +14,8 @@ import java.net.URI;
 /**
  * Note: This class is deprecated and will be removed in the next major version - you should move to
  * the factories in telemetry-core
+ *
+ * <p>To be removed in 0.8.0
  */
 @Deprecated
 public class SpanBatchSenderBuilder {
