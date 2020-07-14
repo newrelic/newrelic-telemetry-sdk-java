@@ -72,7 +72,7 @@ tasks {
             val folder = file(propertiesDir)
             folder.mkdirs()
             val propertiesFile = File(folder.getAbsolutePath(), versionFilename)
-            propertiesFile.writeText("telemetry.sdk.version=${project.version}")
+            propertiesFile.writeText("${project.version}")
         }
     }
 
