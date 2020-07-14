@@ -13,10 +13,9 @@ import com.newrelic.telemetry.spans.json.SpanJsonCommonBlockWriter;
 import com.newrelic.telemetry.spans.json.SpanJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
+import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
 
 /** Manages the sending of {@link SpanBatch} instances to the New Relic Spans API. */
 public class SpanBatchSender {
@@ -43,7 +42,7 @@ public class SpanBatchSender {
   /**
    * Creates a builder for {@link SpanBatchSender}
    *
-   * To be removed in 0.8.0
+   * <p>To be removed in 0.8.0
    *
    * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
    */

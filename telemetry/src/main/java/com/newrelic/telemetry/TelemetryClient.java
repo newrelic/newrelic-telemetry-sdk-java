@@ -17,14 +17,13 @@ import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class should be the go-to spot for sending telemetry to New Relic. It includes the canonical
@@ -99,7 +98,7 @@ public class TelemetryClient {
    * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
    * one of the telemetry types, you can pass in a null value for that sender.
    *
-   * To be removed in 0.8.0
+   * <p>To be removed in 0.8.0
    *
    * @deprecated Use the constructor with all three senders, passing in null to the ones you don't
    *     care about.
