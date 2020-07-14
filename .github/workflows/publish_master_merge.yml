@@ -1,8 +1,8 @@
-name: master build
+name: main build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build-and-publish:

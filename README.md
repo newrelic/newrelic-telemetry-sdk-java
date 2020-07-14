@@ -85,7 +85,7 @@ For general querying information, see:
 
 ### Building
 CI builds are run on Github Actions: 
-![build badge](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/master%20build/badge.svg)
+![build badge](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/main%20build/badge.svg)
 
 The project uses gradle 6 for building, and the gradle wrapper is provided.
 
