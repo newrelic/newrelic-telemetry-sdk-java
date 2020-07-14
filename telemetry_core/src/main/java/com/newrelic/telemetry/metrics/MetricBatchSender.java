@@ -15,9 +15,10 @@ import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
 import com.newrelic.telemetry.metrics.json.MetricToJson;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
-import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
 
 /** Manages the sending of {@link MetricBatch} instances to the New Relic Metrics API. */
 public class MetricBatchSender {
@@ -37,6 +38,8 @@ public class MetricBatchSender {
 
   /**
    * Creates a builder for {@link MetricBatchSender}
+   *
+   * To be removed in 0.8.0
    *
    * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
    */

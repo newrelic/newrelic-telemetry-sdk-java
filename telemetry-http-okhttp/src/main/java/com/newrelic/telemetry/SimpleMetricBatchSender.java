@@ -7,11 +7,14 @@ package com.newrelic.telemetry;
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBatchSenderBuilder;
+
 import java.time.Duration;
 
 /**
  * A builder class for creating a MetricBatchSender that uses okhttp as the underlying http client
  * implementation.
+ *
+ * To be removed in 0.8.0
  *
  * <p>Note: This class is deprecated and will be removed in the next major version - you should move
  * to the factories in telemetry-core

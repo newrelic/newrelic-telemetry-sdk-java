@@ -8,12 +8,16 @@ package com.newrelic.telemetry.spans;
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.util.Utils;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 
 /**
  * Note: This class is deprecated and will be removed in the next major version - you should move to
  * the factories in telemetry-core
+ *
+ * To be removed in 0.8.0
+ *
  */
 @Deprecated
 public class SpanBatchSenderBuilder {
