@@ -19,6 +19,7 @@ import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -164,11 +165,21 @@ public class TelemetryClient {
       long waitTime,
       TimeUnit timeUnit,
       Backoff backoff) {
-    executor.schedule(() -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
+    try {
+      executor.schedule(() -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
+    } catch (RejectedExecutionException e) {
+      LOG.error("Problem scheduling batch.", e);
+    }
   }
 
   private void sendWithErrorHandling(
       BatchSender batchSender, TelemetryBatch<? extends Telemetry> batch, Backoff backoff) {
+    if (executor.isTerminated()) {
+      LOG.info(
+          "TelemetryClient background Executor is terminated. Batch not sent",
+          batch.getClass().getSimpleName());
+      return;
+    }
     try {
       batchSender.sendBatch(batch);
       LOG.debug("Telemetry batch sent");
