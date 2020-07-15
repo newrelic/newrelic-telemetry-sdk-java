@@ -4,17 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.newrelic.telemetry.http.HttpPoster;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class LogBatchSenderFactoryTest {
-  LogBatchSenderFactory factory;
 
-  @BeforeEach
-  void setup() {
-    HttpPoster poster = (url, headers, body, mediaType) -> null;
-    factory = () -> poster;
-  }
+  HttpPoster httpPoster = (url, headers, body, mediaType) -> null;
+  LogBatchSenderFactory factory = () -> httpPoster;
 
   @Test
   void testWithBaseConfig() {
