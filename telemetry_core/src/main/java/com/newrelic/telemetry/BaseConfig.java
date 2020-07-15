@@ -42,29 +42,17 @@ public class BaseConfig {
     this.secondaryUserAgent = secondaryUserAgent;
   }
 
-  /**
-   * Returns the New Relic api insert key
-   *
-   * @return the New Relic api key
-   */
+  /** @return the New Relic api key */
   public String getApiKey() {
     return apiKey;
   }
 
-  /**
-   * Returns true if verbose audit logging is enabled
-   *
-   * @return true if verbose audit logging is enabled
-   */
+  /** @return true if verbose audit logging is enabled */
   public boolean isAuditLoggingEnabled() {
     return auditLoggingEnabled;
   }
 
-  /**
-   * Returns the secondary http user agent string
-   *
-   * @return the secodary http user agent string, which may be null
-   */
+  /** @return the secondary http user agent string, which may be null */
   public String getSecondaryUserAgent() {
     return secondaryUserAgent;
   }
