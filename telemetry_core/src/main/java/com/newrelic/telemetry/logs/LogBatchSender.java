@@ -65,6 +65,14 @@ public class LogBatchSender {
     return sender.send(json);
   }
 
+  /**
+   * Creates a new LogBatchSender with the given supplier of HttpPoster impl and a BaseConfig
+   * instance, with all configuration NOT in BaseConfig being default.
+   *
+   * @param httpPosterCreator A supplier that returns an HttpPoster for this LogBatchSender to use.
+   * @param baseConfig basic configuration for the sender
+   * @return a shiny new LogBatchSender instance
+   */
   public static LogBatchSender create(
       Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
     return create(

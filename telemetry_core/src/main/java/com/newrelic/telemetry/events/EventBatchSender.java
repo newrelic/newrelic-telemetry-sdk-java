@@ -104,6 +104,15 @@ public class EventBatchSender {
     return response;
   }
 
+  /**
+   * Creates a new EventBatchSender with the given supplier of HttpPoster impl and a BaseConfig
+   * instance, with all configuration NOT in BaseConfig being default.
+   *
+   * @param httpPosterCreator A supplier that returns an HttpPoster for this EventBatchSender to
+   *     use.
+   * @param baseConfig basic configuration for the sender
+   * @return a shiny new EventBatchSender instance
+   */
   public static EventBatchSender create(
       Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
     return EventBatchSender.create(

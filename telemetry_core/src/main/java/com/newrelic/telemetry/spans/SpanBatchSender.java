@@ -77,6 +77,14 @@ public class SpanBatchSender {
     return sender.send(json);
   }
 
+  /**
+   * Creates a new SpanBatchSender with the given supplier of HttpPoster impl and a BaseConfig
+   * instance, with all configuration NOT in BaseConfig being default.
+   *
+   * @param httpPosterCreator A supplier that returns an HttpPoster for this SpanBatchSender to use.
+   * @param baseConfig basic configuration for the sender
+   * @return a shiny new SpanBatchSender instance
+   */
   public static SpanBatchSender create(
       Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
     return SpanBatchSender.create(
