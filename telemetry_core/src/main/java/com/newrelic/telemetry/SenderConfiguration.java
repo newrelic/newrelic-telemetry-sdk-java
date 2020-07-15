@@ -90,7 +90,7 @@ public class SenderConfiguration {
     /**
      * Configure the endpoint for data to be sent to. The default path will be used.
      *
-     * To be removed in 0.8.0
+     * <p>To be removed in 0.8.0
      *
      * @param scheme A valid URL scheme, such as "https"
      * @param host The host portion of the URL.
@@ -107,7 +107,7 @@ public class SenderConfiguration {
     /**
      * Configure the *full* endpoint URL for data to be sent to, including the path.
      *
-     * To be removed in 0.8.0
+     * <p>To be removed in 0.8.0
      *
      * @deprecated call the simpler endpoint() method instead
      * @param endpointUrl A full {@link URL}, including the path.
@@ -118,14 +118,14 @@ public class SenderConfiguration {
     }
 
     /**
-     * Configure the *full* endpoint URL for data to be sent to, including the path.
-     * You should only use this method if you wish to modify the default behavior,
-     * which is to send data to the Portland production US endpoints.
+     * Configure the *full* endpoint URL for data to be sent to, including the path. You should only
+     * use this method if you wish to modify the default behavior, which is to send data to the
+     * Portland production US endpoints.
      *
      * @param endpoint A full {@link URL}, including the path.
      * @return this builder.
      */
-    public SenderConfigurationBuilder endpoint(URL endpoint){
+    public SenderConfigurationBuilder endpoint(URL endpoint) {
       this.endpointUrl = endpoint;
       return this;
     }

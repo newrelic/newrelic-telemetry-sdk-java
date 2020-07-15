@@ -19,6 +19,8 @@ import com.newrelic.telemetry.exceptions.DiscardBatchException;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +52,7 @@ class EventApiIntegrationTest {
   private static final int SERVICE_PORT = 1080 + new Random().nextInt(900);
   private static String containerIpAddress;
   private static MockServerClient mockServerClient;
+  private static URL containerUrl;
 
   private static final GenericContainer<?> container =
       new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
@@ -59,7 +62,7 @@ class EventApiIntegrationTest {
   private EventBatchSender eventBatchSender;
 
   @BeforeAll
-  static void beforeClass() {
+  static void beforeClass() throws MalformedURLException {
     container.setPortBindings(singletonList(SERVICE_PORT + ":1080"));
     container.setWaitStrategy(new WaitAllStrategy());
     container.setStartupCheckStrategy(
@@ -67,6 +70,8 @@ class EventApiIntegrationTest {
     container.start();
     containerIpAddress = container.getContainerIpAddress();
     mockServerClient = new MockServerClient(containerIpAddress, SERVICE_PORT);
+    containerUrl =
+        new URL("http://" + containerIpAddress + ":" + SERVICE_PORT + "/v1/accounts/events");
   }
 
   @BeforeEach
@@ -77,7 +82,7 @@ class EventApiIntegrationTest {
     SenderConfiguration config =
         factory
             .configureWith("fakeKey")
-            .endpoint("http", containerIpAddress, SERVICE_PORT)
+            .endpoint(containerUrl)
             .secondaryUserAgent("testApplication/1.0.0")
             .build();
     eventBatchSender = EventBatchSender.create(config);
