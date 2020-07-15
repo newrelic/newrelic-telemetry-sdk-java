@@ -5,6 +5,7 @@
 package com.newrelic.telemetry.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 class MetricBatchSenderTest {
 
@@ -75,12 +77,15 @@ class MetricBatchSenderTest {
     MetricBatch batch = new MetricBatch(metrics, new Attributes().put("f", "b"));
     Supplier<HttpPoster> posterSupplier = () -> poster;
 
-    when(poster.post(eq(url), isA(Map.class), isA(byte[].class), anyString()))
+    ArgumentCaptor<Map> headersCaptor = ArgumentCaptor.forClass(Map.class);
+    when(poster.post(eq(url), headersCaptor.capture(), isA(byte[].class), anyString()))
         .thenReturn(httpResponse);
 
     MetricBatchSender metricBatchSender = MetricBatchSender.create(posterSupplier, baseConfig);
 
     Response result = metricBatchSender.sendBatch(batch);
     assertEquals(expected, result);
+    assertTrue(((String)headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
+
   }
 }

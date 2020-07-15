@@ -1,6 +1,7 @@
 package com.newrelic.telemetry.events;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 public class EventBatchSenderTest {
 
@@ -76,12 +78,15 @@ public class EventBatchSenderTest {
     EventBatch batch = new EventBatch(events, new Attributes().put("f", "b"));
     Supplier<HttpPoster> posterSupplier = () -> poster;
 
-    when(poster.post(eq(url), isA(Map.class), isA(byte[].class), anyString()))
+    ArgumentCaptor<Map> headersCaptor = ArgumentCaptor.forClass(Map.class);
+    when(poster.post(eq(url), headersCaptor.capture(), isA(byte[].class), anyString()))
         .thenReturn(httpResponse);
 
     EventBatchSender logBatchSender = EventBatchSender.create(posterSupplier, baseConfig);
 
     Response result = logBatchSender.sendBatch(batch);
     assertEquals(expected, result);
+    assertTrue(((String)headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
+
   }
 }
