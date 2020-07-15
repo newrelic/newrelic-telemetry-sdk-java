@@ -30,6 +30,14 @@ public interface EventBatchSenderFactory {
     return EventBatchSender.create(configuration.build());
   }
 
+  /**
+   * Creates a new SenderConfigurationBuilder to help with constructing a EventBatchSender. This
+   * builder is configured with data from the BaseConfig, including the apiKey, audit logging
+   * dis/enabled, and secondary user agent (which may be null).
+   *
+   * @param baseConfig a BaseConfig with settings to apply to the new builder
+   * @return a new SenderConfigurationBuilder with the config applied
+   */
   default SenderConfigurationBuilder configureWith(BaseConfig baseConfig) {
     return configureWith(baseConfig.getApiKey())
         .secondaryUserAgent(baseConfig.getSecondaryUserAgent())
