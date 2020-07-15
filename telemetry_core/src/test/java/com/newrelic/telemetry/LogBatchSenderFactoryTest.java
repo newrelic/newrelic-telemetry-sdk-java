@@ -1,20 +1,14 @@
-/*
- * Copyright 2020 New Relic Corporation. All rights reserved.
- * SPDX-License-Identifier: Apache-2.0
- */
 package com.newrelic.telemetry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.newrelic.telemetry.http.HttpPoster;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SpanBatchSenderFactoryTest {
-
-  SpanBatchSenderFactory factory;
+class LogBatchSenderFactoryTest {
+  LogBatchSenderFactory factory;
 
   @BeforeEach
   void setup() {
@@ -23,18 +17,12 @@ class SpanBatchSenderFactoryTest {
   }
 
   @Test
-  void testBuilders() {
-    assertNotNull(factory.configureWith("abc123"));
-    assertNotNull(factory.createBatchSender("abc123"));
-  }
-
-  @Test
-  void withBaseConfig() {
-    BaseConfig baseConfig = new BaseConfig("hey", true, "ttt");
+  void testWithBaseConfig() {
+    BaseConfig baseConfig = new BaseConfig("one", true, "twelve");
     SenderConfiguration.SenderConfigurationBuilder builder = factory.configureWith(baseConfig);
     SenderConfiguration result = builder.build();
-    assertEquals("hey", result.getApiKey());
+    assertEquals("one", result.getApiKey());
     assertTrue(result.isAuditLoggingEnabled());
-    assertEquals("ttt", result.getSecondaryUserAgent());
+    assertEquals("twelve", result.getSecondaryUserAgent());
   }
 }

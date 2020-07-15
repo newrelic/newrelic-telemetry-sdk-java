@@ -30,6 +30,12 @@ public interface SpanBatchSenderFactory {
     return SpanBatchSender.create(configuration.build());
   }
 
+  default SenderConfigurationBuilder configureWith(BaseConfig baseConfig) {
+    return configureWith(baseConfig.getApiKey())
+        .auditLoggingEnabled(baseConfig.isAuditLoggingEnabled())
+        .secondaryUserAgent(baseConfig.getSecondaryUserAgent());
+  }
+
   /**
    * Create a new SpanBatchSenderBuilder with your New Relic Insights Insert API key.
    *

@@ -4,9 +4,12 @@
  */
 package com.newrelic.telemetry.logs;
 
+import com.newrelic.telemetry.BaseConfig;
+import com.newrelic.telemetry.LogBatchSenderFactory;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.exceptions.ResponseException;
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.logs.json.LogBatchMarshaller;
 import com.newrelic.telemetry.logs.json.LogJsonCommonBlockWriter;
@@ -14,6 +17,7 @@ import com.newrelic.telemetry.logs.json.LogJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.URL;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +63,14 @@ public class LogBatchSender {
         batch.size());
     String json = marshaller.toJson(batch);
     return sender.send(json);
+  }
+
+  public static LogBatchSender create(
+      Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
+    return create(
+        LogBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
+            .configureWith(baseConfig)
+            .build());
   }
 
   /**

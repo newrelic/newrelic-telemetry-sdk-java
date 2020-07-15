@@ -30,6 +30,12 @@ public interface MetricBatchSenderFactory {
     return MetricBatchSender.create(configuration.build());
   }
 
+  default SenderConfigurationBuilder configureWith(BaseConfig baseConfig) {
+    return configureWith(baseConfig.getApiKey())
+        .auditLoggingEnabled(baseConfig.isAuditLoggingEnabled())
+        .secondaryUserAgent(baseConfig.getSecondaryUserAgent());
+  }
+
   /**
    * Create a new MetricBatchSenderBuilder with your New Relic Insights Insert API key.
    *

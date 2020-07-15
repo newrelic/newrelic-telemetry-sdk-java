@@ -30,6 +30,12 @@ public interface EventBatchSenderFactory {
     return EventBatchSender.create(configuration.build());
   }
 
+  default SenderConfigurationBuilder configureWith(BaseConfig baseConfig) {
+    return configureWith(baseConfig.getApiKey())
+        .secondaryUserAgent(baseConfig.getSecondaryUserAgent())
+        .auditLoggingEnabled(baseConfig.isAuditLoggingEnabled());
+  }
+
   /**
    * Create a new {@link SenderConfigurationBuilder} with your New Relic Insights Insert API key.
    *
