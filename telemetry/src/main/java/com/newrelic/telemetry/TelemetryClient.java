@@ -252,7 +252,7 @@ public class TelemetryClient {
   }
 
   /**
-   * Create a fully operational {@link TelemetryClient} settings from a BaseConfig instance
+   * Create a fully operational {@link TelemetryClient} from a BaseConfig instance
    *
    * @param httpPosterCreator A {@link Supplier} used to create an {@link HttpPoster} instance.
    * @param baseConfig the base configuration
