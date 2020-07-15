@@ -31,7 +31,6 @@ import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
@@ -44,11 +43,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 class TelemetryClientTest {
@@ -201,11 +198,11 @@ class TelemetryClientTest {
     Supplier<HttpPoster> posterSupplier = () -> poster;
     Response expected = new Response(202, "okey", "bb");
     HttpResponse httpResponse =
-            new HttpResponse(
-                    expected.getBody(),
-                    expected.getStatusCode(),
-                    expected.getStatusMessage(),
-                    new HashMap<>());
+        new HttpResponse(
+            expected.getBody(),
+            expected.getStatusCode(),
+            expected.getStatusMessage(),
+            new HashMap<>());
     CountDownLatch latch = new CountDownLatch(1);
     Event event = new Event("flim", new Attributes().put("x", "y"));
     EventBatch metrics = new EventBatch(singletonList(event), new Attributes().put("a", "b"));
@@ -215,10 +212,12 @@ class TelemetryClientTest {
 
     ArgumentCaptor<Map> headersCaptor = ArgumentCaptor.forClass(Map.class);
     when(poster.post(eq(url), headersCaptor.capture(), isA(byte[].class), anyString()))
-            .thenAnswer((Answer<HttpResponse>) invocation -> {
-              latch.countDown();
-              return httpResponse;
-            });
+        .thenAnswer(
+            (Answer<HttpResponse>)
+                invocation -> {
+                  latch.countDown();
+                  return httpResponse;
+                });
 
     client.sendBatch(metrics);
     assertTrue(latch.await(2, TimeUnit.SECONDS));

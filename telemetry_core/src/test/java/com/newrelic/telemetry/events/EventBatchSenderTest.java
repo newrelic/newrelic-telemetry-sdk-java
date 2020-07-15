@@ -86,7 +86,6 @@ public class EventBatchSenderTest {
 
     Response result = logBatchSender.sendBatch(batch);
     assertEquals(expected, result);
-    assertTrue(((String)headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
-
+    assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
   }
 }

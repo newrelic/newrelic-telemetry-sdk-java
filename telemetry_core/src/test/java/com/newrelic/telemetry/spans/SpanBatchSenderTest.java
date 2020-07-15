@@ -29,8 +29,6 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import javax.lang.model.util.Types;
-
 class SpanBatchSenderTest {
 
   @Test
@@ -87,6 +85,6 @@ class SpanBatchSenderTest {
 
     Response result = spanBatchSender.sendBatch(batch);
     assertEquals(expected, result);
-    assertTrue(((String)headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
+    assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
   }
 }
