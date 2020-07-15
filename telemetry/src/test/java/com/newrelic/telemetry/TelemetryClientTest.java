@@ -5,7 +5,10 @@
 package com.newrelic.telemetry;
 
 import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,6 +19,8 @@ import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.http.HttpPoster;
+import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.logs.Log;
 import com.newrelic.telemetry.logs.LogBatch;
 import com.newrelic.telemetry.logs.LogBatchSender;
@@ -26,15 +31,24 @@ import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 class TelemetryClientTest {
@@ -178,6 +192,38 @@ class TelemetryClientTest {
     assertTrue(result);
     assertTrue(batch1Seen.get());
     assertTrue(batch2Seen.get());
+  }
+
+  @Test
+  void canCreateWithoutSecondaryUserAgent() throws Exception {
+    BaseConfig baseConfig = new BaseConfig("123abc");
+    HttpPoster poster = mock(HttpPoster.class);
+    Supplier<HttpPoster> posterSupplier = () -> poster;
+    Response expected = new Response(202, "okey", "bb");
+    HttpResponse httpResponse =
+            new HttpResponse(
+                    expected.getBody(),
+                    expected.getStatusCode(),
+                    expected.getStatusMessage(),
+                    new HashMap<>());
+    CountDownLatch latch = new CountDownLatch(1);
+    Event event = new Event("flim", new Attributes().put("x", "y"));
+    EventBatch metrics = new EventBatch(singletonList(event), new Attributes().put("a", "b"));
+    URL url = URI.create("https://trace-api.newrelic.com/v1/accounts/events").toURL();
+
+    TelemetryClient client = TelemetryClient.create(posterSupplier, baseConfig);
+
+    ArgumentCaptor<Map> headersCaptor = ArgumentCaptor.forClass(Map.class);
+    when(poster.post(eq(url), headersCaptor.capture(), isA(byte[].class), anyString()))
+            .thenAnswer((Answer<HttpResponse>) invocation -> {
+              latch.countDown();
+              return httpResponse;
+            });
+
+    client.sendBatch(metrics);
+    assertTrue(latch.await(2, TimeUnit.SECONDS));
+    String sentUserAgent = (String) headersCaptor.getValue().get("User-Agent");
+    assertTrue(sentUserAgent.contains("TelemetrySDK"));
   }
 
   private Answer<Object> countDown(CountDownLatch latch) {
