@@ -15,6 +15,8 @@ import com.google.common.net.MediaType;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +45,11 @@ class SpanApiIntegrationTest {
       new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
           .withLogConsumer(outputFrame -> System.out.print(outputFrame.getUtf8String()))
           .withExposedPorts(SERVICE_PORT);
+  private static URL endpointUrl;
   private SpanBatchSender spanBatchSender;
 
   @BeforeAll
-  static void beforeClass() {
+  static void beforeClass() throws MalformedURLException {
     container.setPortBindings(singletonList(SERVICE_PORT + ":1080"));
     container.setWaitStrategy(new WaitAllStrategy());
     container.setStartupCheckStrategy(
@@ -54,6 +57,7 @@ class SpanApiIntegrationTest {
     container.start();
     containerIpAddress = container.getContainerIpAddress();
     mockServerClient = new MockServerClient(containerIpAddress, SERVICE_PORT);
+    endpointUrl = new URL("http://" + containerIpAddress + ":" + SERVICE_PORT + "/trace/v1");
   }
 
   @BeforeEach
@@ -65,7 +69,7 @@ class SpanApiIntegrationTest {
         factory
             .configureWith("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .endpoint("http", containerIpAddress, SERVICE_PORT)
+            .endpoint(endpointUrl)
             .auditLoggingEnabled(true)
             .secondaryUserAgent("myTestApp")
             .build();

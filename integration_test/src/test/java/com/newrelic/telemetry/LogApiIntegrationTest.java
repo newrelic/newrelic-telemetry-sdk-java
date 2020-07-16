@@ -15,6 +15,8 @@ import com.google.common.net.MediaType;
 import com.newrelic.telemetry.logs.Log;
 import com.newrelic.telemetry.logs.LogBatch;
 import com.newrelic.telemetry.logs.LogBatchSender;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +45,11 @@ class LogApiIntegrationTest {
       new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
           .withLogConsumer(outputFrame -> System.out.print(outputFrame.getUtf8String()))
           .withExposedPorts(SERVICE_PORT);
+  private static URL endpointUrl;
   private LogBatchSender logBatchSender;
 
   @BeforeAll
-  static void beforeClass() {
+  static void beforeClass() throws MalformedURLException {
     container.setPortBindings(singletonList(SERVICE_PORT + ":1080"));
     container.setWaitStrategy(new WaitAllStrategy());
     container.setStartupCheckStrategy(
@@ -54,6 +57,7 @@ class LogApiIntegrationTest {
     container.start();
     containerIpAddress = container.getContainerIpAddress();
     mockServerClient = new MockServerClient(containerIpAddress, SERVICE_PORT);
+    endpointUrl = new URL("http://" + containerIpAddress + ":" + SERVICE_PORT + "/log/v1");
   }
 
   @BeforeEach
@@ -63,7 +67,7 @@ class LogApiIntegrationTest {
         LogBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new)
             .configureWith("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .endpoint("http", containerIpAddress, SERVICE_PORT)
+            .endpoint(endpointUrl)
             .auditLoggingEnabled(true)
             .secondaryUserAgent("myTestApp")
             .build();
