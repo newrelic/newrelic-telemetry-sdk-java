@@ -23,6 +23,8 @@ import com.newrelic.telemetry.metrics.Gauge;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.metrics.MetricBuffer;
 import com.newrelic.telemetry.metrics.Summary;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +55,7 @@ class MetricApiIntegrationTest {
   private static final int SERVICE_PORT = 1080 + new Random().nextInt(900);
   private static String containerIpAddress;
   private static MockServerClient mockServerClient;
+  private static URL endpointUrl;
 
   private static final GenericContainer<?> container =
       new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
@@ -62,7 +65,7 @@ class MetricApiIntegrationTest {
   private MetricBatchSender metricBatchSender;
 
   @BeforeAll
-  static void beforeClass() {
+  static void beforeClass() throws MalformedURLException {
     container.setPortBindings(singletonList(SERVICE_PORT + ":1080"));
     container.setWaitStrategy(new WaitAllStrategy());
     container.setStartupCheckStrategy(
@@ -70,6 +73,7 @@ class MetricApiIntegrationTest {
     container.start();
     containerIpAddress = container.getContainerIpAddress();
     mockServerClient = new MockServerClient(containerIpAddress, SERVICE_PORT);
+    endpointUrl = new URL("http://" + containerIpAddress + ":" + SERVICE_PORT + "/metric/v1");
   }
 
   @BeforeEach
@@ -80,7 +84,7 @@ class MetricApiIntegrationTest {
     SenderConfiguration config =
         factory
             .configureWith("fakeKey")
-            .endpoint("http", containerIpAddress, SERVICE_PORT)
+            .endpoint(endpointUrl)
             .secondaryUserAgent("testApplication/1.0.0")
             .build();
     metricBatchSender = MetricBatchSender.create(config);

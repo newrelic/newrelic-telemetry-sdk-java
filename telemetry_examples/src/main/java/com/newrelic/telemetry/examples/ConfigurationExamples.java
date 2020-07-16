@@ -90,7 +90,7 @@ public class ConfigurationExamples {
         EventBatchSender.create(
             EventBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(insightsInsertKey)
-                .endpointWithPath(new URL("http://special-events.com/my-endpoint-rocks/v1/api"))
+                .endpoint(new URL("http://special-events.com/my-endpoint-rocks/v1/api"))
                 .build());
 
     // Configure your log sender:
