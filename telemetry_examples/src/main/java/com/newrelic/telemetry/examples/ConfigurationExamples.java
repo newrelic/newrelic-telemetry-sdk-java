@@ -74,7 +74,7 @@ public class ConfigurationExamples {
                                 // configure custom stuff here, like proxies, etc.
                                 .build()))
                 .configureWith(insightsInsertKey)
-                .endpoint("http", "special-metrics.com", 80)
+                .endpoint(new URL("http://special-metrics.com/your/custom/path"))
                 .build());
 
     // Configure your span sender:
@@ -82,7 +82,7 @@ public class ConfigurationExamples {
         SpanBatchSender.create(
             SpanBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(insightsInsertKey)
-                .endpoint("https", "special-spans.com", 443)
+                .endpoint(new URL("https://special-spans.com/your/custom/path"))
                 .build());
 
     // Configure your event sender:

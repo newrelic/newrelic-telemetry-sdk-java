@@ -69,7 +69,7 @@ class SpanApiIntegrationTest {
         factory
             .configureWith("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .endpoint("http", containerIpAddress, SERVICE_PORT)
+            .endpoint(endpointUrl)
             .auditLoggingEnabled(true)
             .secondaryUserAgent("myTestApp")
             .build();
