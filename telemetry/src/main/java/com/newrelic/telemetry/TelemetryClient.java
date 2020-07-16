@@ -248,29 +248,22 @@ public class TelemetryClient {
    */
   public static TelemetryClient create(
       Supplier<HttpPoster> httpPosterCreator, String insertApiKey) {
-    MetricBatchSender metricBatchSender =
-        MetricBatchSender.create(
-            MetricBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
-                .configureWith(insertApiKey)
-                .build());
+    return create(httpPosterCreator, new BaseConfig(insertApiKey));
+  }
 
-    SpanBatchSender spanBatchSender =
-        SpanBatchSender.create(
-            SpanBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
-                .configureWith(insertApiKey)
-                .build());
-
-    EventBatchSender eventBatchSender =
-        EventBatchSender.create(
-            EventBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
-                .configureWith(insertApiKey)
-                .build());
-
-    LogBatchSender logBatchSender =
-        LogBatchSender.create(
-            LogBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
-                .configureWith(insertApiKey)
-                .build());
+  /**
+   * Create a fully operational {@link TelemetryClient} from a BaseConfig instance
+   *
+   * @param httpPosterCreator A {@link Supplier} used to create an {@link HttpPoster} instance.
+   * @param baseConfig the base configuration
+   * @return A fully operational TelemetryClient instance.
+   */
+  public static TelemetryClient create(
+      Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
+    MetricBatchSender metricBatchSender = MetricBatchSender.create(httpPosterCreator, baseConfig);
+    SpanBatchSender spanBatchSender = SpanBatchSender.create(httpPosterCreator, baseConfig);
+    EventBatchSender eventBatchSender = EventBatchSender.create(httpPosterCreator, baseConfig);
+    LogBatchSender logBatchSender = LogBatchSender.create(httpPosterCreator, baseConfig);
     return new TelemetryClient(
         metricBatchSender, spanBatchSender, eventBatchSender, logBatchSender);
   }

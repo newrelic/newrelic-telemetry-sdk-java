@@ -13,11 +13,9 @@ import java.net.URL;
 
 /** Configuration options for the various classes that send data to the New Relic ingest APIs. */
 public class SenderConfiguration {
-  private final String apiKey;
+  private final BaseConfig baseConfig;
   private final HttpPoster httpPoster;
   private final URL endpointUrl;
-  private final boolean auditLoggingEnabled;
-  private final String secondaryUserAgent;
 
   public SenderConfiguration(
       String apiKey,
@@ -25,15 +23,13 @@ public class SenderConfiguration {
       URL endpointUrl,
       boolean auditLoggingEnabled,
       String secondaryUserAgent) {
-    this.apiKey = apiKey;
     this.httpPoster = httpPoster;
     this.endpointUrl = endpointUrl;
-    this.auditLoggingEnabled = auditLoggingEnabled;
-    this.secondaryUserAgent = secondaryUserAgent;
+    this.baseConfig = new BaseConfig(apiKey, auditLoggingEnabled, secondaryUserAgent);
   }
 
   public String getApiKey() {
-    return apiKey;
+    return baseConfig.getApiKey();
   }
 
   public HttpPoster getHttpPoster() {
@@ -45,11 +41,11 @@ public class SenderConfiguration {
   }
 
   public boolean isAuditLoggingEnabled() {
-    return auditLoggingEnabled;
+    return baseConfig.isAuditLoggingEnabled();
   }
 
   public String getSecondaryUserAgent() {
-    return secondaryUserAgent;
+    return baseConfig.getSecondaryUserAgent();
   }
 
   public static SenderConfigurationBuilder builder(String defaultUrl, String basePath) {

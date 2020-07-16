@@ -4,10 +4,13 @@
  */
 package com.newrelic.telemetry.metrics;
 
+import com.newrelic.telemetry.BaseConfig;
+import com.newrelic.telemetry.MetricBatchSenderFactory;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
 import com.newrelic.telemetry.exceptions.ResponseException;
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.json.AttributesJson;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonCommonBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
@@ -16,6 +19,7 @@ import com.newrelic.telemetry.metrics.json.MetricToJson;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.URL;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +71,23 @@ public class MetricBatchSender {
         batch.size());
     String json = marshaller.toJson(batch);
     return sender.send(json);
+  }
+
+  /**
+   * Creates a new MetricBatchSender with the given supplier of HttpPoster impl and a BaseConfig
+   * instance, with all configuration NOT in BaseConfig being default.
+   *
+   * @param httpPosterCreator A supplier that returns an HttpPoster for this MetricBatchSender to
+   *     use.
+   * @param baseConfig basic configuration for the sender
+   * @return a shiny new MetricBatchSender instance
+   */
+  public static MetricBatchSender create(
+      Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
+    return create(
+        MetricBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
+            .configureWith(baseConfig)
+            .build());
   }
 
   /**

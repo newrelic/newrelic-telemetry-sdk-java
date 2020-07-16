@@ -5,6 +5,8 @@
 
 package com.newrelic.telemetry.events;
 
+import com.newrelic.telemetry.BaseConfig;
+import com.newrelic.telemetry.EventBatchSenderFactory;
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.SenderConfiguration.SenderConfigurationBuilder;
@@ -12,12 +14,14 @@ import com.newrelic.telemetry.TelemetryBatch;
 import com.newrelic.telemetry.events.json.EventBatchMarshaller;
 import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
+import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +102,23 @@ public class EventBatchSender {
     }
 
     return response;
+  }
+
+  /**
+   * Creates a new EventBatchSender with the given supplier of HttpPoster impl and a BaseConfig
+   * instance, with all configuration NOT in BaseConfig being default.
+   *
+   * @param httpPosterCreator A supplier that returns an HttpPoster for this EventBatchSender to
+   *     use.
+   * @param baseConfig basic configuration for the sender
+   * @return a shiny new EventBatchSender instance
+   */
+  public static EventBatchSender create(
+      Supplier<HttpPoster> httpPosterCreator, BaseConfig baseConfig) {
+    return EventBatchSender.create(
+        EventBatchSenderFactory.fromHttpImplementation(httpPosterCreator)
+            .configureWith(baseConfig)
+            .build());
   }
 
   public static EventBatchSender create(SenderConfiguration configuration) {
