@@ -43,7 +43,7 @@ Maven dependencies:
 Gradle dependencies: 
 
 ```
-api("com.newrelic.telemetry:telemetry:0.6.1")
+implementation("com.newrelic.telemetry:telemetry:0.6.1")
 implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.6.1")
 ```
 
