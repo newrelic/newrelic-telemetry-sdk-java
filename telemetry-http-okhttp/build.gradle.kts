@@ -10,8 +10,9 @@ configure<JavaPluginConvention> {
 }
 
 dependencies {
-    "api"(project(":telemetry-core"))
-    "api"("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
+    implementation(project(":telemetry"))
+    api(project(":telemetry-core"))
+    api("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")

@@ -5,6 +5,7 @@
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.EventBatchSenderFactory;
+import com.newrelic.telemetry.Java11Http;
 import com.newrelic.telemetry.Java11HttpPoster;
 import com.newrelic.telemetry.LogBatchSenderFactory;
 import com.newrelic.telemetry.MetricBatchSenderFactory;
@@ -25,13 +26,13 @@ import java.time.Duration;
 public class ConfigurationExamples {
 
   public static void main(String[] args) throws MalformedURLException {
-    String insightsInsertKey = args[0];
+    String insertApiKey = args[0];
 
     // Deprecated configuration methods:
-    SimpleMetricBatchSender.build(insightsInsertKey);
+    SimpleMetricBatchSender.build(insertApiKey);
     MetricBatchSender sender =
         MetricBatchSender.builder()
-            .apiKey(insightsInsertKey)
+            .apiKey(insertApiKey)
             .httpPoster(new OkHttpPoster(Duration.ofSeconds(2)))
             .build();
     new TelemetryClient(sender, null, null, null);
@@ -43,7 +44,7 @@ public class ConfigurationExamples {
     // This will configure everything for you, with the given HTTP client implementation, and
     // an API key.
     //
-    TelemetryClient client = TelemetryClient.create(Java11HttpPoster::new, insightsInsertKey);
+    TelemetryClient client = Java11Http.newTelemetryClient(insertApiKey);
 
     /////////////////////////////////////////////////////////////////////
     // make the harder thing pretty easy:
@@ -56,7 +57,7 @@ public class ConfigurationExamples {
                 HttpClient.newBuilder()
                     // configure custom http configuration here, like proxies, etc.
                     .build()),
-        insightsInsertKey);
+        insertApiKey);
 
     /////////////////////////////////////////////////////////////////////
     // make the hardest things possible:
@@ -73,7 +74,7 @@ public class ConfigurationExamples {
                                 .connectTimeout(Duration.ofSeconds(3))
                                 // configure custom stuff here, like proxies, etc.
                                 .build()))
-                .configureWith(insightsInsertKey)
+                .configureWith(insertApiKey)
                 .endpoint(new URL("http://special-metrics.com/your/custom/path"))
                 .build());
 
@@ -81,7 +82,7 @@ public class ConfigurationExamples {
     SpanBatchSender spanBatchSender =
         SpanBatchSender.create(
             SpanBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
-                .configureWith(insightsInsertKey)
+                .configureWith(insertApiKey)
                 .endpoint(new URL("https://special-spans.com/your/custom/path"))
                 .build());
 
@@ -89,7 +90,7 @@ public class ConfigurationExamples {
     EventBatchSender eventBatchSender =
         EventBatchSender.create(
             EventBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
-                .configureWith(insightsInsertKey)
+                .configureWith(insertApiKey)
                 .endpoint(new URL("http://special-events.com/my-endpoint-rocks/v1/api"))
                 .build());
 
@@ -97,7 +98,7 @@ public class ConfigurationExamples {
     LogBatchSender logBatchSender =
         LogBatchSender.create(
             LogBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
-                .configureWith(insightsInsertKey)
+                .configureWith(insertApiKey)
                 .build());
 
     // Build your TelemetryClient with the 3 senders.
