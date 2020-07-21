@@ -1,12 +1,7 @@
 package com.newrelic.telemetry;
 
-import com.newrelic.telemetry.http.HttpPoster;
-import java.util.function.Supplier;
-
 /** Simple way to create a TelemetryClient that is backed by an OkHttp based HTTP posters. */
 public class OkHttp {
-
-  private static final Supplier<HttpPoster> supplier = OkHttpPoster::new;
 
   /**
    * Create a new TelemetryClient with the given apiKey and default configuration
@@ -14,7 +9,7 @@ public class OkHttp {
    * @param apiKey - The New Relic insert api key
    */
   public static TelemetryClient newTelemetryClient(String apiKey) {
-    return TelemetryClient.create(supplier, apiKey);
+    return TelemetryClient.create(OkHttpPoster::new, apiKey);
   }
 
   /**
@@ -24,6 +19,6 @@ public class OkHttp {
    * @param baseConfig - A configuration instance with the basics
    */
   public static TelemetryClient newTelemetryClient(BaseConfig baseConfig) {
-    return TelemetryClient.create(supplier, baseConfig);
+    return TelemetryClient.create(OkHttpPoster::new, baseConfig);
   }
 }
