@@ -43,6 +43,7 @@ public class EventBatchSenderTest {
 
     Response ok = new Response(200, "OK", "yup");
     BatchDataSender sender = mock(BatchDataSender.class);
+    xxx
     when(sender.send(json)).thenThrow(RetryWithSplitException.class).thenReturn(ok);
 
     EventBatchSender testClass = new EventBatchSender(marshaller, sender);
