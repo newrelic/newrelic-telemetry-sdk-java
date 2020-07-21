@@ -15,7 +15,7 @@ private object Versions {
     const val junit = "5.3.1"
     const val guava = "27.1-jre"
     const val mockito = "2.23.0"
-    const val slf4j = "1.7.26"
+    const val slf4j = "1.7.30"
     const val jsonassert = "1.5.0"
     const val gson = "2.8.6"
 }
