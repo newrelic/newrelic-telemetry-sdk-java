@@ -1,5 +1,5 @@
 private object Versions {
-    const val okhttp = "3.14.1"
+    const val okhttp = "4.8.0"
     const val junit = "5.3.1"
     const val jsonassert = "1.5.0"
 }
