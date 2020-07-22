@@ -48,9 +48,11 @@ public class EventBatchSenderTest {
 
     EventBatchSender testClass = new EventBatchSender(marshaller, sender);
 
-    assertThrows(RetryWithSplitException.class, () -> {
-      testClass.sendBatch(batch);
-    });
+    assertThrows(
+        RetryWithSplitException.class,
+        () -> {
+          testClass.sendBatch(batch);
+        });
   }
 
   @Test

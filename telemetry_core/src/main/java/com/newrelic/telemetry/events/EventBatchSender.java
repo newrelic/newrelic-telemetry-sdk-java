@@ -15,11 +15,10 @@ import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.net.URL;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EventBatchSender {
   private static final String EVENTS_PATH = "/v1/accounts/events";
