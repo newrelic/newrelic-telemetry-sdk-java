@@ -22,10 +22,9 @@ allprojects {
             events("passed", "skipped", "failed")
         }
     }
-
 }
 
-listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11").forEach {
+listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telemetry-all").forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")

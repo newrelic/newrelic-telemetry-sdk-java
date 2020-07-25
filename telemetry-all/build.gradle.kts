@@ -1,6 +1,4 @@
 private object Versions {
-//    const val junit = "5.3.1"
-//    const val jsonassert = "1.5.0"
 }
 
 plugins {
@@ -19,36 +17,18 @@ dependencies {
     "implementation"(project(":telemetry-http-java11"))
 }
 
-plugins.withType<JavaPlugin>().configureEach {
-    configure<JavaPluginExtension> {
-        modularity.inferModulePath.set(true)
-    }
+//plugins.withType<JavaPlugin>().configureEach {
+//    configure<JavaPluginExtension> {
+//        modularity.inferModulePath.set(true)
+//    }
+//}
+
+tasks.register<Jar>("jarAll") {
+    dependsOn(configurations.runtimeClasspath)
+    from(sourceSets["main"].output)
+    configurations.runtimeClasspath.get().allDependencies.findAll(closureOf<Any>{
+        val proj = this as ProjectDependency
+        from(proj.dependencyProject.sourceSets["main"].output)
+    })
+    manifest.attributes["Automatic-Module-Name"] = "com.newrelic.telemetry"
 }
-
-tasks {
-    val taskScope = this
-
-
-    // closureOf<Dependency>(
-    val isDependency = closureOf<>{d : Dependency -> d is ProjectDependency} // : (Dependency) -> Boolean
-
-    val collector = { d : Dependency -> d.dependencyProject.sourceSets.main.output }
-
-    val jar: Jar by taskScope
-    jar.apply {
-        archiveClassifier.set("all")
-        from(sourceSets.main.get().output)
-        dependsOn(configurations.runtimeClasspath)
-        from(configurations.runtimeClasspath.get().allDependencies.findAll( isDependency ).collect(collector))
-
-        manifest {
-            attributes(mapOf(
-                    "Implementation-Version" to project.version,
-                    "Implementation-Vendor" to "New Relic, Inc.",
-                    "Automatic-Module-Name" to "com.newrelic.telemetry"
-            ))
-        }
-    }
-
-}
-
