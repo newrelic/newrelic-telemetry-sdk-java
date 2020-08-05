@@ -1,4 +1,6 @@
 private object Versions {
+        const val slf4j = "1.7.30"
+        const val gson = "2.8.6"
 }
 
 plugins {
@@ -11,10 +13,24 @@ configure<JavaPluginConvention> {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+sourceSets {
+    main {
+        java.setSrcDirs(listOf(
+                "src/main/java",
+                "../telemetry_core/src/main/java",
+                "../telemetry/src/main/java",
+                "../telemetry-http-java11/src/main/java"
+        ))
+        resources.setSrcDirs(listOf(
+                "../telemetry_core/src/main/resources",
+                "../telemetry/src/main/resources",
+                "../telemetry-http-java11/src/main/resources"
+        ))
+    }
+}
 dependencies {
-    "implementation"(project(":telemetry-core"))
-    "implementation"(project(":telemetry"))
-    "implementation"(project(":telemetry-http-java11"))
+    api("org.slf4j:slf4j-api:${Versions.slf4j}")
+    implementation("com.google.code.gson:gson:${Versions.gson}")
 }
 
 //plugins.withType<JavaPlugin>().configureEach {
