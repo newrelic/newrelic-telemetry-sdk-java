@@ -47,6 +47,7 @@ class MetricBufferTest {
     MetricBuffer metricBuffer = new MetricBuffer(expectedCommonAttributes);
     Gauge expectedGauge =
         new Gauge("testGauge", 100.00, System.currentTimeMillis(), new Attributes());
+    assertEquals(0, metricBuffer.size());
     metricBuffer.addMetric(expectedGauge);
     assertEquals(1, metricBuffer.size());
   }
