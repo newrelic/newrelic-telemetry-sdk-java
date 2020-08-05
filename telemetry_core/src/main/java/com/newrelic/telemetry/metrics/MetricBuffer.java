@@ -48,6 +48,13 @@ public final class MetricBuffer {
   }
 
   /**
+   * Get the size of the {@link Metric Metrics} buffer.
+   * @return Size of the {@link Metric Metrics} buffer.
+   */
+  public int size() {
+    return metrics.size();
+  }
+  /**
    * Creates a new {@link MetricBatch} from the contents of this buffer, then clears the contents of
    * this buffer.
    *
