@@ -49,6 +49,7 @@ public final class MetricBuffer {
 
   /**
    * Get the size of the {@link Metric Metrics} buffer.
+   *
    * @return Size of the {@link Metric Metrics} buffer.
    */
   public int size() {
