@@ -46,6 +46,15 @@ public final class EventBuffer {
   }
 
   /**
+   * Get the size of the {@link Event Events} buffer.
+   *
+   * @return Size of the {@link Event Events} buffer.
+   */
+  public int size() {
+    return events.size();
+  }
+
+  /**
    * Creates a new {@link EventBatch} from the contents of this buffer, then clears the contents of
    * this buffer.
    *
