@@ -15,7 +15,7 @@ class EventBufferTest {
     Event expectedEvent =
         new Event("myEvent", new Attributes().put("key1", "val1"), currentTimeMillis);
     assertEquals(0, eventBuffer.size());
-    eventBuffer.addMetric(expectedEvent);
+    eventBuffer.addEvent(expectedEvent);
     assertEquals(1, eventBuffer.size());
   }
 }
