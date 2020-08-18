@@ -8,6 +8,7 @@ package com.newrelic.telemetry.transport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 
 class BatchDataSenderTest {
@@ -95,5 +98,28 @@ class BatchDataSenderTest {
 
     assertNotNull(exception.getCause());
     assertEquals("timeout", exception.getCause().getMessage());
+  }
+
+  @Test
+  void testRequestIdHeaderIsSet() throws Exception {
+    URL endpointURl = new URL("http://example.com");
+    HttpPoster httpPoster = mock(HttpPoster.class);
+    UUID requestId = UUID.fromString("abc-123-def-dead-beef");
+    Map<String, String> headers =
+            ImmutableMap.of(
+                    "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
+                    "Api-Key", "api-key",
+                    "X-Request-Id", requestId.toString(),
+                    "Content-Encoding", "gzip");
+    when(httpPoster.post(
+            eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
+            .thenReturn(new HttpResponse("orangeAnimal", 202, "OK", Collections.emptyMap()));
+
+    BatchDataSender testClass =
+            new BatchDataSender(httpPoster, "api-key", endpointURl, false, null);
+
+    Response response = testClass.send("{}", requestId);
+
+    assertEquals(new Response(202, "OK", "orangeAnimal"), response);
   }
 }
