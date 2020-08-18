@@ -43,7 +43,7 @@ class MetricBatchSenderTest {
     BatchDataSender sender = mock(BatchDataSender.class);
 
     when(marshaller.toJson(batch)).thenReturn(json);
-    when(sender.send(json)).thenReturn(response);
+    when(sender.send(json, batch.getUuid())).thenReturn(response);
 
     MetricBatchSender testClass = new MetricBatchSender(marshaller, sender);
 
