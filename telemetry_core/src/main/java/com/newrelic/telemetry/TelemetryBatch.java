@@ -73,7 +73,7 @@ public abstract class TelemetryBatch<T extends Telemetry> {
     return commonAttributes;
   }
 
-  public UUID getUuid(){
+  public UUID getUuid() {
     return uuid;
   }
 

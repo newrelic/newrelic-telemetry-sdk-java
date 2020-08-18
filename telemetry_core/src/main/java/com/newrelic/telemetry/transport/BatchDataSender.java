@@ -109,7 +109,7 @@ public class BatchDataSender {
     Map<String, String> headers = new HashMap<>();
     headers.put("Api-Key", apiKey);
     headers.put("Content-Encoding", "gzip");
-    if(requestId != null){
+    if (requestId != null) {
       headers.put("X-Request-Id", requestId.toString());
     }
     headers.put("User-Agent", userAgent);

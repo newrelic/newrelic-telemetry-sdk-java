@@ -8,7 +8,6 @@ package com.newrelic.telemetry.transport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -24,7 +23,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 class BatchDataSenderTest {
@@ -37,10 +35,14 @@ class BatchDataSenderTest {
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
-            "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
-            "Api-Key", "api-key",
-            "X-Request-Id", requestId.toString(),
-            "Content-Encoding", "gzip");
+            "User-Agent",
+            BatchDataSender.BASE_USER_AGENT_VALUE,
+            "Api-Key",
+            "api-key",
+            "X-Request-Id",
+            requestId.toString(),
+            "Content-Encoding",
+            "gzip");
     // note: not testing the gzipping here
     when(httpPoster.post(
             eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
@@ -60,10 +62,14 @@ class BatchDataSenderTest {
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
-            "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE + " mySpecialUserAgent/1.0",
-            "Api-Key", "api-key",
-                "X-Request-Id", requestId.toString(),
-                "Content-Encoding", "gzip");
+            "User-Agent",
+            BatchDataSender.BASE_USER_AGENT_VALUE + " mySpecialUserAgent/1.0",
+            "Api-Key",
+            "api-key",
+            "X-Request-Id",
+            requestId.toString(),
+            "Content-Encoding",
+            "gzip");
     // note: not testing the gzipping here
     when(httpPoster.post(
             eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
@@ -83,10 +89,14 @@ class BatchDataSenderTest {
     HttpPoster httpPoster = mock(HttpPoster.class);
     Map<String, String> headers =
         ImmutableMap.of(
-            "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
-            "Api-Key", "api-key",
-              "X-Request-Id", requestId.toString(),
-              "Content-Encoding", "gzip");
+            "User-Agent",
+            BatchDataSender.BASE_USER_AGENT_VALUE,
+            "Api-Key",
+            "api-key",
+            "X-Request-Id",
+            requestId.toString(),
+            "Content-Encoding",
+            "gzip");
     // note: not testing the gzipping here
     when(httpPoster.post(
             eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
