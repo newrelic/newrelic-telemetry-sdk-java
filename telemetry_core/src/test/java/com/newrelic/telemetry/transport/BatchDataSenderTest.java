@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Test;
 
 class BatchDataSenderTest {
 
+  private final UUID requestId = UUID.fromString("abc-123-def-dead-beef");
+
   @Test
   void testSend_noSecondaryUserAgent() throws Exception {
     URL endpointURl = new URL("http://example.com");
@@ -37,6 +39,7 @@ class BatchDataSenderTest {
         ImmutableMap.of(
             "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
             "Api-Key", "api-key",
+            "X-Request-Id", requestId.toString(),
             "Content-Encoding", "gzip");
     // note: not testing the gzipping here
     when(httpPoster.post(
@@ -46,7 +49,7 @@ class BatchDataSenderTest {
     BatchDataSender testClass =
         new BatchDataSender(httpPoster, "api-key", endpointURl, false, null);
 
-    Response response = testClass.send("{}");
+    Response response = testClass.send("{}", requestId);
 
     assertEquals(new Response(202, "OK", "yepyep"), response);
   }
@@ -59,7 +62,8 @@ class BatchDataSenderTest {
         ImmutableMap.of(
             "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE + " mySpecialUserAgent/1.0",
             "Api-Key", "api-key",
-            "Content-Encoding", "gzip");
+                "X-Request-Id", requestId.toString(),
+                "Content-Encoding", "gzip");
     // note: not testing the gzipping here
     when(httpPoster.post(
             eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
@@ -68,7 +72,7 @@ class BatchDataSenderTest {
     BatchDataSender testClass =
         new BatchDataSender(httpPoster, "api-key", endpointURl, false, "mySpecialUserAgent/1.0");
 
-    Response response = testClass.send("{}");
+    Response response = testClass.send("{}", requestId);
 
     assertEquals(new Response(202, "OK", "yepyep"), response);
   }
@@ -81,7 +85,8 @@ class BatchDataSenderTest {
         ImmutableMap.of(
             "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
             "Api-Key", "api-key",
-            "Content-Encoding", "gzip");
+              "X-Request-Id", requestId.toString(),
+              "Content-Encoding", "gzip");
     // note: not testing the gzipping here
     when(httpPoster.post(
             eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
@@ -93,33 +98,10 @@ class BatchDataSenderTest {
     RetryWithBackoffException exception =
         assertThrows(
             RetryWithBackoffException.class,
-            () -> testClass.send("{}"),
+            () -> testClass.send("{}", requestId),
             "Should have thrown a retry with backoff");
 
     assertNotNull(exception.getCause());
     assertEquals("timeout", exception.getCause().getMessage());
-  }
-
-  @Test
-  void testRequestIdHeaderIsSet() throws Exception {
-    URL endpointURl = new URL("http://example.com");
-    HttpPoster httpPoster = mock(HttpPoster.class);
-    UUID requestId = UUID.fromString("abc-123-def-dead-beef");
-    Map<String, String> headers =
-            ImmutableMap.of(
-                    "User-Agent", BatchDataSender.BASE_USER_AGENT_VALUE,
-                    "Api-Key", "api-key",
-                    "X-Request-Id", requestId.toString(),
-                    "Content-Encoding", "gzip");
-    when(httpPoster.post(
-            eq(endpointURl), eq(headers), any(), eq("application/json; charset=utf-8")))
-            .thenReturn(new HttpResponse("orangeAnimal", 202, "OK", Collections.emptyMap()));
-
-    BatchDataSender testClass =
-            new BatchDataSender(httpPoster, "api-key", endpointURl, false, null);
-
-    Response response = testClass.send("{}", requestId);
-
-    assertEquals(new Response(202, "OK", "orangeAnimal"), response);
   }
 }

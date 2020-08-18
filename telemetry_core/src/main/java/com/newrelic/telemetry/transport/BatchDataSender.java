@@ -71,12 +71,6 @@ public class BatchDataSender {
     return BASE_USER_AGENT_VALUE + " " + additionalUserAgent;
   }
 
-  public Response send(String json)
-          throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
-          RetryWithRequestedWaitException {
-    return send(json, null);
-  }
-
   public Response send(String json, UUID batchId)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
           RetryWithRequestedWaitException {
