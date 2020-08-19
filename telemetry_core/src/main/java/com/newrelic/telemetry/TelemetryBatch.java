@@ -11,10 +11,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /** Represents a collection of {@link Telemetry} instances and some common attributes */
 public abstract class TelemetryBatch<T extends Telemetry> {
 
+  private final UUID uuid = UUID.randomUUID();
   private Collection<T> telemetry;
 
   private Attributes commonAttributes;
@@ -69,6 +71,10 @@ public abstract class TelemetryBatch<T extends Telemetry> {
 
   public Attributes getCommonAttributes() {
     return commonAttributes;
+  }
+
+  public UUID getUuid() {
+    return uuid;
   }
 
   @Override

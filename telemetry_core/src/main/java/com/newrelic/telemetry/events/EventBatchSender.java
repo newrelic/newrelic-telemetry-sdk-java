@@ -54,7 +54,7 @@ public class EventBatchSender {
         batch.size());
     String json = marshaller.toJson(batch);
 
-    return sender.send(json);
+    return sender.send(json, batch.getUuid());
   }
 
   /**

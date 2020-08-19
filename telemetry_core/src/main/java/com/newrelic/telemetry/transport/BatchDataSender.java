@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class BatchDataSender {
     return BASE_USER_AGENT_VALUE + " " + additionalUserAgent;
   }
 
-  public Response send(String json)
+  public Response send(String json, UUID batchId)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
           RetryWithRequestedWaitException {
     if (auditLoggingEnabled) {
@@ -78,7 +79,7 @@ public class BatchDataSender {
     }
     byte[] payload = generatePayload(json);
 
-    return sendPayload(payload);
+    return sendPayload(payload, batchId);
   }
 
   private byte[] generatePayload(String json) throws DiscardBatchException {
@@ -102,12 +103,15 @@ public class BatchDataSender {
     return compressedOutput.toByteArray();
   }
 
-  private Response sendPayload(byte[] payload)
+  private Response sendPayload(byte[] payload, UUID requestId)
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
           RetryWithRequestedWaitException {
     Map<String, String> headers = new HashMap<>();
     headers.put("Api-Key", apiKey);
     headers.put("Content-Encoding", "gzip");
+    if (requestId != null) {
+      headers.put("X-Request-Id", requestId.toString());
+    }
     headers.put("User-Agent", userAgent);
     try {
       HttpResponse response = client.post(endpointURl, headers, payload, MEDIA_TYPE);
