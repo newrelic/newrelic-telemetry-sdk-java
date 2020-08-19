@@ -99,6 +99,9 @@ class LogApiIntegrationTest {
                         new LogPayload[] {expectedPayload}, MediaType.JSON_UTF_8, MatchType.STRICT))
                 .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* myTestApp")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
+                .withHeader(
+                    "X-Request-Id",
+                    "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$")
                 .withHeader("Content-Length", ".*"))
         .respond(new HttpResponse().withStatusCode(202));
 

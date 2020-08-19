@@ -89,8 +89,8 @@ class EventApiIntegrationTest {
   }
 
   @Test
-  @DisplayName("Low Level SDK can send a metric batch and returns a successful response")
-  void testSuccessfulMetricSend() throws Exception {
+  @DisplayName("Low Level SDK can send an event batch and returns a successful response")
+  void testSuccessfulEventBatchSend() throws Exception {
     List<Map<String, Object>> expectedPayload =
         Arrays.asList(
             ImmutableMap.<String, Object>builder()
@@ -108,6 +108,9 @@ class EventApiIntegrationTest {
                 .withBody(json)
                 .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* testApplication/1.0.0")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
+                .withHeader(
+                    "X-Request-Id",
+                    "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$")
                 .withHeader("Content-Length", ".*"))
         .respond(new HttpResponse().withStatusCode(202));
 
@@ -124,8 +127,8 @@ class EventApiIntegrationTest {
   }
 
   @Test
-  @DisplayName("SDK responds with RetryWithBackoffException to MetricBatchSender timeout")
-  void testMetricBatchSenderTimeoutExceptionResponse() throws Exception {
+  @DisplayName("SDK responds with RetryWithBackoffException to EventBatchSender timeout")
+  void testEventBatchSenderTimeoutExceptionResponse() throws Exception {
     mockServerClient
         .when(
             new HttpRequest()
@@ -179,7 +182,7 @@ class EventApiIntegrationTest {
   @ParameterizedTest
   @MethodSource("codesAndExpectedExceptions")
   @DisplayName("SDK responds appropriately to non-202s by suggesting a course of action.")
-  void testMetricSendResponseCodes(
+  void testEventBatchSendResponseCodes(
       int statusCode, Class<? extends ResponseException> exceptionClass, String exceptionMessage)
       throws Exception {
     mockServerClient
