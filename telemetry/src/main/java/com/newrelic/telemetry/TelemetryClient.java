@@ -167,10 +167,13 @@ public class TelemetryClient {
       long waitTime,
       TimeUnit timeUnit,
       Backoff backoff) {
+    if (executor.isTerminated()) {
+      return;
+    }
     try {
       executor.schedule(() -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
-      LOG.error("Problem scheduling batch.", e);
+      LOG.error("Problem scheduling batch.");
     }
   }
 
