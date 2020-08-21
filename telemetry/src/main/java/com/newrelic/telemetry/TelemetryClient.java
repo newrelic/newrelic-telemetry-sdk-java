@@ -173,7 +173,7 @@ public class TelemetryClient {
     try {
       executor.schedule(() -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
-      LOG.error("Problem scheduling batch.");
+      LOG.error("Problem scheduling batch : " + e.getMessage());
     }
   }
 
