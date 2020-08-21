@@ -17,14 +17,15 @@ import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class should be the go-to spot for sending telemetry to New Relic. It includes the canonical
@@ -167,10 +168,13 @@ public class TelemetryClient {
       long waitTime,
       TimeUnit timeUnit,
       Backoff backoff) {
+    if(executor.isTerminated()){
+      return;
+    }
     try {
       executor.schedule(() -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
-      LOG.error("Problem scheduling batch.", e);
+      LOG.error("Problem scheduling batch.");
     }
   }
 
