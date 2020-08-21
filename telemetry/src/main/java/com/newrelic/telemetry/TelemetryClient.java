@@ -168,7 +168,7 @@ public class TelemetryClient {
       long waitTime,
       TimeUnit timeUnit,
       Backoff backoff) {
-    if(executor.isTerminated()){
+    if (executor.isTerminated()) {
       return;
     }
     try {
