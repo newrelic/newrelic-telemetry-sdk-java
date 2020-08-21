@@ -4,15 +4,21 @@
  */
 package com.newrelic.telemetry.json;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.Metric;
 import com.newrelic.telemetry.metrics.MetricBatch;
 import com.newrelic.telemetry.metrics.json.MetricBatchJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.metrics.json.MetricToJson;
+
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,5 +53,21 @@ class MetricBatchJsonTelemetryBlockWriterTest {
     testClass.appendTelemetryJson(metricBatch, stringBuilder);
 
     JSONAssert.assertEquals(expectedTelemetryJsonBlock, stringBuilder.toString(), false);
+  }
+
+  @Test
+  void testInvalidMetrics() {
+    Gauge invalidGauge1 = new Gauge("crumb", Float.NaN, System.currentTimeMillis(), new Attributes());
+    Gauge invalidGauge2 = new Gauge("crumb", Float.NEGATIVE_INFINITY, System.currentTimeMillis(), new Attributes());
+    List<Metric> metrics = Arrays.asList(gauge, invalidGauge1, invalidGauge2);
+    metricBatch = new MetricBatch(metrics, commonAttributes);
+    when(metricToJson.writeGaugeJson(gauge)).thenReturn("valid one");
+    when(metricToJson.writeGaugeJson(invalidGauge1)).thenReturn("SUPER DUPER INVALID");
+    when(metricToJson.writeGaugeJson(invalidGauge2)).thenReturn("SUPER DUPER INVALID");
+    MetricBatchJsonTelemetryBlockWriter testClass =
+            new MetricBatchJsonTelemetryBlockWriter(metricToJson);
+    StringBuilder builder = new StringBuilder();
+    testClass.appendTelemetryJson(metricBatch, builder);
+    assertEquals("\"metrics\":[valid one]", builder.toString());
   }
 }

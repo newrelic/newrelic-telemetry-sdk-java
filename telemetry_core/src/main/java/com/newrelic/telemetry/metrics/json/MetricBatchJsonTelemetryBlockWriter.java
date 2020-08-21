@@ -9,6 +9,7 @@ import static java.lang.Double.isFinite;
 import com.newrelic.telemetry.metrics.*;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -42,12 +43,24 @@ public class MetricBatchJsonTelemetryBlockWriter {
           "Dropped "
               + (metrics.size() - retainedCount.get())
               + " metrics from batch due to invalid metric contents (you should fix this)");
-      metrics
-          .stream()
-          .filter(this::isInvalid)
-          .forEach(invalidMetric -> logger.debug("  * Dropped " + toJsonString(invalidMetric)));
+      logAllInvalid(metrics);
     }
     builder.append("]");
+  }
+
+  private void logAllInvalid(Collection<Metric> metrics) {
+    metrics
+        .stream()
+        .filter(this::isInvalid)
+        .forEach(this::logInvalid);
+  }
+
+  private void logInvalid(Metric invalidMetric) {
+    logger.debug("  * Dropped " +
+            typeDispatch(invalidMetric,
+                    count -> "Count(name=" + count.getName() + ",  value = " + count.getValue() + ")",
+                    gauge -> "Gauge(name=" + gauge.getName() + ", value = " + gauge.getValue() + ")",
+                    summary -> "Summary(name=" + summary.getName() + ", value = " + summary.getSum()));
   }
 
   private boolean isInvalid(Metric metric) {
