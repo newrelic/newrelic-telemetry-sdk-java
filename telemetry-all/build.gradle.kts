@@ -33,12 +33,6 @@ dependencies {
     implementation("com.google.code.gson:gson:${Versions.gson}")
 }
 
-//plugins.withType<JavaPlugin>().configureEach {
-//    configure<JavaPluginExtension> {
-//        modularity.inferModulePath.set(true)
-//    }
-//}
-
 tasks.register<Jar>("jarAll") {
     dependsOn(configurations.runtimeClasspath)
     from(sourceSets["main"].output)
