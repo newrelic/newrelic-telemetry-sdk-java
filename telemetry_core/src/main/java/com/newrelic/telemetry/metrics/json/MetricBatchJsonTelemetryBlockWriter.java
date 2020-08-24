@@ -42,8 +42,27 @@ public class MetricBatchJsonTelemetryBlockWriter {
           "Dropped "
               + (metrics.size() - retainedCount.get())
               + " metrics from batch due to invalid metric contents (you should fix this)");
+      logAllInvalid(metrics);
     }
     builder.append("]");
+  }
+
+  private void logAllInvalid(Collection<Metric> metrics) {
+    metrics.stream().filter(this::isInvalid).forEach(this::logInvalid);
+  }
+
+  private void logInvalid(Metric invalidMetric) {
+    logger.debug(
+        "  * Dropped "
+            + typeDispatch(
+                invalidMetric,
+                count -> "Count(name=" + count.getName() + ",  value = " + count.getValue() + ")",
+                gauge -> "Gauge(name=" + gauge.getName() + ", value = " + gauge.getValue() + ")",
+                summary -> "Summary(name=" + summary.getName() + ", value = " + summary.getSum()));
+  }
+
+  private boolean isInvalid(Metric metric) {
+    return !isValid(metric);
   }
 
   private boolean isValid(Metric metric) {

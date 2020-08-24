@@ -39,6 +39,20 @@ class MetricBufferTest {
   }
 
   @Test
+  @DisplayName("Get size of Metrics")
+  void testMetricsSize() {
+    Attributes expectedCommonAttributes =
+        new Attributes().put("key1", "value1").put("key2", true).put("key3", 123.456);
+
+    MetricBuffer metricBuffer = new MetricBuffer(expectedCommonAttributes);
+    Gauge expectedGauge =
+        new Gauge("testGauge", 100.00, System.currentTimeMillis(), new Attributes());
+    assertEquals(0, metricBuffer.size());
+    metricBuffer.addMetric(expectedGauge);
+    assertEquals(1, metricBuffer.size());
+  }
+
+  @Test
   @DisplayName("Null keys & values don't break things")
   void testNullValues() {
     Attributes commonAttributes = new Attributes();

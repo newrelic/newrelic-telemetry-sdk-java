@@ -1,6 +1,7 @@
 package com.newrelic.telemetry.events;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -43,13 +44,17 @@ public class EventBatchSenderTest {
 
     Response ok = new Response(200, "OK", "yup");
     BatchDataSender sender = mock(BatchDataSender.class);
-    when(sender.send(json)).thenThrow(RetryWithSplitException.class).thenReturn(ok);
+    when(sender.send(json, batch.getUuid()))
+        .thenThrow(RetryWithSplitException.class)
+        .thenReturn(ok);
 
     EventBatchSender testClass = new EventBatchSender(marshaller, sender);
 
-    Response result = testClass.sendBatch(batch);
-    assertEquals(ok, result);
-    verify(sender, times(3)).send(any());
+    assertThrows(
+        RetryWithSplitException.class,
+        () -> {
+          testClass.sendBatch(batch);
+        });
   }
 
   @Test

@@ -74,7 +74,7 @@ public class SpanBatchSender {
         "Sending a span batch (number of spans: {}) to the New Relic span ingest endpoint)",
         batch.size());
     String json = marshaller.toJson(batch);
-    return sender.send(json);
+    return sender.send(json, batch.getUuid());
   }
 
   /**

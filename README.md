@@ -31,20 +31,20 @@ Maven dependencies:
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry</artifactId>
-      <version>0.6.1</version>
+      <version>0.7.0</version>
     </dependency>
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry-http-okhttp</artifactId>
-      <version>0.6.1</version>
+      <version>0.7.0</version>
     </dependency>
 ```
 
 Gradle dependencies: 
 
 ```
-implementation("com.newrelic.telemetry:telemetry:0.6.1")
-implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.6.1")
+implementation("com.newrelic.telemetry:telemetry:0.7.0")
+implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.7.0")
 ```
 
 Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
@@ -191,7 +191,7 @@ After the staging release job has run successfully it will publish the new artif
 #### Post Release
 
 Submit and merge a PR with the following:
-* Update the [build.gradle.kts](build.gradle.kts) file with to a snapshot version of a potential future release (e.g. `version  := "0.6.1-SNAPSHOT"`).
+* Update the [build.gradle.kts](build.gradle.kts) file with to a snapshot version of a potential future release (e.g. `version  := "0.7.0-SNAPSHOT"`).
 * Update the [CHANGELOG](CHANGELOG.md) with details of the new release:
   ```markdown
   ## [0.6.0]

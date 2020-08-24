@@ -5,7 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Coming soon
+- remove several deprecated APIs
+
+## [0.7.0] - 2020-07-27
 - Quieter logging when IOExceptions occur during data transmission.
+- Improve accuracy of version handling when bundled with other software (onejar/shadowjar)
+- Add `.endpoint(url)` to the `SenderConfiguration` and deprecate the others that don't take a fully qualified URL.
+- Better support for SLF4J with Java 11 modules system
+- Add simple one-shot factory methods `OkHttp.newTelemetryClient()` and `Java11Http.newTelemetryClient()`
+- Upgrade to OkHttp 4.8.0 (latest)  
 
 ## [0.6.1] - 2020-06-18
 - Fix the default metric API URL to point at the metric API
