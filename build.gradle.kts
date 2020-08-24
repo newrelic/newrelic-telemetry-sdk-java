@@ -49,7 +49,8 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telem
                 manifest {
                     attributes(mapOf(
                             "Implementation-Version" to project.version,
-                            "Implementation-Vendor" to "New Relic, Inc."
+                            "Implementation-Vendor" to "New Relic, Inc.",
+                            "Automatic-Module-Name" to "com.newrelic.telemetry" // Hack
                     ))
                 }
             }
