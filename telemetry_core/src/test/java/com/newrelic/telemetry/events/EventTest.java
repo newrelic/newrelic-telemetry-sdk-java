@@ -1,9 +1,9 @@
 package com.newrelic.telemetry.events;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.newrelic.telemetry.Attributes;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EventTest {
 
