@@ -24,6 +24,9 @@ public final class Event implements Telemetry {
    * @param attributes The key-value pairs that make up the event.
    */
   public Event(String eventType, Attributes attributes, long timestamp) {
+    if (eventType == null || "".equals(eventType)) {
+      throw new IllegalArgumentException("eventType must not be empty.");
+    }
     this.eventType = eventType;
     this.attributes = attributes;
     this.timestamp = timestamp;
