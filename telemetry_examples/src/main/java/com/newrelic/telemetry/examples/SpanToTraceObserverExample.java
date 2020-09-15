@@ -26,7 +26,7 @@ public class SpanToTraceObserverExample {
       Arrays.asList("apples", "oranges", "papayas", "mangoes");
 
   public static void main(String[] args) throws ResponseException, MalformedURLException {
-    logger.info("Starting the SpanExample");
+    logger.info("Starting the SpanToTraceObserverExample");
     String apiInsertKey = args[0];
     String apiUrl = args[1];
 
