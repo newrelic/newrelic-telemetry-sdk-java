@@ -31,6 +31,19 @@ This example shows you how you can send spans to the New Relic trace ingest api.
 It demonstrates how to use the `SimpleSpanBatchSender` to easily create a `SpanBatchSender`
 that can be fed a `SpanBatch`.
 
+#### [SpanToTraceObserverExample.java](src/main/java/com/newrelic/telemetry/examples/SpanToTraceObserverExample.java)
+
+This example shows you how you can send spans to an alternate endpoint.  In this case, we are sending to a provisioned TraceObserver for Infinite Tracing on the New Relic Edge. 
+Sending spans to a TraceObserver requires a modification to the default behavior. The default behavior is to send data to the Portland production US endpoints.
+The example demonstrates how to use the `SpanBatchSenderFactory` to easily create a `SpanBatchSender` and change the endpoint by providing the URL of 
+a provisioned TraceObserver.  
+The expected TraceObserver URL format is given below.
+
+`https://<Your-TraceObserver-UUID>.aws-us-east-1.tracing.edge.nr-data.net:443/trace/v1`
+ 
+For more information on TraceObserver and Infinite Tracing [go here.](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/enable-configure/language-agents-enable-distributed-tracing#provision-trace-observer)
+
+
 #### [TelemetryClientExample.java](src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 
 This is an example of how to use the provided `com.newrelic.telemetry.TelemetryClient` to handle
@@ -38,9 +51,13 @@ errors in the recommended way.
 
 ### Running the examples
 
-You can run the examples using gradle tasks.  You'll need your [New Relic Event Insert API Key](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/introduction-event-api#register).
+You can build the examples using gradle tasks.  You'll need your [New Relic Event Insert API Key](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/introduction-event-api#register).
 Provide the API key as the `-PapiKey=<your-api-key>` property and run the gradle task in the usual way, as shown below.
-The command below will run the BoundaryExample class.
+The command below will run the `BoundaryExample` class.
 
 `./gradlew telemetry_examples:BoundaryExample -PapiKey=<Your Insert API Key>`
 
+
+The `SpanToTraceObserverExample` requires two arguments.
+
+`./gradlew telemetry_examples:SpanToTraceObserverExample --args=<'Your Insert API Key> <https://<Your-TraceObserver-UUID>.aws-us-east-1.tracing.edge.nr-data.net:443/trace/v1'>`
