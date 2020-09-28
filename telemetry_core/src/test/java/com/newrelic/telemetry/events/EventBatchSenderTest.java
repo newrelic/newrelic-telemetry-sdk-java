@@ -75,7 +75,7 @@ public class EventBatchSenderTest {
             expected.getStatusCode(),
             expected.getStatusMessage(),
             new HashMap<>());
-    URL url = URI.create("https://trace-api.newrelic.com/v1/accounts/events").toURL();
+    URL url = URI.create("https://insights-collector.newrelic.com/v1/accounts/events").toURL();
 
     HttpPoster poster = mock(HttpPoster.class);
     Event event = new Event("mytype", new Attributes().put("a", "b"));

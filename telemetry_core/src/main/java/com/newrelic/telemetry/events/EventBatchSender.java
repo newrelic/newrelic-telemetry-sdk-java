@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventBatchSender {
   private static final String EVENTS_PATH = "/v1/accounts/events";
-  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
+  private static final String DEFAULT_URL = "https://insights-collector.newrelic.com/";
 
   private static final Logger logger = LoggerFactory.getLogger(EventBatchSender.class);
 
