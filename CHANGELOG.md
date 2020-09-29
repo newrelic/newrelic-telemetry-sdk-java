@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CRITICAL: Fix default ingest URI for event data. Upgrade strongly recommended.
 - Size of `MetricBuffer` [is now exposed via `size()` method](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/215).
 - [x-request-id header is now included](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/218) on data ingest http requests, and `TelemetryBatch` instances each have a UUID.
-- Cleaner, [less verbose shutdown](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/220)
-- Events now [disallow null and empty event types](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/221/files).
+- Cleaner, [less verbose shutdown](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/220).
+- Events now [disallow null and empty event types](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/221).
 - When audit logging is enabled, dropped metrics [will now be logged](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/222) for troubleshooting.
 - We now have [an example](https://github.com/newrelic/newrelic-telemetry-sdk-java/blob/main/telemetry_examples/src/main/java/com/newrelic/telemetry/examples/SpanToTraceObserverExample.java) of how to send spans to an Infinite Tracing trace observer.
 
