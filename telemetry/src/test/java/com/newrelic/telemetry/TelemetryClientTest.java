@@ -206,7 +206,7 @@ class TelemetryClientTest {
     CountDownLatch latch = new CountDownLatch(1);
     Event event = new Event("flim", new Attributes().put("x", "y"));
     EventBatch metrics = new EventBatch(singletonList(event), new Attributes().put("a", "b"));
-    URL url = URI.create("https://trace-api.newrelic.com/v1/accounts/events").toURL();
+    URL url = URI.create("https://insights-collector.newrelic.com/v1/accounts/events").toURL();
 
     TelemetryClient client = TelemetryClient.create(posterSupplier, baseConfig);
 
