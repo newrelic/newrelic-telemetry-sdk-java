@@ -12,7 +12,7 @@ plugins {
 allprojects {
     group = "com.newrelic.telemetry"
     val release: String? by project
-    version = if("true" == release) version else "${version}-SNAPSHOT"
+    version = if ("true" == release) version else "${version}-SNAPSHOT"
     repositories {
         mavenCentral()
         jcenter()
