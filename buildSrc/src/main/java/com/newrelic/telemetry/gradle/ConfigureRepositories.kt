@@ -13,7 +13,7 @@ fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype
             if (useLocalSonatype) {
                 val releasesRepoUrl = project.uri("http://localhost:8081/repository/maven-releases/")
                 val snapshotsRepoUrl = project.uri("http://localhost:8081/repository/maven-snapshots/")
-                url = if("true" == release) releasesRepoUrl else snapshotsRepoUrl
+                url = if ("true" == release) releasesRepoUrl else snapshotsRepoUrl
             }
             else {
                 val releasesRepoUrl = project.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
