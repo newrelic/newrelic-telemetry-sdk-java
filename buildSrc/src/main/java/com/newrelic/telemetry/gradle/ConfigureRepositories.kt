@@ -18,7 +18,7 @@ fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype
             else {
                 val releasesRepoUrl = project.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
                 val snapshotsRepoUrl = project.uri("https://oss.sonatype.org/content/repositories/snapshots/")
-                url = if("true" == release) releasesRepoUrl else snapshotsRepoUrl
+                url = if ("true" == release) releasesRepoUrl else snapshotsRepoUrl
                 project.configure<SigningExtension> {
                     val signingKey : String? = project.properties["signingKey"] as String?
                     val signingKeyId: String? = project.properties["signingKeyId"] as String?
