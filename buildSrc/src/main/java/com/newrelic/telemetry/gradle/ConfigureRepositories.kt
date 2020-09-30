@@ -6,19 +6,19 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.plugins.signing.SigningExtension
 
-fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype: Boolean, publicationName: String) {
+fun PublishingExtension.configureRepositories(project: Project, useLocalSonatype: Boolean, publicationName: String, release: String?) {
     val publishing = this;
     repositories {
         maven {
             if (useLocalSonatype) {
                 val releasesRepoUrl = project.uri("http://localhost:8081/repository/maven-releases/")
                 val snapshotsRepoUrl = project.uri("http://localhost:8081/repository/maven-snapshots/")
-                url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                url = if("true" == release) releasesRepoUrl else snapshotsRepoUrl
             }
             else {
                 val releasesRepoUrl = project.uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
                 val snapshotsRepoUrl = project.uri("https://oss.sonatype.org/content/repositories/snapshots/")
-                url = if (project.version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                url = if("true" == release) releasesRepoUrl else snapshotsRepoUrl
                 project.configure<SigningExtension> {
                     val signingKey : String? = project.properties["signingKey"] as String?
                     val signingKeyId: String? = project.properties["signingKeyId"] as String?
