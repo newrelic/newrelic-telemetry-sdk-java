@@ -31,7 +31,6 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telem
         apply(plugin = "maven-publish")
         apply(plugin = "signing")
         val release: String? by project
-        version = if("true" == release) version else "${version}-SNAPSHOT"
         tasks {
             val taskScope = this
             val sources = sourceSets
