@@ -11,7 +11,8 @@ plugins {
 
 allprojects {
     group = "com.newrelic.telemetry"
-    version = project.findProperty("releaseVersion") as String
+    val release: String? by project
+    version = if ("true" == release) version else "${version}-SNAPSHOT"
     repositories {
         mavenCentral()
         jcenter()
@@ -29,6 +30,7 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telem
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
         apply(plugin = "signing")
+        val release: String? by project
         tasks {
             val taskScope = this
             val sources = sourceSets
@@ -56,7 +58,6 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telem
             }
         }
         val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
-
         configure<PublishingExtension> {
             publications {
                 create<MavenPublication>("mavenJava") {
@@ -66,7 +67,7 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telem
                     configuredPom(project)
                 }
             }
-            configureRepositories(project, useLocalSonatype, "mavenJava")
+            configureRepositories(project, useLocalSonatype, "mavenJava", release)
         }
     }
 }

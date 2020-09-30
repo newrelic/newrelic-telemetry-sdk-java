@@ -84,6 +84,7 @@ tasks {
 }
 
 val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
+val release: String? by project
 
 configure<PublishingExtension> {
     publications {
@@ -94,5 +95,5 @@ configure<PublishingExtension> {
             configuredPom(project)
         }
     }
-    configureRepositories(project, useLocalSonatype, "mavenJava")
+    configureRepositories(project, useLocalSonatype, "mavenJava", release)
 }
