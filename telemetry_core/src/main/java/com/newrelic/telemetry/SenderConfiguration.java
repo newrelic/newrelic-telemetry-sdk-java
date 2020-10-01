@@ -95,6 +95,7 @@ public class SenderConfiguration {
      * @throws MalformedURLException If a valid URL cannot be constructed from the pieces provided.
      * @deprecated call the simpler endpoint(URL) method with the full URL instead
      */
+    @Deprecated
     public SenderConfigurationBuilder endpoint(String scheme, String host, int port)
         throws MalformedURLException {
       return endpointWithPath(new URL(scheme, host, port, basePath));
@@ -109,6 +110,7 @@ public class SenderConfiguration {
      * @param endpointUrl A full {@link URL}, including the path.
      * @return this builder.
      */
+    @Deprecated
     public SenderConfigurationBuilder endpointWithPath(URL endpointUrl) {
       return endpoint(endpointUrl);
     }
