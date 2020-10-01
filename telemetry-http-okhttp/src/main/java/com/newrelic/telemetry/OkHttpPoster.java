@@ -25,12 +25,20 @@ public class OkHttpPoster implements HttpPoster {
     this(Duration.ofSeconds(2));
   }
 
-  /** Create an OkHttpPoster with a default OkHttpClient, with only a custom call timeout. */
+  /**
+   * Create an OkHttpPoster with a default OkHttpClient, with only a custom http timeout.
+   *
+   * @param callTimeout expected call timeout
+   */
   public OkHttpPoster(Duration callTimeout) {
     this(new OkHttpClient.Builder().callTimeout(callTimeout).build());
   }
 
-  /** Create an OkHttpPoster with your own OkHttpClient implementation. */
+  /**
+   * Create an OkHttpPoster with your own OkHttpClient implementation.
+   *
+   * @param client http client responsible for the http communication
+   */
   public OkHttpPoster(OkHttpClient client) {
     this.okHttpClient = client;
   }
