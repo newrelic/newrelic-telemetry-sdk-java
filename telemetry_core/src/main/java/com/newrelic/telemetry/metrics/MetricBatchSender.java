@@ -44,6 +44,7 @@ public class MetricBatchSender {
    *
    * <p>To be removed in 0.8.0
    *
+   * @return a new metric batch sender builder
    * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
    */
   @Deprecated
@@ -93,6 +94,7 @@ public class MetricBatchSender {
   /**
    * Build the final {@link MetricBatchSender}.
    *
+   * @param configuration new relict rest api ingest configurations
    * @return the fully configured MetricBatchSender object
    */
   public static MetricBatchSender create(SenderConfiguration configuration) {

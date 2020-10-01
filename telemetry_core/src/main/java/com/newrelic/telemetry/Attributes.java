@@ -21,16 +21,29 @@ public class Attributes {
   /** Creates an empty object */
   public Attributes() {}
 
-  /** Creates a copy. Changes to the new copy will not affect the original and vice versa. */
+  /**
+   * @param original Creates a copy. Changes to the new copy will not affect the original and vice
+   *     versa.
+   */
   public Attributes(Attributes original) {
     rawAttributes.putAll(original.rawAttributes);
   }
 
-  /** Creates a copy. Changes to the new copy will not affect the original and vice versa. */
+  /**
+   * Creates a copy. Changes to the new copy will not affect the original and vice versa.
+   *
+   * @return new instance holding current attributes
+   */
   public Attributes copy() {
     return new Attributes(this);
   }
 
+  /**
+   * Merge attributes into current attributes
+   *
+   * @param incoming attributes to be merged
+   * @return this
+   */
   public Attributes putAll(Attributes incoming) {
     rawAttributes.putAll(incoming.rawAttributes);
     return this;
@@ -39,6 +52,8 @@ public class Attributes {
   /**
    * Add a string-valued attribute.
    *
+   * @param key to locate the value
+   * @param value to be stored
    * @return this
    */
   public Attributes put(String key, String value) {
@@ -49,6 +64,8 @@ public class Attributes {
   /**
    * Add a Number-valued attribute.
    *
+   * @param key to locate the value
+   * @param value to be stored
    * @return this
    */
   public Attributes put(String key, Number value) {
@@ -59,6 +76,8 @@ public class Attributes {
   /**
    * Add a boolean-valued attribute.
    *
+   * @param key to locate the value
+   * @param value to be stored
    * @return this
    */
   public Attributes put(String key, boolean value) {

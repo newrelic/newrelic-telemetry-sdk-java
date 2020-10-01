@@ -51,6 +51,8 @@ public class SpanBatchSenderBuilder {
    * Turns on audit logging. Payloads sent will be logged at the DEBUG level. Please note that if
    * your payloads contain sensitive information, that information will be logged wherever your logs
    * are configured.
+   *
+   * @return this builder
    */
   public SpanBatchSenderBuilder enableAuditLogging() {
     configBuilder.auditLoggingEnabled(true);
@@ -63,6 +65,8 @@ public class SpanBatchSenderBuilder {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return this builder
    */
   public SpanBatchSenderBuilder apiKey(String apiKey) {
     configBuilder.apiKey(apiKey);
@@ -72,6 +76,9 @@ public class SpanBatchSenderBuilder {
   /**
    * Provide an implementation for HTTP POST. {@link #build()} will throw if an implementation is
    * not provided or this method is not called.
+   *
+   * @param httpPoster client responsible to execute the http request
+   * @return this builder
    */
   public SpanBatchSenderBuilder httpPoster(HttpPoster httpPoster) {
     configBuilder.httpPoster(httpPoster);
@@ -81,6 +88,10 @@ public class SpanBatchSenderBuilder {
   /**
    * Provide additional user agent information. The product is required to be non-null and
    * non-empty. The version is optional, although highly recommended.
+   *
+   * @param product to be used in the secondary user agent
+   * @param version to be used in the secondary user agent
+   * @return this builder
    */
   public SpanBatchSenderBuilder secondaryUserAgent(String product, String version) {
     Utils.verifyNonBlank(product, "Product cannot be null or empty in the secondary user-agent.");

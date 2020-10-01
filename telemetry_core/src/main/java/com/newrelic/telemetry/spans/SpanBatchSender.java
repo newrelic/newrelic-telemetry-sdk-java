@@ -48,6 +48,7 @@ public class SpanBatchSender {
    *
    * <p>To be removed in 0.8.0
    *
+   * @return new instance of a span batch sender builder
    * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
    */
   @Deprecated
@@ -96,6 +97,7 @@ public class SpanBatchSender {
   /**
    * Build the final {@link SpanBatchSender}.
    *
+   * @param configuration new relict rest api ingest configurations
    * @return the fully configured SpanBatchSender object
    */
   public static SpanBatchSender create(SenderConfiguration configuration) {

@@ -22,6 +22,7 @@ public final class Event implements Telemetry {
    *
    * @param eventType The type of event.
    * @param attributes The key-value pairs that make up the event.
+   * @param timestamp time stamp in epoch milliseconds
    */
   public Event(String eventType, Attributes attributes, long timestamp) {
     if (eventType == null || "".equals(eventType)) {

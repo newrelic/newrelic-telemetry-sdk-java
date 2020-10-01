@@ -23,6 +23,8 @@ public interface MetricBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new metric batch sender instance
    */
   default MetricBatchSender createBatchSender(String apiKey) {
     SenderConfigurationBuilder configuration =
@@ -50,6 +52,8 @@ public interface MetricBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new sender configuration builder instance
    */
   default SenderConfigurationBuilder configureWith(String apiKey) {
     return MetricBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster());

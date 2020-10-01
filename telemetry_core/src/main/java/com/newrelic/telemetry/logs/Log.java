@@ -27,32 +27,32 @@ public class Log implements Telemetry {
     this.throwable = throwable;
   }
 
-  /** The point in time (ms since UNIX epoch) that the log entry was created. */
+  /** @return The point in time (ms since UNIX epoch) that the log entry was created. */
   public long getTimestamp() {
     return timestamp;
   }
 
-  /** The log line itself. */
+  /** @return The log line itself */
   public String getMessage() {
     return message;
   }
 
-  /** Additional attributes associated with the log entry. */
+  /** @return Additional attributes associated with the log entry. */
   public Attributes getAttributes() {
     return attributes;
   }
 
-  /** The name of the service which produced this log entry. */
+  /** @return The name of the service which produced this log entry. */
   public String getServiceName() {
     return serviceName;
   }
 
-  /** The log level (eg. INFO, DEBUG, etc) for the log entry. */
+  /** @return The log level (eg. INFO, DEBUG, etc) for the log entry. */
   public String getLevel() {
     return level;
   }
 
-  /** Create a builder for building a new log entry. */
+  /** @return Create a builder for building a new log entry. */
   public static LogBuilder builder() {
     return new LogBuilder();
   }
@@ -134,42 +134,60 @@ public class Log implements Telemetry {
     private String level;
     private Throwable throwable;
 
-    /** The point in time (ms since UNIX epoch) that the log entry was created. */
+    /**
+     * @param timestamp The point in time (ms since UNIX epoch) that the log entry was created.
+     * @return log builder instance
+     */
     public LogBuilder timestamp(long timestamp) {
       this.timestamp = timestamp;
       return this;
     }
 
-    /** The log line itself. */
+    /**
+     * @param message The log line itself.
+     * @return log builder instance
+     */
     public LogBuilder message(String message) {
       this.message = message;
       return this;
     }
 
-    /** Additional attributes associated with the log entry. */
+    /**
+     * @param attributes Additional attributes associated with the log entry.
+     * @return log builder instance
+     */
     public LogBuilder attributes(Attributes attributes) {
       this.attributes = attributes;
       return this;
     }
 
-    /** The name of the service which produced this log entry. */
+    /**
+     * @param serviceName The name of the service which produced this log entry.
+     * @return log builder instance
+     */
     public LogBuilder serviceName(String serviceName) {
       this.serviceName = serviceName;
       return this;
     }
 
-    /** The log level (eg. INFO, DEBUG, etc) for the log entry. */
+    /**
+     * @param logLevel The log level (eg. INFO, DEBUG, etc) for the log entry.
+     * @return log builder instance
+     */
     public LogBuilder level(String logLevel) {
       this.level = logLevel;
       return this;
     }
 
-    /** Create the new {@link Log} entry. */
+    /** @return Create the new {@link Log} entry. */
     public Log build() {
       return new Log(this, throwable);
     }
 
-    /** Will assign a throwable to the log entry. */
+    /**
+     * @param e Will assign a throwable to the log entry.
+     * @return log builder instance
+     */
     public LogBuilder throwable(Throwable e) {
       Utils.verifyNonNull(e);
       this.throwable = e;
