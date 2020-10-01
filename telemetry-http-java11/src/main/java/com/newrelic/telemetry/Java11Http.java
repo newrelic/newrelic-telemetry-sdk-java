@@ -7,6 +7,7 @@ public class Java11Http {
    * Create a new TelemetryClient with the given apiKey and default configuration
    *
    * @param apiKey - The New Relic insert api key
+   * @return a telemetry client
    */
   public static TelemetryClient newTelemetryClient(String apiKey) {
     return TelemetryClient.create(Java11HttpPoster::new, apiKey);
@@ -17,6 +18,7 @@ public class Java11Http {
    * Everything not covered in the baseConfig will be defaulted.
    *
    * @param baseConfig - A configuration instance with the basics
+   * @return a telemetry client
    */
   public static TelemetryClient newTelemetryClient(BaseConfig baseConfig) {
     return TelemetryClient.create(Java11HttpPoster::new, baseConfig);
