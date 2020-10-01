@@ -28,6 +28,8 @@ public class SimpleMetricBatchSender {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new instance of a metric batch sender
    */
   public static MetricBatchSender build(String apiKey) {
     return builder(apiKey).build();
@@ -39,6 +41,8 @@ public class SimpleMetricBatchSender {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new instance of a metric batch sender builder
    */
   public static MetricBatchSenderBuilder builder(String apiKey) {
     return builder(apiKey, Duration.ofSeconds(2));
@@ -51,6 +55,9 @@ public class SimpleMetricBatchSender {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @param callTimeout http connection timeout
+   * @return a new instance of a metric batch sender
    */
   public static MetricBatchSender build(String apiKey, Duration callTimeout) {
     return builder(apiKey, callTimeout).build();
@@ -63,6 +70,9 @@ public class SimpleMetricBatchSender {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @param callTimeout http connection timeout
+   * @return a new instance of a metric batch sender builder
    */
   public static MetricBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
     SenderConfigurationBuilder configurationBuilder =
