@@ -56,7 +56,7 @@ public class SimpleSpanBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    * @param apiKey new relic api key
-   * @param callTimeout http connection timeout
+   * @param callTimeout http call timeout
    * @return a new instance of a span batch sender
    */
   public static SpanBatchSender build(String apiKey, Duration callTimeout) {
@@ -71,7 +71,7 @@ public class SimpleSpanBatchSender {
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
    * @param apiKey new relic api key
-   * @param callTimeout http connection timeout
+   * @param callTimeout http call timeout
    * @return a new instance of a span batch sender builder
    */
   public static SpanBatchSenderBuilder builder(String apiKey, Duration callTimeout) {
