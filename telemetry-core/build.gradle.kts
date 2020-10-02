@@ -5,20 +5,18 @@ import com.newrelic.telemetry.gradle.configuredPom
 plugins {
     java
     id("java-library")
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.johnrengelman.shadow")
 }
+
+val junitVersion: String by project
+val jsonassertVersion: String by project
+val mockitoVersion: String by project
+val guavaVersion: String by project
+val slf4jVersion: String by project
+val gsonVersion: String by project
 
 apply(plugin = "maven-publish")
 apply(plugin = "signing")
-
-private object Versions {
-    const val junit = "5.3.1"
-    const val guava = "27.1-jre"
-    const val mockito = "2.23.0"
-    const val slf4j = "1.7.30"
-    const val jsonassert = "1.5.0"
-    const val gson = "2.8.6"
-}
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -28,15 +26,15 @@ configure<JavaPluginConvention> {
 configurations["shadow"].extendsFrom(configurations["api"])
 
 dependencies {
-    api("org.slf4j:slf4j-api:${Versions.slf4j}")
-    implementation("com.google.code.gson:gson:${Versions.gson}")
+    api("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("com.google.code.gson:gson:${gsonVersion}")
 
-    testImplementation("org.slf4j:slf4j-simple:${Versions.slf4j}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
-    testImplementation("org.mockito:mockito-core:${Versions.mockito}")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
-    testImplementation("com.google.guava:guava:${Versions.guava}")
-    testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
+    testImplementation("org.slf4j:slf4j-simple:${slf4jVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testImplementation("com.google.guava:guava:${guavaVersion}")
+    testImplementation("org.skyscreamer:jsonassert:${jsonassertVersion}")
 }
 
 val javadocJar by tasks.creating(Jar::class) {
@@ -55,7 +53,7 @@ tasks {
     "shadowJar"(ShadowJar::class) {
         archiveClassifier.set("")
         dependencies {
-            exclude(dependency("org.slf4j:slf4j-api:${Versions.slf4j}"))
+            exclude(dependency("org.slf4j:slf4j-api:${slf4jVersion}"))
         }
         manifest {
             attributes(mapOf("Implementation-Version" to project.version, "Implementation-Vendor" to "New Relic, Inc."))
