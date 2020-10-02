@@ -1,14 +1,14 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
-private object Versions {
-    const val junit = "5.3.1"
-    const val mockito = "2.23.0"
-    const val mockserver = "5.5.1"
-    const val slf4j = "1.7.26"
-    const val okhttp = "3.14.1"
-    const val guava = "27.1-jre"
-    const val testContainer = "1.11.3"
-}
+val guavaVersion: String by project
+val junitVersion: String by project
+val mockitoVersion: String by project
+val mockserverVersion: String by project
+val okhttpVersion: String by project
+val slf4jVersion: String by project
+val gsonVersion: String by project
+val testContainerVersion: String by project
+
 repositories {
     mavenCentral()
     jcenter()
@@ -19,19 +19,19 @@ plugins {
 }
 
 dependencies {
-    implementation("org.mock-server:mockserver-client-java:${Versions.mockserver}")
+    implementation("org.mock-server:mockserver-client-java:${mockserverVersion}")
     implementation(project(":telemetry-core"))
     implementation(project(":telemetry-http-okhttp"))
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:${Versions.junit}")
-    testImplementation("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
-    testImplementation("org.mockito:mockito-core:${Versions.mockito}")
-    testImplementation("org.slf4j:slf4j-simple:${Versions.slf4j}")
-    testImplementation("com.google.guava:guava:${Versions.guava}")
-    testImplementation("org.testcontainers:testcontainers:${Versions.testContainer}")
-    testImplementation("org.testcontainers:junit-jupiter:${Versions.testContainer}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:${junitVersion}")
+    testImplementation("com.squareup.okhttp3:okhttp:${okhttpVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testImplementation("org.mockito:mockito-core:${mockitoVersion}")
+    testImplementation("org.slf4j:slf4j-simple:${slf4jVersion}")
+    testImplementation("com.google.guava:guava:${guavaVersion}")
+    testImplementation("org.testcontainers:testcontainers:${testContainerVersion}")
+    testImplementation("org.testcontainers:junit-jupiter:${testContainerVersion}")
 }
 
 tasks {
