@@ -7,6 +7,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("com.github.sherter.google-java-format") version "0.8"
+    id("com.github.johnrengelman.shadow") version "5.2.0" apply false
 }
 
 allprojects {
@@ -25,7 +26,7 @@ allprojects {
     }
 }
 
-listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telemetry-all").forEach {
+listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11" /*, ":telemetry-all"*/).forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
