@@ -1,3 +1,5 @@
+[![Community Project header](https://github.com/newrelic/open-source-office/raw/master/examples/categories/images/Community_Project.png)](https://github.com/newrelic/open-source-office/blob/master/examples/categories/index.md#community-project)
+
 # New Relic Java Telemetry SDK 
 The New Relic Java Telemetry SDK is an easy way to send data to New Relic.
 The SDK currently supports sending the MELT telemetry data types 
@@ -21,7 +23,11 @@ We imagine you (or your customers) are interested in the telemetry data, generat
 
 For the most recently published version, see [Releases](https://github.com/newrelic/newrelic-telemetry-sdk-java/releases)
 
-## Get started
+## Installation
+
+See [Getting started](#getting-started)
+
+## Getting started
 
 In order to send metrics or spans to New Relic, you will need an [Insights Insert API Key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key).
 
@@ -54,25 +60,27 @@ first.
 Note: If you do not want to include `okhttp` as a transitive depenedency, you will need to provide a custom implementation of the 
 `com.newrelic.telemetry.http.HttpPoster` interface, rather than using the `com.newrelic.telemetry:telemetry-http-okhttp` library.
 
-## Logging
+## Usage
+
+### Logging
 The Telemetry SDK uses slf4j for all logging. Having a slf4j implementation in your application is required in order to see log information.
 See [the slf4j documentation](http://www.slf4j.org/manual.html#swapping) for details.
 
-### Enabling audit logging
+#### Enabling audit logging
 The various builders for the Telemetry SDK components include an option to `enableAuditLogging`. Enabling this option will cause the
 SDK to product additional logging at `DEBUG` level. This logging includes the details of every payload sent to the New Relic APIs, and the responses from those APIs.
 
 *WARNING*: If you enable audit logging, all the data in your spans and metrics will be sent to your logging system. It is recommended that you only enable
 audit logging when absolutely necessary.
 
-## For developers: 
-### Requirements
+### For developers: 
+#### Requirements
 
 * Java 8 or greater
 * For IDEA:
 * Docker & docker-compose must be installed for integration testing
 
-## Find and use your data
+### Find and use your data
 
 Tips on how to find and query your data in New Relic:
 - [Find metric data](https://docs.newrelic.com/docs/data-ingest-apis/get-data-new-relic/metric-api/introduction-metric-api#find-data)
@@ -82,8 +90,7 @@ For general querying information, see:
 - [Query New Relic data](https://docs.newrelic.com/docs/using-new-relic/data/understand-data/query-new-relic-data)
 - [Intro to NRQL](https://docs.newrelic.com/docs/query-data/nrql-new-relic-query-language/getting-started/introduction-nrql)
 
-
-### Building
+## Building
 CI builds are run on Github Actions: 
 ![build badge](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/main%20build/badge.svg)
 
@@ -93,7 +100,7 @@ To compile, run the tests and build the jars:
 
 `$ ./gradlew build`
 
-### Integration testing
+## Testing
 
 End-to-end integration tests are included. 
 They are implemented with the testcontainers library; [mock-server](https://github.com/jamesdbloom/mockserver) provides the backend.
@@ -102,7 +109,7 @@ There are two modes to run the integration tests.
 * Run with gradle: `$ ./gradlew integration_test:test`
 * Run the integration test classes in IDEA directly. It should "just work".
 
-### Code style
+## Code style
 This project uses the [google-java-format](https://github.com/google/google-java-format) code style, and it is 
 easily applied via an included [gradle plugin](https://github.com/sherter/google-java-format-gradle-plugin):
 
@@ -157,20 +164,23 @@ until a max wait of 15 seconds is reached.  After 10 failed attempts, data is dr
 is logged. 
 
 The backoff strategy is not currently pluggable.  Please file an issue or submit a pull request 
-if you need greater control over this behavior. 
+if you need greater control over this behavior.
 
+## Contribute
 
-### Licensing
-The New Relic Java Telemetry SDK is licensed under the Apache 2.0 License.
+We encourage your contributions to improve New Relic Java Telemetry SDK! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 
-The New Relic Java Telemetry SDK also uses source code from third party libraries. 
-Full details on which libraries are used and the terms under which they are licensed can be found in the 
-third party notices document.
+If you have any questions, or to execute our corporate CLA (which is required if your contribution is on behalf of a company), drop us an email at opensource@newrelic.com.
 
-### Contributing
-Full details are available in our [CONTRIBUTING.md](CONTRIBUTING.md) file. 
-We'd love to get your contributions to improve the Java Telemetry SDK! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
-To execute our corporate CLA, which is required if your contribution is on behalf of a company, or if you have any questions, please drop us an email at opensource@newrelic.com. 
+**A note about vulnerabilities**
+
+As noted in our [security policy](../../security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
+
+If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
+
+If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
+
+To [all contributors](https://github.com/newrelic/newrelic-telemetry-sdk-java/graphs/contributors), we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to [New Relic Telemetry SDK (Java)](https://opensource.newrelic.com/projects/newrelic/newrelic-telemetry-sdk-java).
 
 ### Release Process
 
@@ -204,3 +214,10 @@ Submit and merge a PR with the following:
 
 ### Limitations
 The New Relic Telemetry APIs are rate limited. Please reference the documentation for [New Relic Metric API](https://docs.newrelic.com/docs/introduction-new-relic-metric-api) and [New Relic Trace API requirements and limits](https://docs.newrelic.com/docs/apm/distributed-tracing/trace-api/trace-api-general-requirements-limits) on the specifics of the rate limits.
+
+## License
+The New Relic Java Telemetry SDK is licensed under the Apache 2.0 License.
+
+The New Relic Java Telemetry SDK also uses source code from third party libraries. 
+Full details on which libraries are used and the terms under which they are licensed can be found in the 
+third party notices document.
