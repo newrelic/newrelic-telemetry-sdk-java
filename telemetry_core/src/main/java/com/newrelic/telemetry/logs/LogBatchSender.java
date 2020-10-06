@@ -84,6 +84,7 @@ public class LogBatchSender {
   /**
    * Build the final {@link LogBatchSender}.
    *
+   * @param configuration new relict rest api ingest configurations
    * @return the fully configured LogBatchSender object
    */
   public static LogBatchSender create(SenderConfiguration configuration) {

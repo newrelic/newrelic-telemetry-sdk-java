@@ -141,6 +141,7 @@ public final class MetricBuffer {
      * be included in all common attributes as "service.name".
      *
      * @param serviceName - The name of the service
+     * @return this builder
      */
     public Builder serviceName(String serviceName) {
       commonAttributesBuilder.serviceName(serviceName);
@@ -154,6 +155,7 @@ public final class MetricBuffer {
      * provider will be included in all common attributes as "instrumentation.provider".
      *
      * @param instrumentationProvider - The name of the instrumentation library
+     * @return this builder
      */
     public Builder instrumentationProvider(String instrumentationProvider) {
       commonAttributesBuilder.instrumentationProvider(instrumentationProvider);

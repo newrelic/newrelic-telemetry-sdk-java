@@ -23,6 +23,8 @@ public interface SpanBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new instance of a span batch sender
    */
   default SpanBatchSender createBatchSender(String apiKey) {
     SenderConfigurationBuilder configuration =
@@ -50,6 +52,8 @@ public interface SpanBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new instance of a span configuration builder
    */
   default SenderConfigurationBuilder configureWith(String apiKey) {
     return SpanBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster());

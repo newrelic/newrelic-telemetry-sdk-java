@@ -23,6 +23,8 @@ public interface EventBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new event batch sender instance
    */
   default EventBatchSender createBatchSender(String apiKey) {
     SenderConfigurationBuilder configuration =
@@ -50,6 +52,8 @@ public interface EventBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new sender configuration instance
    */
   default SenderConfigurationBuilder configureWith(String apiKey) {
     return EventBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster());

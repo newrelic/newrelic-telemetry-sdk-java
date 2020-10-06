@@ -50,6 +50,8 @@ public class MetricBatchSenderBuilder {
    * Turns on audit logging. Payloads sent will be logged at the DEBUG level. Please note that if
    * your payloads contain sensitive information, that information will be logged wherever your logs
    * are configured.
+   *
+   * @return this builder
    */
   public MetricBatchSenderBuilder enableAuditLogging() {
     configBuilder.auditLoggingEnabled(true);
@@ -62,6 +64,8 @@ public class MetricBatchSenderBuilder {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return this builder
    */
   public MetricBatchSenderBuilder apiKey(String apiKey) {
     configBuilder.apiKey(apiKey);
@@ -71,6 +75,9 @@ public class MetricBatchSenderBuilder {
   /**
    * Provide an implementation for HTTP POST. {@link #build()} will throw if an implementation is
    * not provided or this method is not called.
+   *
+   * @param httpPoster client responsible to execute the http request
+   * @return this builder
    */
   public MetricBatchSenderBuilder httpPoster(HttpPoster httpPoster) {
     configBuilder.httpPoster(httpPoster);
@@ -80,6 +87,10 @@ public class MetricBatchSenderBuilder {
   /**
    * Provide additional user agent information. The product is required to be non-null and
    * non-empty. The version is optional, although highly recommended.
+   *
+   * @param product to be used in the secondary user agent
+   * @param version to be used in the secondary user agent
+   * @return this builder
    */
   public MetricBatchSenderBuilder secondaryUserAgent(String product, String version) {
     if (version == null || version.isEmpty()) {

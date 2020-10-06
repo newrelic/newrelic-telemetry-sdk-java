@@ -23,6 +23,8 @@ public interface LogBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new log batch sender instance
    */
   default LogBatchSender createBatchSender(String apiKey) {
     SenderConfigurationBuilder configuration =
@@ -51,6 +53,8 @@ public interface LogBatchSenderFactory {
    * @see <a
    *     href="https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key">New
    *     Relic API Keys</a>
+   * @param apiKey new relic api key
+   * @return a new sender configuration builder instance
    */
   default SenderConfigurationBuilder configureWith(String apiKey) {
     return LogBatchSender.configurationBuilder().apiKey(apiKey).httpPoster(getPoster());

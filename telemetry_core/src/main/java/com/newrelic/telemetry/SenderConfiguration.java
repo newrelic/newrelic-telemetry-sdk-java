@@ -71,6 +71,7 @@ public class SenderConfiguration {
     /**
      * Configure the New Relic Insert API key to use.
      *
+     * @param apiKey new relic api key
      * @return this builder;
      */
     public SenderConfigurationBuilder apiKey(String apiKey) {
@@ -78,6 +79,10 @@ public class SenderConfiguration {
       return this;
     }
 
+    /**
+     * @param httpPoster client responsible to execute the http request
+     * @return this builder
+     */
     public SenderConfigurationBuilder httpPoster(HttpPoster httpPoster) {
       this.httpPoster = httpPoster;
       return this;
@@ -132,6 +137,7 @@ public class SenderConfiguration {
      * Configure whether audit logging is enabled. Note: audit logging will log all data payloads
      * sent to New Relic at DEBUG level, in plain text.
      *
+     * @param auditLoggingEnabled if true, audit log will be enabled
      * @return this builder.
      */
     public SenderConfigurationBuilder auditLoggingEnabled(boolean auditLoggingEnabled) {
@@ -144,6 +150,7 @@ public class SenderConfiguration {
      * default User-Agent that the SDK sends, and is useful for monitoring various sources of data
      * coming into the New Relic systems.
      *
+     * @param secondaryUserAgent configure a secondary User-Agent
      * @return this builder.
      */
     public SenderConfigurationBuilder secondaryUserAgent(String secondaryUserAgent) {

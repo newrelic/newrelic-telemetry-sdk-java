@@ -35,6 +35,7 @@ public class MetricBatch extends TelemetryBatch<Metric> {
      * be included in all common attributes.
      *
      * @param serviceName - The name of the service
+     * @return this builder
      */
     public Builder serviceName(String serviceName) {
       commonAttributesBuilder.serviceName(serviceName);
@@ -47,6 +48,7 @@ public class MetricBatch extends TelemetryBatch<Metric> {
      * included in all common attributes as "instrumentation.provider".
      *
      * @param instrumentationProvider - The instrumentation provider name
+     * @return this builder
      */
     public Builder instrumentationProvider(String instrumentationProvider) {
       commonAttributesBuilder.instrumentationProvider(instrumentationProvider);

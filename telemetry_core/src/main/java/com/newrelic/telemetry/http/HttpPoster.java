@@ -14,7 +14,16 @@ import java.util.Map;
  */
 public interface HttpPoster {
 
-  /** Post data to the provided URL. */
+  /**
+   * Post data to the provided URL.
+   *
+   * @param url http url to be reached
+   * @param headers headers to be sent
+   * @param body body to be sent
+   * @param mediaType media type definition
+   * @return http response from the POST request
+   * @throws IOException in case of http request error
+   */
   HttpResponse post(URL url, Map<String, String> headers, byte[] body, String mediaType)
       throws IOException;
 }
