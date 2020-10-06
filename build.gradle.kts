@@ -7,10 +7,11 @@ plugins {
     id("maven-publish")
     id("signing")
     id("com.github.sherter.google-java-format") version "0.8"
+    id("org.ysb33r.java.modulehelper") version("0.9.0") apply false
+    id("com.github.johnrengelman.shadow") version ("5.2.0") apply false
 }
 
 allprojects {
-    group = "com.newrelic.telemetry"
     val release: String? by project
     version = if ("true" == release) version else "${version}-SNAPSHOT"
     repositories {
@@ -25,7 +26,7 @@ allprojects {
     }
 }
 
-listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telemetry-all").forEach {
+listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11" , ":telemetry-all").forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
