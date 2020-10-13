@@ -119,6 +119,8 @@ public class TelemetryClient {
    * Send a batch of {@link com.newrelic.telemetry.metrics.Metric} instances, with standard retry
    * logic. This happens on a background thread, asynchronously, so currently there will be no
    * feedback to the caller outside of the logs.
+   *
+   * @param batch batch metrics to be applied
    */
   public void sendBatch(MetricBatch batch) {
     scheduleBatchSend(
@@ -129,6 +131,8 @@ public class TelemetryClient {
    * Send a batch of {@link com.newrelic.telemetry.spans.Span} instances, with standard retry logic.
    * This happens on a background thread, asynchronously, so currently there will be no feedback to
    * the caller outside of the logs.
+   *
+   * @param batch to be sent
    */
   public void sendBatch(SpanBatch batch) {
     scheduleBatchSend((b) -> spanBatchSender.sendBatch((SpanBatch) b), batch, 0, TimeUnit.SECONDS);
@@ -138,6 +142,8 @@ public class TelemetryClient {
    * Send a batch of {@link com.newrelic.telemetry.events.Event} instances, with standard retry
    * logic. This happens on a background thread, asynchronously, so currently there will be no
    * feedback to the caller outside of the logs.
+   *
+   * @param batch to be sent
    */
   public void sendBatch(EventBatch batch) {
     scheduleBatchSend(
@@ -148,6 +154,8 @@ public class TelemetryClient {
    * Send a batch of {@link com.newrelic.telemetry.logs.Log} entries, with standard retry logic.
    * This happens on a background thread, asynchronously, so currently there will be no feedback to
    * the caller outside of the logs.
+   *
+   * @param batch to be sent
    */
   public void sendBatch(LogBatch batch) {
     scheduleBatchSend((b) -> logBatchSender.sendBatch((LogBatch) b), batch, 0, TimeUnit.SECONDS);

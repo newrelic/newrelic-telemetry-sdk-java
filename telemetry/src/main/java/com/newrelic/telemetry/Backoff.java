@@ -52,23 +52,46 @@ public class Backoff {
     private long backoffFactorMs;
     private int maxRetries;
 
-    /** The max time between retries */
+    /**
+     * The max time between retries
+     *
+     * @param backoff backoff time value
+     * @param unit time to be used, e.g. SECONDS
+     * @return Builder instance
+     */
     public Builder maxBackoff(int backoff, TimeUnit unit) {
       this.maxBackoffTimeMs = unit.toMillis(backoff);
       return this;
     }
 
-    /** The base amount of time to start doubling from when backing off. */
+    /**
+     * The base amount of time to start doubling from when backing off.
+     *
+     * @param backoffFactor backoff time value, to be doubled
+     * @param unit time to be used, e.g. SECONDS
+     * @return Builder instance
+     */
     public Builder backoffFactor(int backoffFactor, TimeUnit unit) {
       this.backoffFactorMs = unit.toMillis(backoffFactor);
       return this;
     }
 
+    /**
+     * Define max of retries
+     *
+     * @param maxRetries max retries
+     * @return Builder instance
+     */
     public Builder maxRetries(int maxRetries) {
       this.maxRetries = maxRetries;
       return this;
     }
 
+    /**
+     * Create a Backoff instance
+     *
+     * @return a new instance
+     */
     public Backoff build() {
       return new Backoff(this);
     }
