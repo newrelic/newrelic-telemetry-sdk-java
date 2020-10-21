@@ -37,20 +37,20 @@ Maven dependencies:
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry</artifactId>
-      <version>0.7.0</version>
+      <version>0.9.0</version>
     </dependency>
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry-http-okhttp</artifactId>
-      <version>0.7.0</version>
+      <version>0.9.0</version>
     </dependency>
 ```
 
 Gradle dependencies: 
 
 ```
-implementation("com.newrelic.telemetry:telemetry:0.7.0")
-implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.7.0")
+implementation("com.newrelic.telemetry:telemetry:0.9.0")
+implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.9.0")
 ```
 
 Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
@@ -186,10 +186,18 @@ To [all contributors](https://github.com/newrelic/newrelic-telemetry-sdk-java/gr
 
 #### Publish to Staging Repo
 
-To stage the release simply submit and merge a PR to update the [build.gradle.kts](build.gradle.kts) file with the version to be released (e.g. `version := "0.6.0"`).
+To stage the release:
+ 
+ 1. Create a branch titled <version>_release_branch (e.g. 0.6.0_release_branch) 
+ 2. Submit and merge a PR to update the [build.gradle.kts](build.gradle.kts) file with the version to be released (e.g. `version := "0.6.0"`).
+ 3. From Github releases, create a release and set the tag like `v0.6.0` and set the branch to the release branch.  You'll fill in the  release notes after release.
+ 4. Publish the release to Sonatype and this will run the publish release job.
+ 
+Results of the job [can be viewed here](https://github.com/newrelic/newrelic-telemetry-sdk-java/actions?query=workflow%3A%22publish+release+version+explicitly%22).
 
-Results of the job can be viewed here: https://github.com/newrelic/newrelic-telemetry-sdk-java/actions
-After the staging release job has run successfully it will publish the new artifact to a staging repository on Sonatype at: https://oss.sonatype.org/#stagingRepositories.
+![publish release version explicitly](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/publish%20release%20version%20explicitly/badge.svg) 
+
+After the release job has run successfully it will publish the new artifact to a staging repository on Sonatype at: https://oss.sonatype.org/#stagingRepositories.
 
 #### Manually Release Staging Repo
 
@@ -200,8 +208,8 @@ After the staging release job has run successfully it will publish the new artif
 
 #### Post Release
 
-Submit and merge a PR with the following:
-* Update the [build.gradle.kts](build.gradle.kts) file with to a snapshot version of a potential future release (e.g. `version  := "0.7.0-SNAPSHOT"`).
+1. Submit and merge a PR with the following:
+* Update the [build.gradle.kts](build.gradle.kts) file with to a version of a potential future release (e.g. `version  := "0.7.0"`).
 * Update the [CHANGELOG](CHANGELOG.md) with details of the new release:
   ```markdown
   ## [0.6.0]
@@ -209,6 +217,8 @@ Submit and merge a PR with the following:
   ```
 * Update the [Usage](#usage) example in the [README](README.md) with the newly released version (e.g. `implementation("com.newrelic.telemetry:telemetry:0.6.0")`).
 
+2. Update the release notes with the changelog details.
+ 
 [javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry.svg
 [javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry
 
