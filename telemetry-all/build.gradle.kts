@@ -16,14 +16,11 @@ sourceSets {
     main {
         java.setSrcDirs(listOf(
                 "src/main/java",
-                "../telemetry-core/src/main/java",
-                "../telemetry/src/main/java",
-                "../telemetry-http-java11/src/main/java"
+                ".generated-src/java"
         ))
         resources.setSrcDirs(listOf(
-                "../telemetry-core/src/main/resources",
-                "../telemetry/src/main/resources",
-                "../telemetry-http-java11/src/main/resources"
+                "src/main/resources",
+                ".generated-src/resources"
         ))
     }
 }
@@ -40,4 +37,40 @@ extraJavaModules {
     module("gson-${gsonVersion}.jar", "com.google.code.gson", gsonVersion) {
         exports("com.google.gson")
     }
+}
+
+tasks.register<Copy>("copySources") {
+    group = "Build"
+    description = "Copies sources from other subprojects"
+    into(".generated-src")
+    from ("../telemetry-core/src/main/java") {
+        into ("java")
+    }
+    from ("../telemetry/src/main/java") {
+        into ("java")
+    }
+    from ("../telemetry-http-java11/src/main/java") {
+        into ("java")
+    }
+    from ("../telemetry-core/src/main/resources") {
+        into ("resources")
+    }
+    from ("../telemetry/src/main/resources") {
+        into ("resources")
+    }
+    from ("../telemetry-http-java11/src/main/resources") {
+        into ("resources")
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn("copySources")
+}
+
+tasks.named("processResources") {
+    dependsOn("copySources")
+}
+
+tasks.named<Delete>("clean") {
+    delete (".generated-src")
 }
