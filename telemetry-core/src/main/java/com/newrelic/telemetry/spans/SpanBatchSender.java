@@ -44,8 +44,7 @@ public class SpanBatchSender {
   }
 
   /**
-  /**
-   * Send a batch of spans to New Relic.
+   * /** Send a batch of spans to New Relic.
    *
    * @param batch The batch to send. This batch will be drained of accumulated spans as a part of
    *     this process.
