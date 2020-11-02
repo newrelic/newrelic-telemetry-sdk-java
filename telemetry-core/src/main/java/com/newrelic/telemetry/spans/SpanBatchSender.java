@@ -44,18 +44,6 @@ public class SpanBatchSender {
   }
 
   /**
-   * Creates a builder for {@link SpanBatchSender}
-   *
-   * <p>To be removed in 0.8.0
-   *
-   * @return new instance of a span batch sender builder
-   * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
-   */
-  @Deprecated
-  public static SpanBatchSenderBuilder builder() {
-    return new SpanBatchSenderBuilder(configurationBuilder());
-  }
-
   /**
    * Send a batch of spans to New Relic.
    *
