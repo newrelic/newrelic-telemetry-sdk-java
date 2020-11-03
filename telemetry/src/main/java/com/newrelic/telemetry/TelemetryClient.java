@@ -39,11 +39,12 @@ public class TelemetryClient {
   private static final Logger LOG = LoggerFactory.getLogger(TelemetryClient.class);
   private static final int DEFAULT_SHUTDOWN_SECONDS = 3;
   private static final boolean DEFAULT_IS_DAEMON = true;
+  private static final int DEFAULT_MAX_TELEMETRY_LIMIT = 1_000_000;
 
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
   private final SpanBatchSender spanBatchSender;
-  private final ScheduledExecutorService executor;
+  private final LimitingScheduler scheduler;
   private final int shutdownSeconds;
   private final LogBatchSender logBatchSender;
 
@@ -92,7 +93,7 @@ public class TelemetryClient {
     this.eventBatchSender = eventBatchSender;
     this.logBatchSender = logBatchSender;
     this.shutdownSeconds = shutdownSeconds;
-    this.executor = buildExecutorService(useDaemonThread);
+    this.scheduler = buildScheduler(useDaemonThread);
   }
 
   /**
@@ -175,11 +176,14 @@ public class TelemetryClient {
       long waitTime,
       TimeUnit timeUnit,
       Backoff backoff) {
-    if (executor.isTerminated()) {
+
+
+
+    if (scheduler.isTerminated()) {
       return;
     }
     try {
-      executor.schedule(() -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
+      scheduler.schedule(batch.size(), () -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
       LOG.error("Problem scheduling batch : " + e.getMessage());
     }
@@ -238,11 +242,11 @@ public class TelemetryClient {
   /** Cleanly shuts down the background Executor thread. */
   public void shutdown() {
     LOG.info("Shutting down the TelemetryClient background Executor");
-    executor.shutdown();
+    scheduler.shutdown();
     try {
-      if (!executor.awaitTermination(shutdownSeconds, TimeUnit.SECONDS)) {
+      if (!scheduler.awaitTermination(shutdownSeconds, TimeUnit.SECONDS)) {
         LOG.warn("couldn't shutdown within timeout");
-        executor.shutdownNow();
+        scheduler.shutdownNow();
       }
     } catch (InterruptedException e) {
       LOG.error("interrupted graceful shutdown", e);
@@ -285,12 +289,13 @@ public class TelemetryClient {
    * @param useDaemonThread A flag to decide user-threads or daemon-threads
    * @return ScheduledExecutorService
    */
-  private static ScheduledExecutorService buildExecutorService(boolean useDaemonThread) {
-    return Executors.newSingleThreadScheduledExecutor(
-        r -> {
-          Thread thread = new Thread(r);
-          thread.setDaemon(useDaemonThread);
-          return thread;
-        });
+  private static LimitingScheduler buildScheduler(boolean useDaemonThread) {
+    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
+            r -> {
+              Thread thread = new Thread(r);
+              thread.setDaemon(useDaemonThread);
+              return thread;
+            });
+    return new LimitingScheduler(executor, DEFAULT_MAX_TELEMETRY_LIMIT);
   }
 }
