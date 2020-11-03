@@ -28,7 +28,8 @@ public class ConfigurationExamples {
   public static void main(String[] args) throws MalformedURLException {
     String insertApiKey = args[0];
 
-    SenderConfiguration config = MetricBatchSender.configurationBuilder()
+    SenderConfiguration config =
+        MetricBatchSender.configurationBuilder()
             .apiKey(insertApiKey)
             .httpPoster(new OkHttpPoster(Duration.ofSeconds(2)))
             .build();
