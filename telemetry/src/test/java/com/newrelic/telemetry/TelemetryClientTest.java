@@ -6,6 +6,7 @@ package com.newrelic.telemetry;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,6 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,7 @@ class TelemetryClientTest {
   private SpanBatch spanBatch;
   private EventBatch eventBatch;
   private LogBatch logBatch;
+  private MetricBatchSender batchSender;
 
   @BeforeEach
   void setup() {
@@ -61,11 +64,11 @@ class TelemetryClientTest {
     spanBatch = new SpanBatch(singleton(makeSpan()), new Attributes().put("foo", "bar"));
     eventBatch = new EventBatch(singleton(makeEvent()));
     logBatch = new LogBatch(singleton(makeLog()), new Attributes().put("foo", "bar"));
+    batchSender = mock(MetricBatchSender.class);
   }
 
   @Test
   void sendMetricsHappyPath() throws Exception {
-    MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(metricBatch)).thenAnswer(countDown(sendLatch));
 
@@ -117,7 +120,6 @@ class TelemetryClientTest {
 
   @Test
   void sendGeneratesRetryWithBackoff() throws Exception {
-    MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     // First time explodes, second time succeeds
     Answer<Object> requestRetry =
@@ -139,7 +141,6 @@ class TelemetryClientTest {
 
   @Test
   void sendGeneratesRetryWithRequestedBackoff() throws Exception {
-    MetricBatchSender batchSender = mock(MetricBatchSender.class);
     CountDownLatch sendLatch = new CountDownLatch(1);
     when(batchSender.sendBatch(metricBatch))
         .thenAnswer(
@@ -157,7 +158,6 @@ class TelemetryClientTest {
 
   @Test
   void sendGeneratesRetryWithSplit() throws Exception {
-    MetricBatchSender batchSender = mock(MetricBatchSender.class);
     MetricBatch batch = makeBatchOf3Metrics();
     // 1 for initial failure, then 1 for each part of the split
     CountDownLatch sendLatch = new CountDownLatch(3);
@@ -186,6 +186,83 @@ class TelemetryClientTest {
 
     testClass.sendBatch(batch);
     boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    assertTrue(result);
+    assertTrue(batch1Seen.get());
+    assertTrue(batch2Seen.get());
+  }
+
+  @Test
+  void retryWithSplitGoesOverLimit() throws Exception {
+    // The first schedule will work, we'll be right at capacity which is fine...but the handling of
+    // the SplitWithRetryException still takes place in the job, so the telemetry for that initial
+    // batch is still resident.  Therefore, the split will push us over and the subsequent schedules
+    // will fail, and send will not get called again.
+    int maxTelemetry = 3;
+    MetricBatch batch = makeBatchOf3Metrics();
+    // 1 for initial failure, then 1 for each part of the split
+    CountDownLatch sendLatch = new CountDownLatch(1);
+    AtomicBoolean batch1Seen = new AtomicBoolean(false);
+    AtomicBoolean batch2Seen = new AtomicBoolean(false);
+    AtomicInteger sendCount = new AtomicInteger();
+
+    when(batchSender.sendBatch(isA(MetricBatch.class)))
+        .thenAnswer(
+            invocation -> {
+              sendCount.incrementAndGet();
+              MetricBatch batchParam = invocation.getArgument(0);
+              if (batchParam.size() == 3) {
+                sendLatch.countDown();
+                throw new RetryWithSplitException();
+              }
+              return null;
+            });
+
+    TelemetryClient testClass =
+        new TelemetryClient(batchSender, null, null, null, 1, true, maxTelemetry);
+
+    testClass.sendBatch(batch);
+    testClass.shutdown();
+    boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    assertTrue(result);
+    assertEquals(1, sendCount.get());
+  }
+
+  @Test
+  void retryWithSplitDoesntGoOverLimit() throws Exception {
+    int maxTelemetry = 6; // two times the largest failing batch size of 3
+    MetricBatch batch = makeBatchOf3Metrics();
+    // 1 for initial failure, then 1 for each part of the split
+    CountDownLatch sendLatch = new CountDownLatch(3);
+    AtomicBoolean batch1Seen = new AtomicBoolean(false);
+    AtomicBoolean batch2Seen = new AtomicBoolean(false);
+    AtomicInteger totalSent = new AtomicInteger(0);
+
+    when(batchSender.sendBatch(isA(MetricBatch.class)))
+        .thenAnswer(
+            invocation -> {
+              MetricBatch batchParam = invocation.getArgument(0);
+              totalSent.addAndGet(batchParam.size());
+              if (batchParam.size() == 3) {
+                sendLatch.countDown();
+                throw new RetryWithSplitException();
+              }
+              if (batchParam.size() == 1) { // first part of split batch
+                batch1Seen.set(true);
+              }
+              if (batchParam.size() == 2) { // second part of split batch
+                batch2Seen.set(true);
+              }
+              sendLatch.countDown();
+              return null;
+            });
+
+    TelemetryClient testClass =
+        new TelemetryClient(batchSender, null, null, null, 1, true, maxTelemetry);
+
+    testClass.sendBatch(batch);
+    boolean result = sendLatch.await(3, TimeUnit.SECONDS);
+    testClass.shutdown();
+    assertEquals(6, totalSent.get());
     assertTrue(result);
     assertTrue(batch1Seen.get());
     assertTrue(batch2Seen.get());

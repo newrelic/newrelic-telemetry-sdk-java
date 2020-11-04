@@ -88,28 +88,43 @@ public class TelemetryClient {
       LogBatchSender logBatchSender,
       int shutdownSeconds,
       boolean useDaemonThread) {
+    this(
+        metricBatchSender,
+        spanBatchSender,
+        eventBatchSender,
+        logBatchSender,
+        shutdownSeconds,
+        useDaemonThread,
+        DEFAULT_MAX_TELEMETRY_LIMIT);
+  }
+
+  /**
+   * Create a new TelemetryClient instance, with four senders and seconds to wait for shutdown. You
+   * can also specify if the backing threads should be daemon threads, and the max number of
+   * telemetry to buffer.
+   *
+   * @param metricBatchSender The sender for dimensional metrics.
+   * @param spanBatchSender The sender for distributed tracing spans.
+   * @param eventBatchSender The sender for custom events
+   * @param logBatchSender The sender for log entries.
+   * @param shutdownSeconds num of seconds to wait for graceful shutdown of its executor
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   * @param maxTelemetryBuffer The max number of telemetry to buffer
+   */
+  public TelemetryClient(
+      MetricBatchSender metricBatchSender,
+      SpanBatchSender spanBatchSender,
+      EventBatchSender eventBatchSender,
+      LogBatchSender logBatchSender,
+      int shutdownSeconds,
+      boolean useDaemonThread,
+      int maxTelemetryBuffer) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;
     this.logBatchSender = logBatchSender;
     this.shutdownSeconds = shutdownSeconds;
-    this.scheduler = buildScheduler(useDaemonThread);
-  }
-
-  /**
-   * Create a new TelemetryClient instance, with two senders. Note that if you don't intend to send
-   * one of the telemetry types, you can pass in a null value for that sender.
-   *
-   * <p>To be removed in 0.8.0
-   *
-   * @deprecated Use the constructor with all three senders, passing in null to the ones you don't
-   *     care about.
-   * @param metricBatchSender The sender for dimensional metrics.
-   * @param spanBatchSender The sender for distributed tracing spans.
-   */
-  @Deprecated
-  public TelemetryClient(MetricBatchSender metricBatchSender, SpanBatchSender spanBatchSender) {
-    this(metricBatchSender, spanBatchSender, null, null);
+    this.scheduler = buildScheduler(useDaemonThread, maxTelemetryBuffer);
   }
 
   private interface BatchSender {
@@ -177,13 +192,12 @@ public class TelemetryClient {
       TimeUnit timeUnit,
       Backoff backoff) {
 
-
-
     if (scheduler.isTerminated()) {
       return;
     }
     try {
-      scheduler.schedule(batch.size(), () -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
+      scheduler.schedule(
+          batch.size(), () -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
       LOG.error("Problem scheduling batch : " + e.getMessage());
     }
@@ -287,15 +301,17 @@ public class TelemetryClient {
    * Create ScheduledExecutorService from a parameter given by constructor
    *
    * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   * @param maxTelemetryBuffer Max number of telemetry to buffer
    * @return ScheduledExecutorService
    */
-  private static LimitingScheduler buildScheduler(boolean useDaemonThread) {
-    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
+  private static LimitingScheduler buildScheduler(boolean useDaemonThread, int maxTelemetryBuffer) {
+    ScheduledExecutorService executor =
+        Executors.newSingleThreadScheduledExecutor(
             r -> {
               Thread thread = new Thread(r);
               thread.setDaemon(useDaemonThread);
               return thread;
             });
-    return new LimitingScheduler(executor, DEFAULT_MAX_TELEMETRY_LIMIT);
+    return new LimitingScheduler(executor, maxTelemetryBuffer);
   }
 }
