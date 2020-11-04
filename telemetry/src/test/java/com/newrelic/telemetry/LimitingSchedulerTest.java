@@ -28,7 +28,7 @@ class LimitingSchedulerTest {
   }
 
   @Test
-  void testScheduleNoProblem() throws Exception {
+  void testScheduleSuccess() throws Exception {
     LimitingScheduler testClass = new LimitingScheduler(exec, 10);
     CountDownLatch completed = new CountDownLatch(2);
     boolean result1 = testClass.schedule(5, completed::countDown);
@@ -39,7 +39,7 @@ class LimitingSchedulerTest {
   }
 
   @Test
-  void testScheduleNoFailsOverCapacity() throws Exception {
+  void testScheduleFailsWhenOverCapacity() throws Exception {
     ConcurrentHashMap<String, Object> seen = new ConcurrentHashMap<>();
     CountDownLatch latch = new CountDownLatch(1);
     LimitingScheduler testClass = new LimitingScheduler(exec, 10);
@@ -61,9 +61,9 @@ class LimitingSchedulerTest {
             },
             13,
             TimeUnit.MILLISECONDS);
-    assertTrue(latch.await(5, SECONDS));
     assertTrue(result1);
     assertFalse(result2);
+    assertTrue(latch.await(5, SECONDS));
     assertEquals(new HashSet<>(Collections.singletonList("1")), seen.keySet());
     boolean result3 = testClass.schedule(6, () -> {}, 13, TimeUnit.MILLISECONDS);
     assertTrue(result3);
