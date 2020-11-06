@@ -10,7 +10,7 @@ import com.newrelic.telemetry.Java11HttpPoster;
 import com.newrelic.telemetry.LogBatchSenderFactory;
 import com.newrelic.telemetry.MetricBatchSenderFactory;
 import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.SimpleMetricBatchSender;
+import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.SpanBatchSenderFactory;
 import com.newrelic.telemetry.TelemetryClient;
 import com.newrelic.telemetry.events.EventBatchSender;
@@ -28,13 +28,12 @@ public class ConfigurationExamples {
   public static void main(String[] args) throws MalformedURLException {
     String insertApiKey = args[0];
 
-    // Deprecated configuration methods:
-    SimpleMetricBatchSender.build(insertApiKey);
-    MetricBatchSender sender =
-        MetricBatchSender.builder()
+    SenderConfiguration config =
+        MetricBatchSender.configurationBuilder()
             .apiKey(insertApiKey)
             .httpPoster(new OkHttpPoster(Duration.ofSeconds(2)))
             .build();
+    MetricBatchSender sender = MetricBatchSender.create(config);
     new TelemetryClient(sender, null, null, null);
 
     // new configuration methods:

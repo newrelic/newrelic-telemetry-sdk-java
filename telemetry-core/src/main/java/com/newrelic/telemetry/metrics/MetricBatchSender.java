@@ -40,19 +40,6 @@ public class MetricBatchSender {
   }
 
   /**
-   * Creates a builder for {@link MetricBatchSender}
-   *
-   * <p>To be removed in 0.8.0
-   *
-   * @return a new metric batch sender builder
-   * @deprecated Use the {@link #create(SenderConfiguration)} method instead.
-   */
-  @Deprecated
-  public static MetricBatchSenderBuilder builder() {
-    return new MetricBatchSenderBuilder(MetricBatchSender.configurationBuilder());
-  }
-
-  /**
    * Send a batch of metrics to New Relic.
    *
    * @param batch The batch to send. This batch will be drained of accumulated metrics as a part of
