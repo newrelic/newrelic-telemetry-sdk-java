@@ -53,12 +53,7 @@ class LimitingSchedulerTest {
             },
             13,
             TimeUnit.MILLISECONDS);
-    boolean result2 =
-        testClass.schedule(
-            6,
-            Assertions::fail,
-            13,
-            TimeUnit.MILLISECONDS);
+    boolean result2 = testClass.schedule(6, Assertions::fail, 13, TimeUnit.MILLISECONDS);
     assertTrue(result1);
     assertFalse(result2);
     assertTrue(latch.await(5, SECONDS));
