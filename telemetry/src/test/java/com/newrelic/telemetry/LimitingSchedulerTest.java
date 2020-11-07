@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,15 +53,7 @@ class LimitingSchedulerTest {
             },
             13,
             TimeUnit.MILLISECONDS);
-    boolean result2 =
-        testClass.schedule(
-            6,
-            () -> {
-              seen.put("2", "");
-              latch.countDown();
-            },
-            13,
-            TimeUnit.MILLISECONDS);
+    boolean result2 = testClass.schedule(6, Assertions::fail, 13, TimeUnit.MILLISECONDS);
     assertTrue(result1);
     assertFalse(result2);
     assertTrue(latch.await(5, SECONDS));
@@ -70,7 +63,7 @@ class LimitingSchedulerTest {
   }
 
   @Test
-  void testFirstSuccessSecondFailsRetry() throws Exception {
+  void testSingleOverLimitFails() throws Exception {
     LimitingScheduler testClass = new LimitingScheduler(exec, 10);
     AtomicBoolean wasRun = new AtomicBoolean(false);
     boolean result =
@@ -79,6 +72,8 @@ class LimitingSchedulerTest {
             () -> {
               wasRun.set(true);
             });
+    testClass.shutdown();
+    assertTrue(testClass.awaitTermination(5, SECONDS));
     assertFalse(result);
     assertFalse(wasRun.get());
   }
