@@ -47,6 +47,7 @@ public class TelemetryClient {
   private final LimitingScheduler scheduler;
   private final int shutdownSeconds;
   private final LogBatchSender logBatchSender;
+  private NotificationHandler notificationHandler = new LoggingNotificationHandler(LOG);
 
   /**
    * Create a new TelemetryClient instance, with four senders. Note that if you don't intend to send
@@ -199,7 +200,7 @@ public class TelemetryClient {
       scheduler.schedule(
           batch.size(), () -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
-      LOG.error("Problem scheduling batch : " + e.getMessage());
+      notificationHandler.noticeError("Problem scheduling batch : ", e, batch);
     }
   }
 
@@ -215,16 +216,19 @@ public class TelemetryClient {
     } catch (RetryWithSplitException e) {
       splitAndSend(batchSender, batch, e);
     } catch (ResponseException e) {
-      LOG.error(
-          "Received a fatal exception from the New Relic API. Aborting metric batch send.", e);
+      notificationHandler.noticeError(
+          "Received a fatal exception from the New Relic API. Aborting metric batch send.",
+          e,
+          batch);
     } catch (Exception e) {
-      LOG.error("Unexpected failure when sending data.", e);
+      notificationHandler.noticeError("Unexpected failure when sending data.", e, batch);
     }
   }
 
   private <T extends Telemetry> void splitAndSend(
       BatchSender sender, TelemetryBatch<T> batch, RetryWithSplitException e) {
-    LOG.info("Metric batch size too large, splitting and retrying.", e);
+    notificationHandler.noticeInfo(
+        "Metric batch size too large, splitting and retrying.", e, batch);
     List<TelemetryBatch<T>> splitBatches = batch.split();
     splitBatches.forEach(
         metricBatch -> scheduleBatchSend(sender, metricBatch, 0, TimeUnit.SECONDS));
@@ -234,10 +238,11 @@ public class TelemetryClient {
       BatchSender sender,
       TelemetryBatch<? extends Telemetry> batch,
       RetryWithRequestedWaitException e) {
-    LOG.info(
-        "Metric batch sending failed. Retrying failed batch after {} {}",
-        e.getWaitTime(),
-        e.getTimeUnit());
+    notificationHandler.noticeInfo(
+        String.format(
+            "Metric batch sending failed. Retrying failed batch after %d %s",
+            e.getWaitTime(), e.getTimeUnit().toString()),
+        batch);
     scheduleBatchSend(sender, batch, e.getWaitTime(), e.getTimeUnit());
   }
 
@@ -246,10 +251,16 @@ public class TelemetryClient {
 
     long newWaitTime = backoff.nextWaitMs();
     if (newWaitTime == -1) {
-      LOG.error("Max retries exceeded.  Dropping {} pieces of telemetry data!", batch.size());
+      notificationHandler.noticeError(
+          String.format(
+              "Max retries exceeded.  Dropping %d pieces of telemetry data!", batch.size()),
+          batch);
       return;
     }
-    LOG.info("Metric batch sending failed. Backing off {} {}", newWaitTime, TimeUnit.MILLISECONDS);
+    notificationHandler.noticeInfo(
+        String.format(
+            "Metric batch sending failed. Backing off %d %s", newWaitTime, TimeUnit.MILLISECONDS),
+        batch);
     scheduleBatchSend(sender, batch, newWaitTime, TimeUnit.MILLISECONDS, backoff);
   }
 
@@ -313,5 +324,15 @@ public class TelemetryClient {
               return thread;
             });
     return new LimitingScheduler(executor, maxTelemetryBuffer);
+  }
+
+  /**
+   * Provide a {@link NotificationHandler} to the {@link TelemetryClient} for handling {@link
+   * ResponseException}
+   *
+   * @param notificationHandler The {@link NotificationHandler} to use
+   */
+  public void withNotificationHandler(NotificationHandler notificationHandler) {
+    this.notificationHandler = notificationHandler;
   }
 }
