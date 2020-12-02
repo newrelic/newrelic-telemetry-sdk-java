@@ -250,7 +250,7 @@ public class TelemetryClient {
       notificationHandler.noticeInfo(
           String.format(
               "Metric batch sending failed. Retrying failed batch after %d %s",
-              e.getWaitTime(), e.getTimeUnit().toString()),
+              e.getWaitTime(), e.getTimeUnit()),
           batch);
     }
     scheduleBatchSend(sender, batch, e.getWaitTime(), e.getTimeUnit());

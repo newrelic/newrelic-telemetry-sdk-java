@@ -4,7 +4,7 @@ package com.newrelic.telemetry;
 public interface NotificationHandler {
 
   /**
-   * Notice info events
+   * Notice info events.
    *
    * @param message the message provided by {@link TelemetryClient}
    * @param batch the telemetry batch that was sent
@@ -14,7 +14,7 @@ public interface NotificationHandler {
   }
 
   /**
-   * Notice info events
+   * Notice info events.
    *
    * @param message the message provided by {@link TelemetryClient}
    * @param exception the Exception provided by {@link TelemetryClient}
@@ -23,7 +23,7 @@ public interface NotificationHandler {
   void noticeInfo(String message, Exception exception, TelemetryBatch<? extends Telemetry> batch);
 
   /**
-   * Notice error events
+   * Notice error events.
    *
    * @param message the message provided by {@link TelemetryClient}
    * @param batch the telemetry batch that was sent
@@ -33,7 +33,7 @@ public interface NotificationHandler {
   }
 
   /**
-   * Notice error events
+   * Notice error events.
    *
    * @param message the message provided by {@link TelemetryClient}
    * @param throwable the throwable provided by {@link TelemetryClient}
