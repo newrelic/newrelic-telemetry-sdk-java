@@ -200,7 +200,9 @@ public class TelemetryClient {
       scheduler.schedule(
           batch.size(), () -> sendWithErrorHandling(sender, batch, backoff), waitTime, timeUnit);
     } catch (RejectedExecutionException e) {
-      notificationHandler.noticeError("Problem scheduling batch : ", e, batch);
+      if (notificationHandler != null) {
+        notificationHandler.noticeError("Problem scheduling batch : ", e, batch);
+      }
     }
   }
 
@@ -216,19 +218,25 @@ public class TelemetryClient {
     } catch (RetryWithSplitException e) {
       splitAndSend(batchSender, batch, e);
     } catch (ResponseException e) {
-      notificationHandler.noticeError(
-          "Received a fatal exception from the New Relic API. Aborting metric batch send.",
-          e,
-          batch);
+      if (notificationHandler != null) {
+        notificationHandler.noticeError(
+            "Received a fatal exception from the New Relic API. Aborting metric batch send.",
+            e,
+            batch);
+      }
     } catch (Exception e) {
-      notificationHandler.noticeError("Unexpected failure when sending data.", e, batch);
+      if (notificationHandler != null) {
+        notificationHandler.noticeError("Unexpected failure when sending data.", e, batch);
+      }
     }
   }
 
   private <T extends Telemetry> void splitAndSend(
       BatchSender sender, TelemetryBatch<T> batch, RetryWithSplitException e) {
-    notificationHandler.noticeInfo(
-        "Metric batch size too large, splitting and retrying.", e, batch);
+    if (notificationHandler != null) {
+      notificationHandler.noticeInfo(
+          "Metric batch size too large, splitting and retrying.", e, batch);
+    }
     List<TelemetryBatch<T>> splitBatches = batch.split();
     splitBatches.forEach(
         metricBatch -> scheduleBatchSend(sender, metricBatch, 0, TimeUnit.SECONDS));
@@ -238,11 +246,13 @@ public class TelemetryClient {
       BatchSender sender,
       TelemetryBatch<? extends Telemetry> batch,
       RetryWithRequestedWaitException e) {
-    notificationHandler.noticeInfo(
-        String.format(
-            "Metric batch sending failed. Retrying failed batch after %d %s",
-            e.getWaitTime(), e.getTimeUnit().toString()),
-        batch);
+    if (notificationHandler != null) {
+      notificationHandler.noticeInfo(
+          String.format(
+              "Metric batch sending failed. Retrying failed batch after %d %s",
+              e.getWaitTime(), e.getTimeUnit().toString()),
+          batch);
+    }
     scheduleBatchSend(sender, batch, e.getWaitTime(), e.getTimeUnit());
   }
 
@@ -251,16 +261,20 @@ public class TelemetryClient {
 
     long newWaitTime = backoff.nextWaitMs();
     if (newWaitTime == -1) {
-      notificationHandler.noticeError(
-          String.format(
-              "Max retries exceeded.  Dropping %d pieces of telemetry data!", batch.size()),
-          batch);
+      if (notificationHandler != null) {
+        notificationHandler.noticeError(
+            String.format(
+                "Max retries exceeded.  Dropping %d pieces of telemetry data!", batch.size()),
+            batch);
+      }
       return;
     }
-    notificationHandler.noticeInfo(
-        String.format(
-            "Metric batch sending failed. Backing off %d %s", newWaitTime, TimeUnit.MILLISECONDS),
-        batch);
+    if (notificationHandler != null) {
+      notificationHandler.noticeInfo(
+          String.format(
+              "Metric batch sending failed. Backing off %d %s", newWaitTime, TimeUnit.MILLISECONDS),
+          batch);
+    }
     scheduleBatchSend(sender, batch, newWaitTime, TimeUnit.MILLISECONDS, backoff);
   }
 
