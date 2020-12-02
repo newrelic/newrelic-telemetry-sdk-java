@@ -33,7 +33,7 @@ public interface NotificationHandler {
   }
 
   /**
-   * Notice info events
+   * Notice error events
    *
    * @param message the message provided by {@link TelemetryClient}
    * @param throwable the throwable provided by {@link TelemetryClient}
