@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.BaseConfig;
@@ -44,9 +48,7 @@ public class EventBatchSenderTest {
 
     Response ok = new Response(200, "OK", "yup");
     BatchDataSender sender = mock(BatchDataSender.class);
-    when(sender.send(json, batch.getUuid()))
-        .thenThrow(RetryWithSplitException.class)
-        .thenReturn(ok);
+    when(sender.send(json, batch)).thenThrow(RetryWithSplitException.class).thenReturn(ok);
 
     EventBatchSender testClass = new EventBatchSender(marshaller, sender);
 

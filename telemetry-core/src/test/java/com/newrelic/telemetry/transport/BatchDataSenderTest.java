@@ -18,16 +18,25 @@ import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.exceptions.RetryWithBackoffException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
+import com.newrelic.telemetry.metrics.MetricBatch;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BatchDataSenderTest {
 
   private final UUID requestId = UUID.fromString("abc-123-def-dead-beef");
+  private MetricBatch batch;
+
+  @BeforeEach
+  void setup() {
+    batch = mock(MetricBatch.class);
+    when(batch.getUuid()).thenReturn(requestId);
+  }
 
   @Test
   void testSend_noSecondaryUserAgent() throws Exception {
@@ -51,8 +60,7 @@ class BatchDataSenderTest {
     BatchDataSender testClass =
         new BatchDataSender(httpPoster, "api-key", endpointURl, false, null);
 
-    Response response = testClass.send("{}", requestId);
-
+    Response response = testClass.send("{}", batch);
     assertEquals(new Response(202, "OK", "yepyep"), response);
   }
 
@@ -78,7 +86,7 @@ class BatchDataSenderTest {
     BatchDataSender testClass =
         new BatchDataSender(httpPoster, "api-key", endpointURl, false, "mySpecialUserAgent/1.0");
 
-    Response response = testClass.send("{}", requestId);
+    Response response = testClass.send("{}", batch);
 
     assertEquals(new Response(202, "OK", "yepyep"), response);
   }
@@ -108,7 +116,7 @@ class BatchDataSenderTest {
     RetryWithBackoffException exception =
         assertThrows(
             RetryWithBackoffException.class,
-            () -> testClass.send("{}", requestId),
+            () -> testClass.send("{}", batch),
             "Should have thrown a retry with backoff");
 
     assertNotNull(exception.getCause());

@@ -62,7 +62,7 @@ public class LogBatchSender {
         "Sending a log batch (number of logs: {}) to the New Relic log ingest endpoint)",
         batch.size());
     String json = marshaller.toJson(batch);
-    return sender.send(json, batch.getUuid());
+    return sender.send(json, batch);
   }
 
   /**
