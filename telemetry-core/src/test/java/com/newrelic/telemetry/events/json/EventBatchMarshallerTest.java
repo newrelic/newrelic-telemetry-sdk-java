@@ -46,4 +46,24 @@ public class EventBatchMarshallerTest {
         "[{\"timestamp\":1586413929145,\"eventType\":\"testJIT\",\"escapeMe\":\"\\\"quoted\\\"\",\"number\":55.555,\"boolean\":true,\"double\":3.14,\"float\":4.32,\"int\":5,\"long\":384949494949499999}]";
     JSONAssert.assertEquals(expected, json, true);
   }
+
+  @Test
+  public void mapToJson() throws Exception {
+    long eventTimeMillis = 888777666222L;
+    Event event =
+        new Event(
+            "jitThing",
+            new Attributes()
+                .put("foo", "bar")
+                .put("bar", "baz")
+                .put("quux", true)
+                .put("zzz", 819)
+                .put("yyy", 2.997),
+            eventTimeMillis);
+    String expected =
+        "{\"eventType\":\"jitThing\", \"timestamp\":888777666222, \"foo\":\"bar\",\"bar\":\"baz\",\"quux\":true,\"zzz\":819,\"yyy\":2.997}";
+
+    String json = EventBatchMarshaller.mapToJson(event);
+    JSONAssert.assertEquals(expected, json, false);
+  }
 }

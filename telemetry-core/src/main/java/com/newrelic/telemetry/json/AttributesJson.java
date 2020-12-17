@@ -16,7 +16,6 @@ public class AttributesJson {
   public String toJson(Map<String, Object> attributes) {
     StringWriter out = new StringWriter();
     Map<String, Object> filteredAttributes = filterIllegalValues(attributes);
-    filterIllegalValues(filteredAttributes);
     if (filteredAttributes.isEmpty()) {
       return "{}";
     }

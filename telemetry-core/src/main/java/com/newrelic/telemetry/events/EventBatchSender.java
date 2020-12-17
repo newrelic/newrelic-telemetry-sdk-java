@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 public class EventBatchSender {
   private static final String EVENTS_PATH = "/v1/accounts/events";
   private static final String DEFAULT_URL = "https://insights-collector.newrelic.com/";
+  private static final Response EMPTY_BATCH_RESPONSE = new Response(202, "Ignored", "Empty batch");
 
   private static final Logger logger = LoggerFactory.getLogger(EventBatchSender.class);
 
@@ -47,7 +48,7 @@ public class EventBatchSender {
   public Response sendBatch(EventBatch batch) throws ResponseException {
     if (batch == null || batch.size() == 0) {
       logger.debug("Skipped sending of an empty event batch.");
-      return new Response(202, "Ignored", "Empty batch");
+      return EMPTY_BATCH_RESPONSE;
     }
     logger.debug(
         "Sending an event batch (number of events: {}) to the New Relic event ingest endpoint)",
