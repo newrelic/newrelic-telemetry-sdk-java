@@ -89,38 +89,6 @@ public class SenderConfiguration {
     }
 
     /**
-     * Configure the endpoint for data to be sent to. The default path will be used.
-     *
-     * <p>To be removed in 0.8.0
-     *
-     * @param scheme A valid URL scheme, such as "https"
-     * @param host The host portion of the URL.
-     * @param port The port portion of the URL.
-     * @return this builder.
-     * @throws MalformedURLException If a valid URL cannot be constructed from the pieces provided.
-     * @deprecated call the simpler endpoint(URL) method with the full URL instead
-     */
-    @Deprecated
-    public SenderConfigurationBuilder endpoint(String scheme, String host, int port)
-        throws MalformedURLException {
-      return endpointWithPath(new URL(scheme, host, port, basePath));
-    }
-
-    /**
-     * Configure the *full* endpoint URL for data to be sent to, including the path.
-     *
-     * <p>To be removed in 0.8.0
-     *
-     * @deprecated call the simpler endpoint() method instead
-     * @param endpointUrl A full {@link URL}, including the path.
-     * @return this builder.
-     */
-    @Deprecated
-    public SenderConfigurationBuilder endpointWithPath(URL endpointUrl) {
-      return endpoint(endpointUrl);
-    }
-
-    /**
      * Configure the *full* endpoint URL for data to be sent to, including the path. You should only
      * use this method if you wish to modify the default behavior, which is to send data to the
      * Portland production US endpoints.
