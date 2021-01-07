@@ -19,11 +19,18 @@ public class LoggingNotificationHandler implements NotificationHandler {
   @Override
   public void noticeInfo(
       String message, Exception exception, TelemetryBatch<? extends Telemetry> batch) {
-    logger.info(message, exception);
+    logger.info(addBatchType(message, batch), exception);
   }
 
   @Override
   public void noticeError(String message, Throwable t, TelemetryBatch<? extends Telemetry> batch) {
-    logger.error(message, t);
+    logger.error(addBatchType(message, batch), t);
+  }
+
+  private String addBatchType(String message, TelemetryBatch<? extends Telemetry> batch) {
+    if (batch != null) {
+      return String.format("[%s] - %s", batch.getClass().getSimpleName(), message);
+    }
+    return message;
   }
 }

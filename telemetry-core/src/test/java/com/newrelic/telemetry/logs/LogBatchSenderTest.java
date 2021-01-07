@@ -42,7 +42,7 @@ class LogBatchSenderTest {
     BatchDataSender sender = mock(BatchDataSender.class);
 
     when(marshaller.toJson(batch)).thenReturn(json);
-    when(sender.send(json, batch.getUuid())).thenReturn(response);
+    when(sender.send(json, batch)).thenReturn(response);
 
     LogBatchSender testClass = new LogBatchSender(marshaller, sender);
 

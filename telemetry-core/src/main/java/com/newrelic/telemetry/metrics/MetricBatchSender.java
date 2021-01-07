@@ -58,7 +58,7 @@ public class MetricBatchSender {
         "Sending a metric batch (number of metrics: {}) to the New Relic metric ingest endpoint)",
         batch.size());
     String json = marshaller.toJson(batch);
-    return sender.send(json, batch.getUuid());
+    return sender.send(json, batch);
   }
 
   /**

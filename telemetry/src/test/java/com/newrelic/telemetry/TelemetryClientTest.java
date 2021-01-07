@@ -166,7 +166,7 @@ class TelemetryClientTest {
     assertEquals(Collections.emptyList(), customNotificationHandler.errorMessages);
     assertEquals(
         Collections.singletonList(
-            "Metric batch sending failed. Retrying failed batch after 15 MILLISECONDS"),
+            "Batch sending failed. Retrying failed batch after 15 MILLISECONDS"),
         customNotificationHandler.infoMessages);
   }
 
@@ -209,7 +209,7 @@ class TelemetryClientTest {
     assertTrue(result);
     assertEquals(Collections.emptyList(), customNotificationHandler.errorMessages);
     assertEquals(
-        Collections.singletonList("Metric batch size too large, splitting and retrying."),
+        Collections.singletonList("Batch size too large, splitting and retrying."),
         customNotificationHandler.infoMessages);
   }
 
@@ -251,7 +251,7 @@ class TelemetryClientTest {
     assertEquals(0, customNotificationHandler.errorMessages.size());
     assertEquals(Collections.emptyList(), customNotificationHandler.errorMessages);
     assertEquals(
-        Collections.singletonList("Metric batch size too large, splitting and retrying."),
+        Collections.singletonList("Batch size too large, splitting and retrying."),
         customNotificationHandler.infoMessages);
   }
 
@@ -297,7 +297,7 @@ class TelemetryClientTest {
     assertTrue(batch2Seen.get());
     assertEquals(Collections.emptyList(), customNotificationHandler.errorMessages);
     assertEquals(
-        Collections.singletonList("Metric batch size too large, splitting and retrying."),
+        Collections.singletonList("Batch size too large, splitting and retrying."),
         customNotificationHandler.infoMessages);
   }
 

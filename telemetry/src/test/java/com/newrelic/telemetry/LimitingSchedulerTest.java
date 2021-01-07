@@ -58,7 +58,14 @@ class LimitingSchedulerTest {
     assertFalse(result2);
     assertTrue(latch.await(5, SECONDS));
     assertEquals(new HashSet<>(Collections.singletonList("1")), seen.keySet());
-    boolean result3 = testClass.schedule(6, () -> {}, 13, TimeUnit.MILLISECONDS);
+    boolean result3 = false;
+    for (int i = 0; i < 10; i++) {
+      result3 = testClass.schedule(6, () -> {}, 13, TimeUnit.MILLISECONDS);
+      if (result3) {
+        break;
+      }
+      Thread.sleep(1000);
+    }
     assertTrue(result3);
   }
 

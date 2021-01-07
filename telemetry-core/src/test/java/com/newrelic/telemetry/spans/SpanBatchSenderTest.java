@@ -43,7 +43,7 @@ class SpanBatchSenderTest {
     BatchDataSender sender = mock(BatchDataSender.class);
 
     when(marshaller.toJson(batch)).thenReturn(json);
-    when(sender.send(json, batch.getUuid())).thenReturn(response);
+    when(sender.send(json, batch)).thenReturn(response);
 
     SpanBatchSender testClass = new SpanBatchSender(marshaller, sender);
 
