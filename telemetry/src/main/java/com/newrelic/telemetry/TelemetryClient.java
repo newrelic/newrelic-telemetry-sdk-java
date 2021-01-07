@@ -232,11 +232,7 @@ public class TelemetryClient {
   private <T extends Telemetry> void splitAndSend(
       BatchSender sender, TelemetryBatch<T> batch, RetryWithSplitException e) {
     if (notificationHandler != null) {
-      notificationHandler.noticeInfo(
-          String.format(
-              "%s size too large, splitting and retrying.", batch.getClass().getSimpleName()),
-          e,
-          batch);
+      notificationHandler.noticeInfo("Batch size too large, splitting and retrying.", e, batch);
     }
     List<TelemetryBatch<T>> splitBatches = batch.split();
     splitBatches.forEach(
@@ -250,8 +246,8 @@ public class TelemetryClient {
     if (notificationHandler != null) {
       notificationHandler.noticeInfo(
           String.format(
-              "%s sending failed. Retrying failed batch after %d %s",
-              batch.getClass().getSimpleName(), e.getWaitTime(), e.getTimeUnit()),
+              "Batch sending failed. Retrying failed batch after %d %s",
+              e.getWaitTime(), e.getTimeUnit()),
           batch);
     }
     scheduleBatchSend(sender, batch, e.getWaitTime(), e.getTimeUnit());
