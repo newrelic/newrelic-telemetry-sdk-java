@@ -16,5 +16,5 @@ jobs:
     - name: Check formatting
       run: ./gradlew verifyGoogleJavaFormat
     - name: Check build and test
-      run: ./gradlew check javadoc --info
+      run: ./gradlew test --info
 

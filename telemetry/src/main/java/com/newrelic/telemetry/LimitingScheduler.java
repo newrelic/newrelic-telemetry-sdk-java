@@ -52,6 +52,8 @@ public class LimitingScheduler {
               command.run();
             } finally {
               semaphore.release(size);
+              logger.warn("Released");
+              logger.warn("Permits available: " + String.valueOf(semaphore.availablePermits()));
             }
           },
           delay,
