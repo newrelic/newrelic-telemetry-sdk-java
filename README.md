@@ -37,20 +37,20 @@ Maven dependencies:
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry-http-okhttp</artifactId>
-      <version>0.9.0</version>
+      <version>0.10.0</version>
     </dependency>
 ```
 
 Gradle dependencies: 
 
 ```
-implementation("com.newrelic.telemetry:telemetry:0.9.0")
-implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.9.0")
+implementation("com.newrelic.telemetry:telemetry:0.10.0")
+implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.10.0")
 ```
 
 Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
