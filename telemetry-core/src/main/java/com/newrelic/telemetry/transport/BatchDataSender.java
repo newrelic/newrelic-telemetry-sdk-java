@@ -4,8 +4,6 @@
  */
 package com.newrelic.telemetry.transport;
 
-import static java.util.Collections.emptyList;
-
 import com.newrelic.telemetry.Response;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.TelemetryBatch;
@@ -15,6 +13,9 @@ import com.newrelic.telemetry.exceptions.RetryWithRequestedWaitException;
 import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,8 +29,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static java.util.Collections.emptyList;
 
 public class BatchDataSender {
 
@@ -234,6 +235,10 @@ public class BatchDataSender {
           BatchDataSender.class
               .getClassLoader()
               .getResourceAsStream("telemetry.sdk.version.properties");
+
+      if(in == null){
+        return "UnknownVersion";
+      }
       return new BufferedReader(new InputStreamReader(in)).readLine().trim();
     } catch (Exception e) {
       logger.error("Error reading version. Defaulting to 'UnknownVersion'", e);
