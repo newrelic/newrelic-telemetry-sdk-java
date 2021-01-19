@@ -46,7 +46,7 @@ tasks.register<Copy>("copySources") {
     from ("../telemetry-core/src/main/java") {
         into ("java")
     }
-    from ("../telemetry/src/main/java") {
+    from ("../telemetry-client/src/main/java") {
         into ("java")
     }
     from ("../telemetry-http-java11/src/main/java") {
@@ -55,7 +55,7 @@ tasks.register<Copy>("copySources") {
     from ("../telemetry-core/src/main/resources") {
         into ("resources")
     }
-    from ("../telemetry/src/main/resources") {
+    from ("../telemetry-client/src/main/resources") {
         into ("resources")
     }
     from ("../telemetry-http-java11/src/main/resources") {

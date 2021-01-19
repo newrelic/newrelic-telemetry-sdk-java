@@ -10,8 +10,8 @@ build. As such, it has a minimum version of Java 11.
 
 It includes the contents of the non-modular artifacts:
 
-* telemetry
-* telemetry_core
+* telemetry-client
+* telemetry-core
 * telemetry-http-java11
 
 It should be used instead of these artifacts in a modular build, and it cannot

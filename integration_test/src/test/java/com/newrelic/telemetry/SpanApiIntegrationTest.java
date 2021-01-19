@@ -12,9 +12,14 @@ import static org.mockserver.model.JsonBody.json;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import com.newrelic.telemetry.spans.Span;
-import com.newrelic.telemetry.spans.SpanBatch;
-import com.newrelic.telemetry.spans.SpanBatchSender;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.Response;
+import com.newrelic.telemetry.core.SenderConfiguration;
+import com.newrelic.telemetry.core.SpanBatchSenderFactory;
+import com.newrelic.telemetry.core.spans.Span;
+import com.newrelic.telemetry.core.spans.SpanBatch;
+import com.newrelic.telemetry.core.spans.SpanBatchSender;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;

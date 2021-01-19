@@ -8,7 +8,7 @@ configure<JavaPluginConvention> {
 }
 
 dependencies {
-    implementation(project(":telemetry"))
+    implementation(project(":telemetry-client"))
     api(project(":telemetry-core"))
     api("com.squareup.okhttp3:okhttp:${okhttpVersion}")
 

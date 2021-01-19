@@ -46,7 +46,7 @@ For more information on TraceObserver and Infinite Tracing [go here.](https://do
 
 #### [TelemetryClientExample.java](src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 
-This is an example of how to use the provided `com.newrelic.telemetry.TelemetryClient` to handle
+This is an example of how to use the provided `com.newrelic.telemetry.client.TelemetryClient` to handle
 errors in the recommended way.
 
 ### Running the examples

@@ -2,6 +2,7 @@ package com.newrelic.telemetry;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.newrelic.telemetry.core.BaseConfig;
 import org.junit.jupiter.api.Test;
 
 class BaseConfigTest {

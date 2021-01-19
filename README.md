@@ -49,7 +49,7 @@ Maven dependencies:
 Gradle dependencies: 
 
 ```
-implementation("com.newrelic.telemetry:telemetry:0.10.0")
+implementation("com.newrelic.telemetry:telemetry-client:0.10.0")
 implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.10.0")
 ```
 
@@ -58,7 +58,7 @@ We recommend looking at the [TelemetryClientExample](telemetry_examples/src/main
 first.
 
 Note: If you do not want to include `okhttp` as a transitive depenedency, you will need to provide a custom implementation of the 
-`com.newrelic.telemetry.http.HttpPoster` interface, rather than using the `com.newrelic.telemetry:telemetry-http-okhttp` library.
+`com.newrelic.telemetry.core.http.HttpPoster` interface, rather than using the `com.newrelic.telemetry:telemetry-http-okhttp` library.
 
 ## Usage
 
@@ -129,13 +129,13 @@ In order to send metrics and spans to New Relic, you will also need an Insights 
 Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
 for more information.
 
-#### `telemetry`
+#### `telemetry-client`
 This module contains code for using all New Relic telemetry modules, gathered in one place, as well as what we 
 consider "best practice" implementations of how to interact with the lower-level modules.
 
-The `telemetry` library is published under the maven coordinates:
+The `telemetry-client` library is published under the maven coordinates:
 
-`com.newrelic.telemetry:telemetry`
+`com.newrelic.telemetry:telemetry-client`
 
 #### `telemetry-http-java11`
 This is an implementation of the required http client interface using Java 11 JDK classes as the underlying library.

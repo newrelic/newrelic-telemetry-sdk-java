@@ -4,12 +4,12 @@
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.SenderConfiguration;
-import com.newrelic.telemetry.logs.Log;
-import com.newrelic.telemetry.logs.LogBatch;
-import com.newrelic.telemetry.logs.LogBatchSender;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.SenderConfiguration;
+import com.newrelic.telemetry.core.logs.Log;
+import com.newrelic.telemetry.core.logs.LogBatch;
+import com.newrelic.telemetry.core.logs.LogBatchSender;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

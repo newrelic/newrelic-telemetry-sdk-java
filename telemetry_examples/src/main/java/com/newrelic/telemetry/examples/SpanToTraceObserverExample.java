@@ -1,12 +1,12 @@
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.SpanBatchSenderFactory;
-import com.newrelic.telemetry.exceptions.ResponseException;
-import com.newrelic.telemetry.spans.Span;
-import com.newrelic.telemetry.spans.SpanBatch;
-import com.newrelic.telemetry.spans.SpanBatchSender;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.SpanBatchSenderFactory;
+import com.newrelic.telemetry.core.exceptions.ResponseException;
+import com.newrelic.telemetry.core.spans.Span;
+import com.newrelic.telemetry.core.spans.SpanBatch;
+import com.newrelic.telemetry.core.spans.SpanBatchSender;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;

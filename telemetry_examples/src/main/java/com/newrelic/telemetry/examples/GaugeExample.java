@@ -4,13 +4,13 @@
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.MetricBatchSenderFactory;
-import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.http.HttpPoster;
-import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.MetricBatchSenderFactory;
+import com.newrelic.telemetry.core.http.HttpPoster;
+import com.newrelic.telemetry.core.metrics.Gauge;
+import com.newrelic.telemetry.core.metrics.MetricBatchSender;
+import com.newrelic.telemetry.core.metrics.MetricBuffer;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * <p>A gauge represents a numeric value measured at a point in time.
  *
  * <p>Additionally, this provides an example of using a {@code
- * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
+ * com.newrelic.telemetry.core.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
  * <p>To run this example, provide a command line argument for your Insights Insert key.
  */

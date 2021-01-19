@@ -3,7 +3,10 @@ package com.newrelic.telemetry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import com.newrelic.telemetry.http.HttpPoster;
+import com.newrelic.telemetry.core.BaseConfig;
+import com.newrelic.telemetry.core.EventBatchSenderFactory;
+import com.newrelic.telemetry.core.SenderConfiguration;
+import com.newrelic.telemetry.core.http.HttpPoster;
 import org.junit.jupiter.api.Test;
 
 class EventBatchSenderFactoryTest {

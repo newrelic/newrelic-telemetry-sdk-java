@@ -26,7 +26,7 @@ allprojects {
     }
 }
 
-listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11" , ":telemetry-all").forEach {
+listOf(":telemetry-client", ":telemetry-http-okhttp", ":telemetry-http-java11", ":telemetry-all").forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
@@ -52,8 +52,7 @@ listOf(":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11" , ":tele
                 manifest {
                     attributes(mapOf(
                             "Implementation-Version" to project.version,
-                            "Implementation-Vendor" to "New Relic, Inc.",
-                            "Automatic-Module-Name" to "com.newrelic.telemetry" // Hack
+                            "Implementation-Vendor" to "New Relic, Inc."
                     ))
                 }
             }

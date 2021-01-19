@@ -4,19 +4,19 @@
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.EventBatchSenderFactory;
-import com.newrelic.telemetry.Java11Http;
-import com.newrelic.telemetry.Java11HttpPoster;
-import com.newrelic.telemetry.LogBatchSenderFactory;
-import com.newrelic.telemetry.MetricBatchSenderFactory;
-import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.SenderConfiguration;
-import com.newrelic.telemetry.SpanBatchSenderFactory;
-import com.newrelic.telemetry.TelemetryClient;
-import com.newrelic.telemetry.events.EventBatchSender;
-import com.newrelic.telemetry.logs.LogBatchSender;
-import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.spans.SpanBatchSender;
+import com.newrelic.telemetry.client.TelemetryClient;
+import com.newrelic.telemetry.core.EventBatchSenderFactory;
+import com.newrelic.telemetry.core.LogBatchSenderFactory;
+import com.newrelic.telemetry.core.MetricBatchSenderFactory;
+import com.newrelic.telemetry.core.SenderConfiguration;
+import com.newrelic.telemetry.core.SpanBatchSenderFactory;
+import com.newrelic.telemetry.core.events.EventBatchSender;
+import com.newrelic.telemetry.core.logs.LogBatchSender;
+import com.newrelic.telemetry.core.metrics.MetricBatchSender;
+import com.newrelic.telemetry.core.spans.SpanBatchSender;
+import com.newrelic.telemetry.javahttp.Java11Http;
+import com.newrelic.telemetry.javahttp.Java11HttpPoster;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.http.HttpClient;

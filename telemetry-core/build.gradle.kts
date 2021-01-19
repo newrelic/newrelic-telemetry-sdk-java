@@ -58,6 +58,7 @@ tasks {
         manifest {
             attributes(mapOf("Implementation-Version" to project.version, "Implementation-Vendor" to "New Relic, Inc."))
         }
+        exclude("**/module-info.class")
         relocate("com.google.gson", "com.newrelic.relocated")
         minimize()
     }

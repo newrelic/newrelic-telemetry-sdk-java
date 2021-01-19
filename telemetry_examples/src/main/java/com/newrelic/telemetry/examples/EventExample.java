@@ -1,11 +1,11 @@
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.EventBatchSenderFactory;
-import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.events.Event;
-import com.newrelic.telemetry.events.EventBatchSender;
-import com.newrelic.telemetry.events.EventBuffer;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.EventBatchSenderFactory;
+import com.newrelic.telemetry.core.events.Event;
+import com.newrelic.telemetry.core.events.EventBatchSender;
+import com.newrelic.telemetry.core.events.EventBuffer;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 
 public class EventExample {
   public static void main(String[] args) throws Exception {

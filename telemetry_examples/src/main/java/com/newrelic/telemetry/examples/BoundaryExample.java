@@ -4,14 +4,14 @@
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.MetricBatchSenderFactory;
-import com.newrelic.telemetry.OkHttpPoster;
-import com.newrelic.telemetry.Response;
-import com.newrelic.telemetry.exceptions.ResponseException;
-import com.newrelic.telemetry.metrics.Count;
-import com.newrelic.telemetry.metrics.MetricBatchSender;
-import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.MetricBatchSenderFactory;
+import com.newrelic.telemetry.core.Response;
+import com.newrelic.telemetry.core.exceptions.ResponseException;
+import com.newrelic.telemetry.core.metrics.Count;
+import com.newrelic.telemetry.core.metrics.MetricBatchSender;
+import com.newrelic.telemetry.core.metrics.MetricBuffer;
+import com.newrelic.telemetry.okhttp.OkHttpPoster;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.logging.Logger;

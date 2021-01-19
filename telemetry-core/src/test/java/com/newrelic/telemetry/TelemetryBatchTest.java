@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.newrelic.telemetry.metrics.Count;
-import com.newrelic.telemetry.metrics.Gauge;
-import com.newrelic.telemetry.metrics.Metric;
-import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.core.Attributes;
+import com.newrelic.telemetry.core.TelemetryBatch;
+import com.newrelic.telemetry.core.metrics.Count;
+import com.newrelic.telemetry.core.metrics.Gauge;
+import com.newrelic.telemetry.core.metrics.Metric;
+import com.newrelic.telemetry.core.metrics.MetricBatch;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
