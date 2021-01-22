@@ -58,6 +58,8 @@ tasks {
         manifest {
             attributes(mapOf("Implementation-Version" to project.version, "Implementation-Vendor" to "New Relic, Inc."))
         }
+        // Ensure module-info.class files from dependencies don't erroneously make it into the jar
+        exclude("**/module-info.class")
         relocate("com.google.gson", "com.newrelic.relocated")
         minimize()
     }
