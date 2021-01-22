@@ -36,7 +36,7 @@ Maven dependencies:
 ```
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
-      <artifactId>telemetry</artifactId>
+      <artifactId>telemetry-core</artifactId>
       <version>0.10.0</version>
     </dependency>
     <dependency>
@@ -49,7 +49,7 @@ Maven dependencies:
 Gradle dependencies: 
 
 ```
-implementation("com.newrelic.telemetry:telemetry:0.10.0")
+implementation("com.newrelic.telemetry:telemetry-core:0.10.0")
 implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.10.0")
 ```
 
@@ -121,21 +121,15 @@ be applied automatically before commits by moving it into `.git/hooks/pre-commit
 ### Module structure:
 
 #### `telemetry_core`
-This is the core module for sending dimensional metrics and spans to New Relic. The library is published under maven coordinates:
+This is the core module for sending dimensional metrics and spans to New Relic. It contains low level APIs as well as
+ higher level "best practice" implementations that compose interactions with the lower level modules. The library is 
+ published under maven coordinates:
 
 `com.newrelic.telemetry:telemetry-core`
 
 In order to send metrics and spans to New Relic, you will also need an Insights Insert API Key. 
 Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
 for more information.
-
-#### `telemetry`
-This module contains code for using all New Relic telemetry modules, gathered in one place, as well as what we 
-consider "best practice" implementations of how to interact with the lower-level modules.
-
-The `telemetry` library is published under the maven coordinates:
-
-`com.newrelic.telemetry:telemetry`
 
 #### `telemetry-http-java11`
 This is an implementation of the required http client interface using Java 11 JDK classes as the underlying library.
@@ -215,7 +209,7 @@ After the release job has run successfully it will publish the new artifact to a
   ## [0.6.0]
   - Miscellaneous bug fixes and tweaks
   ```
-* Update the [Usage](#usage) example in the [README](README.md) with the newly released version (e.g. `implementation("com.newrelic.telemetry:telemetry:0.6.0")`).
+* Update the [Usage](#usage) example in the [README](README.md) with the newly released version (e.g. `implementation("com.newrelic.telemetry:telemetry-core:0.6.0")`).
 
 2. Update the release notes with the changelog details.
  

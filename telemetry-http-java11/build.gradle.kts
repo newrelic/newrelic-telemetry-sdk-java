@@ -7,7 +7,6 @@ configure<JavaPluginConvention> {
 }
 
 dependencies {
-    implementation(project(":telemetry"))
     api(project(":telemetry-core"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
