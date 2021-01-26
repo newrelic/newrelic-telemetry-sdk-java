@@ -60,7 +60,6 @@ The Telemetry SDK comes with tests in:.
 
 `integration_test`
 `telemetry-core/src/test`
-`telemetry/src/test`
 `telemetry-http-okhttp/src/test`
 
 You can run all of these tests, and verify that your code is formatted correctly by running
