@@ -16,7 +16,6 @@ plugins {
 apply(plugin = "java-library")
 
 dependencies {
-    implementation(project(":telemetry"))
     implementation(project(":telemetry-http-okhttp"))
     implementation(project(":telemetry-http-java11"))
     runtimeOnly("org.slf4j:slf4j-simple:${Versions.slf4j}")

@@ -1,6 +1,5 @@
 rootProject.name = "newrelic-telemetry-sdk-java"
 
-include (":telemetry")
 include (":telemetry-all")
 include (":telemetry_examples")
 include (":telemetry-core")
