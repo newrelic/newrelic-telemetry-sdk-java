@@ -35,6 +35,7 @@ public class BatchDataSender {
 
   private static final Logger logger = LoggerFactory.getLogger(BatchDataSender.class);
   private static final String MEDIA_TYPE = "application/json; charset=utf-8";
+  private static final String UNKNOWN_VERSION = "UnknownVersion";
 
   static final String BASE_USER_AGENT_VALUE;
 
@@ -234,10 +235,14 @@ public class BatchDataSender {
           BatchDataSender.class
               .getClassLoader()
               .getResourceAsStream("telemetry.sdk.version.properties");
+
+      if (in == null) {
+        return UNKNOWN_VERSION;
+      }
       return new BufferedReader(new InputStreamReader(in)).readLine().trim();
     } catch (Exception e) {
-      logger.error("Error reading version. Defaulting to 'UnknownVersion'", e);
-      return "UnknownVersion";
+      logger.error(String.format("Error reading version. Defaulting to '%s'", UNKNOWN_VERSION), e);
+      return UNKNOWN_VERSION;
     }
   }
 }
