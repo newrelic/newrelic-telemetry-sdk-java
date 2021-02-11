@@ -89,7 +89,8 @@ public class EventBatchSender {
             configuration.getApiKey(),
             url,
             configuration.isAuditLoggingEnabled(),
-            configuration.getSecondaryUserAgent());
+            configuration.getSecondaryUserAgent(),
+            configuration.useLicenseKey());
 
     return new EventBatchSender(marshaller, sender);
   }

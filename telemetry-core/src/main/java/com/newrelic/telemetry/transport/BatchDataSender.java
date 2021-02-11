@@ -44,6 +44,7 @@ public class BatchDataSender {
   private final URL endpointURl;
   private final boolean auditLoggingEnabled;
   private final String userAgent;
+  private final boolean useLicenseKey;
 
   static {
     String implementationVersion = readVersion();
@@ -56,11 +57,22 @@ public class BatchDataSender {
       URL endpointURl,
       boolean auditLoggingEnabled,
       String secondaryUserAgent) {
+    this(client, apiKey, endpointURl, auditLoggingEnabled, secondaryUserAgent, false);
+  }
+
+  public BatchDataSender(
+      HttpPoster client,
+      String apiKey,
+      URL endpointURl,
+      boolean auditLoggingEnabled,
+      String secondaryUserAgent,
+      boolean useLicenseKey) {
     this.client = client;
     this.apiKey = apiKey;
     this.endpointURl = endpointURl;
     this.auditLoggingEnabled = auditLoggingEnabled;
     this.userAgent = buildUserAgent(secondaryUserAgent);
+    this.useLicenseKey = useLicenseKey;
     logger.info("BatchDataSender configured with endpoint {}", endpointURl);
     if (auditLoggingEnabled) {
       logger.info("BatchDataSender configured with audit logging enabled.");
@@ -124,7 +136,11 @@ public class BatchDataSender {
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
           RetryWithRequestedWaitException {
     Map<String, String> headers = new HashMap<>();
-    headers.put("Api-Key", apiKey);
+    if (useLicenseKey) {
+      headers.put("X-License-Key", apiKey);
+    } else {
+      headers.put("Api-Key", apiKey);
+    }
     headers.put("Content-Encoding", "gzip");
     if (requestId != null) {
       headers.put("X-Request-Id", requestId.toString());

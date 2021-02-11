@@ -100,7 +100,8 @@ public class MetricBatchSender {
             configuration.getApiKey(),
             url,
             configuration.isAuditLoggingEnabled(),
-            configuration.getSecondaryUserAgent());
+            configuration.getSecondaryUserAgent(),
+            configuration.useLicenseKey());
 
     return new MetricBatchSender(marshaller, sender);
   }
