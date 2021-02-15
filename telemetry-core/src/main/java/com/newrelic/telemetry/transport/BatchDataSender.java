@@ -77,6 +77,11 @@ public class BatchDataSender {
     if (auditLoggingEnabled) {
       logger.info("BatchDataSender configured with audit logging enabled.");
     }
+    if (useLicenseKey) {
+      logger.info("BatchDataSender configured to use license keys");
+    } else {
+      logger.info("BatchDataSender configured to use insights keys");
+    }
   }
 
   private String buildUserAgent(String additionalUserAgent) {
