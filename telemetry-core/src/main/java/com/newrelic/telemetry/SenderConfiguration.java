@@ -119,8 +119,8 @@ public class SenderConfiguration {
     }
 
     /**
-     * @param useLicenseKey flag to indicate license key should be used instead of insights
-     * @return
+     * @param useLicenseKey flag to indicate the configured {@code apiKey} is a license key, not an insights api key
+     * @return this builder
      */
     public SenderConfigurationBuilder useLicenseKey(boolean useLicenseKey) {
       this.useLicenseKey = useLicenseKey;
