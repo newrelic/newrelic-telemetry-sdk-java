@@ -154,7 +154,12 @@ public class SenderConfiguration {
 
     public SenderConfiguration build() {
       return new SenderConfiguration(
-          apiKey, httpPoster, getOrDefaultSendUrl(), auditLoggingEnabled, secondaryUserAgent, useLicenseKey);
+          apiKey,
+          httpPoster,
+          getOrDefaultSendUrl(),
+          auditLoggingEnabled,
+          secondaryUserAgent,
+          useLicenseKey);
     }
 
     private URL getOrDefaultSendUrl() {
