@@ -103,7 +103,8 @@ public class SpanBatchSender {
             configuration.getApiKey(),
             url,
             configuration.isAuditLoggingEnabled(),
-            configuration.getSecondaryUserAgent());
+            configuration.getSecondaryUserAgent(),
+            configuration.useLicenseKey());
 
     return new SpanBatchSender(marshaller, sender);
   }

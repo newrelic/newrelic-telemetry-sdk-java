@@ -16,6 +16,7 @@ public class SenderConfiguration {
   private final BaseConfig baseConfig;
   private final HttpPoster httpPoster;
   private final URL endpointUrl;
+  private final boolean useLicenseKey;
 
   public SenderConfiguration(
       String apiKey,
@@ -23,9 +24,20 @@ public class SenderConfiguration {
       URL endpointUrl,
       boolean auditLoggingEnabled,
       String secondaryUserAgent) {
+    this(apiKey, httpPoster, endpointUrl, auditLoggingEnabled, secondaryUserAgent, false);
+  }
+
+  public SenderConfiguration(
+      String apiKey,
+      HttpPoster httpPoster,
+      URL endpointUrl,
+      boolean auditLoggingEnabled,
+      String secondaryUserAgent,
+      boolean useLicenseKey) {
     this.httpPoster = httpPoster;
     this.endpointUrl = endpointUrl;
     this.baseConfig = new BaseConfig(apiKey, auditLoggingEnabled, secondaryUserAgent);
+    this.useLicenseKey = useLicenseKey;
   }
 
   public String getApiKey() {
@@ -48,6 +60,10 @@ public class SenderConfiguration {
     return baseConfig.getSecondaryUserAgent();
   }
 
+  public boolean useLicenseKey() {
+    return useLicenseKey;
+  }
+
   public static SenderConfigurationBuilder builder(String defaultUrl, String basePath) {
     return new SenderConfigurationBuilder(defaultUrl, basePath);
   }
@@ -61,6 +77,7 @@ public class SenderConfiguration {
     private HttpPoster httpPoster;
     private URL endpointUrl;
     private boolean auditLoggingEnabled = false;
+    private boolean useLicenseKey = false;
     private String secondaryUserAgent;
 
     public SenderConfigurationBuilder(String defaultUrl, String basePath) {
@@ -102,6 +119,16 @@ public class SenderConfiguration {
     }
 
     /**
+     * @param useLicenseKey flag to indicate the configured {@code apiKey} is a license key, not an
+     *     insights api key
+     * @return this builder
+     */
+    public SenderConfigurationBuilder useLicenseKey(boolean useLicenseKey) {
+      this.useLicenseKey = useLicenseKey;
+      return this;
+    }
+
+    /**
      * Configure whether audit logging is enabled. Note: audit logging will log all data payloads
      * sent to New Relic at DEBUG level, in plain text.
      *
@@ -128,7 +155,12 @@ public class SenderConfiguration {
 
     public SenderConfiguration build() {
       return new SenderConfiguration(
-          apiKey, httpPoster, getOrDefaultSendUrl(), auditLoggingEnabled, secondaryUserAgent);
+          apiKey,
+          httpPoster,
+          getOrDefaultSendUrl(),
+          auditLoggingEnabled,
+          secondaryUserAgent,
+          useLicenseKey);
     }
 
     private URL getOrDefaultSendUrl() {

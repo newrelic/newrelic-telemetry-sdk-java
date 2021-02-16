@@ -103,7 +103,8 @@ public class LogBatchSender {
             configuration.getApiKey(),
             url,
             configuration.isAuditLoggingEnabled(),
-            configuration.getSecondaryUserAgent());
+            configuration.getSecondaryUserAgent(),
+            configuration.useLicenseKey());
 
     return new LogBatchSender(marshaller, sender);
   }
