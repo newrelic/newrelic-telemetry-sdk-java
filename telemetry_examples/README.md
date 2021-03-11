@@ -3,8 +3,7 @@
 This module contains a set of examples on how to use the telemetry SDK. 
 They are full examples, which should compile and be runnable as-is. 
 
-You will need to provide your Insights Insert Key and the New Relic Metric API endpoint as 
-command-line parameters to the programs.
+You will need to provide your Insights Insert Key or License Key and the New Relic Metric API endpoint as command-line parameters to the programs.
 
 ### The examples
 
@@ -51,12 +50,21 @@ errors in the recommended way.
 
 ### Running the examples
 
-You can build the examples using gradle tasks.  You'll need your [New Relic Event Insert API Key](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/introduction-event-api#register).
-Provide the API key as the `-PapiKey=<your-api-key>` property and run the gradle task in the usual way, as shown below.
-The command below will run the `BoundaryExample` class.
+You can build the examples using gradle tasks.  You'll need your [New Relic Insights Insert API Key](https://docs.newrelic.com/docs/insights/insights-data-sources/custom-data/introduction-event-api#register) or [New Relic APM License Key](https://docs.newrelic.com/docs/accounts/accounts-billing/account-setup/new-relic-license-key/).
+Provide the Insights Key as the `-PapiKey=<your-api-key>` property and run the gradle task in the usual way, as shown below.
+
+The command below will run the `BoundaryExample` class using your Insights key.
 
 `./gradlew telemetry_examples:BoundaryExample -PapiKey=<Your Insert API Key>`
 
+To run the `BoundaryExample` with your license key, you'll modify `MetricBatchSender` with an additional `useLicenseKey` builder configuration.
+
+```java
+MetricBatchSender.create(factory.configureWith(insightsInsertKey).useLicenseKey(true).build());
+```
+You will then run this command.
+
+`./gradlew telemetry_examples:BoundaryExample -PapiKey=<Your License Key>`
 
 The `SpanToTraceObserverExample` requires two arguments.
 

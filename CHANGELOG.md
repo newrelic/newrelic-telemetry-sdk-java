@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2021-02-19
+- Accepts a New Relic APM license key as an alternative to an Insights Insert API key.
+
 ## [0.11.0] - 2021-01-26
 - Merge `telemetry` module into `telemetry-core`
 - Remove erroneous `module-info.class` from `telemetry-core` jar

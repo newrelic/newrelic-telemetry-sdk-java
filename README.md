@@ -29,7 +29,7 @@ See [Getting started](#getting-started)
 
 ## Getting started
 
-In order to send metrics or spans to New Relic, you will need an [Insights Insert API Key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key).
+In order to send metrics or spans to New Relic, you will need an [Insights Insert API Key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key) or  a [License Key.](https://docs.newrelic.com/docs/accounts/accounts-billing/account-setup/new-relic-license-key/)
 
 Maven dependencies:
 
@@ -72,6 +72,9 @@ SDK to product additional logging at `DEBUG` level. This logging includes the de
 
 *WARNING*: If you enable audit logging, all the data in your spans and metrics will be sent to your logging system. It is recommended that you only enable
 audit logging when absolutely necessary.
+
+#### Use License Key
+The various builders for the Telemetry SDK components include an option to `useLicenseKey`. Enabling this option will cause the SDK to inform the API endpoints the key you provided is a New Relic License Key.
 
 ### For developers: 
 #### Requirements
@@ -126,10 +129,6 @@ This is the core module for sending dimensional metrics and spans to New Relic. 
  published under maven coordinates:
 
 `com.newrelic.telemetry:telemetry-core`
-
-In order to send metrics and spans to New Relic, you will also need an Insights Insert API Key. 
-Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
-for more information.
 
 #### `telemetry-http-java11`
 This is an implementation of the required http client interface using Java 11 JDK classes as the underlying library.
