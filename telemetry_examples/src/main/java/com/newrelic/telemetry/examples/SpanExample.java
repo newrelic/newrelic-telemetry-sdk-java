@@ -41,7 +41,8 @@ public class SpanExample {
     SpanBatchSender sender =
         SpanBatchSender.create(
             SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new)
-                .configureWith(licenseKey).useLicenseKey(true)
+                .configureWith(licenseKey)
+                .useLicenseKey(true)
                 .auditLoggingEnabled(true)
                 .build());
 

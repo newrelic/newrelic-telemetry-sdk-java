@@ -35,12 +35,19 @@ import java.util.UUID;
 public class TelemetryClientExample {
 
   public static void main(String[] args) throws Exception {
-    String insightsInsertKey = args[0];
+    // String insightsInsertKey = args[0];
+    String licenseKey = args[0];
+
+    /*
+    TelemetryClient telemetryClient =
+        TelemetryClient.create(
+            () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), insightsInsertKey);
+    */
 
     // create a TelemetryClient with an http connect timeout of 10 seconds.
     TelemetryClient telemetryClient =
         TelemetryClient.create(
-            () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), insightsInsertKey);
+            () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), licenseKey);
 
     Attributes commonAttributes =
         new Attributes()

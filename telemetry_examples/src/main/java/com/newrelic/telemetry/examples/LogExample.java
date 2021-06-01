@@ -41,7 +41,8 @@ public class LogExample {
 
     SenderConfiguration configuration =
         LogBatchSender.configurationBuilder()
-            .apiKey(licenseKey).useLicenseKey(true)
+            .apiKey(licenseKey)
+            .useLicenseKey(true)
             .auditLoggingEnabled(true)
             .httpPoster(new OkHttpPoster())
             .build();
