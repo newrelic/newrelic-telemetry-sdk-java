@@ -14,7 +14,7 @@ import com.newrelic.telemetry.events.EventBuffer;
  * Key. Then, an event is created with an EventType, Attributes, and the current time in
  * milliseconds (UTC time). The event is added to an EventBuffer and sent via sender.sendBatch().
  *
- * <p>To run this example, provide your License Key.
+ * <p>To run this example, provide a command line argument for your License Key.
  */
 public class EventExample {
   public static void main(String[] args) throws Exception {
