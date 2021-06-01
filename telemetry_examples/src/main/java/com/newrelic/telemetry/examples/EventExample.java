@@ -7,14 +7,18 @@ import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.events.EventBuffer;
 
+import java.net.URL;
+
 public class EventExample {
   public static void main(String[] args) throws Exception {
-    String insightsInsertKey = args[0];
 
+    String licenseKey = args[0];
     EventBatchSenderFactory factory =
         EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+
     EventBatchSender sender =
-        EventBatchSender.create(factory.configureWith(insightsInsertKey).build());
+            EventBatchSender.create(factory.configureWith(licenseKey).useLicenseKey(true).build());
+
     EventBuffer eventBuffer = new EventBuffer(getCommonAttributes());
 
     Attributes attr = new Attributes();

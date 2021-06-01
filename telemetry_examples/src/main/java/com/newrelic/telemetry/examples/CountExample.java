@@ -35,12 +35,12 @@ public class CountExample {
   private static final List<String> items = Arrays.asList("apples", "oranges", "beer", "wine");
 
   public static void main(String[] args) throws Exception {
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     MetricBatchSenderFactory factory =
         MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     MetricBatchSender sender =
-        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
+        MetricBatchSender.create(factory.configureWith(licenseKey).useLicenseKey(true).build());
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
     for (int i = 0; i < 10; i++) {

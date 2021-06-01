@@ -37,11 +37,11 @@ public class LogExample {
 
   public static void main(String[] args) throws Exception {
     logger.info("Starting the LogExample");
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     SenderConfiguration configuration =
         LogBatchSender.configurationBuilder()
-            .apiKey(insightsInsertKey)
+            .apiKey(licenseKey).useLicenseKey(true)
             .auditLoggingEnabled(true)
             .httpPoster(new OkHttpPoster())
             .build();

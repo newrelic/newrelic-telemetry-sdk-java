@@ -36,12 +36,12 @@ public class SpanExample {
 
   public static void main(String[] args) throws Exception {
     logger.info("Starting the SpanExample");
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     SpanBatchSender sender =
         SpanBatchSender.create(
             SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new)
-                .configureWith(insightsInsertKey)
+                .configureWith(licenseKey).useLicenseKey(true)
                 .auditLoggingEnabled(true)
                 .build());
 

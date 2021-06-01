@@ -35,12 +35,12 @@ public class GaugeExample {
       Arrays.asList("bedroom", "dining_room", "living_room", "basement");
 
   public static void main(String[] args) throws Exception {
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     MetricBatchSenderFactory factory =
         MetricBatchSenderFactory.fromHttpImplementation((Supplier<HttpPoster>) OkHttpPoster::new);
     MetricBatchSender sender =
-        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
+        MetricBatchSender.create(factory.configureWith(licenseKey).useLicenseKey(true).build());
 
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 

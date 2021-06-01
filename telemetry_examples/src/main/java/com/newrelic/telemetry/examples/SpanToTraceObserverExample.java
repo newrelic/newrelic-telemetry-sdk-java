@@ -27,16 +27,17 @@ public class SpanToTraceObserverExample {
 
   public static void main(String[] args) throws ResponseException, MalformedURLException {
     logger.info("Starting the SpanToTraceObserverExample");
-    String apiInsertKey = args[0];
-    String apiUrl = args[1];
 
-    if (apiInsertKey != null && apiUrl != null) {
+    String licenseKey = args[0];
+    String traceObserverUrl = args[1];
+
+    if (licenseKey != null && traceObserverUrl != null) {
       SpanBatchSender sender =
           SpanBatchSender.create(
               SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new)
-                  .configureWith(apiInsertKey)
+                  .configureWith(licenseKey).useLicenseKey(true)
                   .auditLoggingEnabled(true)
-                  .endpoint(new URL(apiUrl))
+                  .endpoint(new URL(traceObserverUrl))
                   .build());
 
       List<Span> spans = new ArrayList<>();

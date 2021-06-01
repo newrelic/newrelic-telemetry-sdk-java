@@ -32,12 +32,12 @@ public class BoundaryExample {
   private static final Logger logger = Logger.getLogger(BoundaryExample.class.getName());
 
   public static void main(String[] args) throws ResponseException {
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     MetricBatchSenderFactory factory =
         MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     MetricBatchSender sender =
-        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
+        MetricBatchSender.create(factory.configureWith(licenseKey).useLicenseKey(true).build());
 
     MetricBuffer metricBuffer =
         new MetricBuffer(new Attributes().put("exampleName", "BoundaryExample"));
