@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * <p>Additionally, this provides an example of using a {@code
  * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
- * <p>To run this example, provide a command line argument for your Insights Insert key.
+ * <p>To run this example, provide a command line argument for your License key.
  */
 public class GaugeExample {
 

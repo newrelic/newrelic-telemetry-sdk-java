@@ -7,6 +7,15 @@ import com.newrelic.telemetry.events.Event;
 import com.newrelic.telemetry.events.EventBatchSender;
 import com.newrelic.telemetry.events.EventBuffer;
 
+/**
+ * This is an example of sending an Event to New Relic.
+ *
+ * <p>An EventBatchSender is created by configuring an EventBatchSenderFactory object with a License
+ * Key. Then, an event is created with an EventType, Attributes, and the current time in
+ * milliseconds (UTC time). The event is added to an EventBuffer and sent via sender.sendBatch().
+ *
+ * <p>To run this example, provide your License Key.
+ */
 public class EventExample {
   public static void main(String[] args) throws Exception {
 

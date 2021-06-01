@@ -75,6 +75,7 @@ public class ConfigurationExamples {
                                 // configure custom stuff here, like proxies, etc.
                                 .build()))
                 .configureWith(licenseKey)
+                .useLicenseKey(true)
                 .endpoint(new URL("http://special-metrics.com/your/custom/path"))
                 .build());
 
@@ -83,6 +84,7 @@ public class ConfigurationExamples {
         SpanBatchSender.create(
             SpanBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(licenseKey)
+                .useLicenseKey(true)
                 .endpoint(new URL("https://special-spans.com/your/custom/path"))
                 .build());
 
@@ -91,6 +93,7 @@ public class ConfigurationExamples {
         EventBatchSender.create(
             EventBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(licenseKey)
+                .useLicenseKey(true)
                 .endpoint(new URL("http://special-events.com/my-endpoint-rocks/v1/api"))
                 .build());
 
@@ -99,6 +102,7 @@ public class ConfigurationExamples {
         LogBatchSender.create(
             LogBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new)
                 .configureWith(licenseKey)
+                .useLicenseKey(true)
                 .build());
 
     // Build your TelemetryClient with the 3 senders.

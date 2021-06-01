@@ -25,8 +25,7 @@ import java.util.concurrent.TimeUnit;
  * <p>Additionally, this provides an example of using a {@code
  * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
- * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
- * endpoint, and the 2nd is the Insights Insert key.
+ * <p>To run this example, provide your License Key.
  */
 public class CountExample {
 

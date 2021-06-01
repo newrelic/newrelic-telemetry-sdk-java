@@ -20,13 +20,14 @@ import java.util.stream.IntStream;
 /**
  * The purpose of this example is demonstrate some of the boundaries of the New Relic Metric API,
  * and exercise those boundaries. When metrics are invalid, for whatever reason, a
- * "NrIntegrationError" custom event will be created in your account in Insights with your API Key
- * and the requestId as custom attributes.
+ * "NrIntegrationError" custom event will be created in your account. Data associated with this
+ * custom event can be viewed through the Data Explorer / Query Builder in New Relic One. This can
+ * be found by clicking "Browse data" in the top menubar.
  *
  * <p>The exact response of the Metric API is not guaranteed for any of these edge cases. They are
  * just provided as example of things that might cause issues.
  *
- * <p>To run this example, provide a command line argument for your Insights Insert key.
+ * <p>To run this example, provide a command line argument for your License Key.
  */
 public class BoundaryExample {
   private static final Logger logger = Logger.getLogger(BoundaryExample.class.getName());
