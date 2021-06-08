@@ -25,8 +25,7 @@ import java.util.concurrent.TimeUnit;
  * <p>Additionally, this provides an example of using a {@code
  * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
- * <p>To run this example, provide 2 command line args, the first is the URL to the metric ingest
- * endpoint, and the 2nd is the Insights Insert key.
+ * <p>To run this example, provide a command line argument for your License Key.
  */
 public class CountExample {
 
@@ -35,12 +34,12 @@ public class CountExample {
   private static final List<String> items = Arrays.asList("apples", "oranges", "beer", "wine");
 
   public static void main(String[] args) throws Exception {
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     MetricBatchSenderFactory factory =
         MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
     MetricBatchSender sender =
-        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
+        MetricBatchSender.create(factory.configureWith(licenseKey).useLicenseKey(true).build());
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
     for (int i = 0; i < 10; i++) {

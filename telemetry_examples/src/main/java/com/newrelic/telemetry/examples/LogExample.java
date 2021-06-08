@@ -22,11 +22,11 @@ import org.slf4j.LoggerFactory;
 /**
  * This is an example of sending a batch of Logs to New Relic.
  *
- * <p>A LogBatchSender is created with the Insights insert key and the reference http implementation
- * from OkHttp. An example batch of 4 logs (apples, oranges, beer, wine) is created and then sent
- * via sender.sendBatch().
+ * <p>A LogBatchSender is created with the License Key and the reference http implementation from
+ * OkHttp. An example batch of 4 logs (apples, oranges, beer, wine) is created and then sent via
+ * sender.sendBatch().
  *
- * <p>To run this example, pass the insights api key as a commandline argument.
+ * <p>To run this example, pass the License Key as a command line argument.
  */
 public class LogExample {
   private static final Logger logger = LoggerFactory.getLogger(LogExample.class);
@@ -37,11 +37,12 @@ public class LogExample {
 
   public static void main(String[] args) throws Exception {
     logger.info("Starting the LogExample");
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     SenderConfiguration configuration =
         LogBatchSender.configurationBuilder()
-            .apiKey(insightsInsertKey)
+            .apiKey(licenseKey)
+            .useLicenseKey(true)
             .auditLoggingEnabled(true)
             .httpPoster(new OkHttpPoster())
             .build();

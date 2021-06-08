@@ -41,7 +41,6 @@ public class TelemetryClientExample {
     TelemetryClient telemetryClient =
         TelemetryClient.create(
             () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), insightsInsertKey);
-
     Attributes commonAttributes =
         new Attributes()
             .put("exampleName", "TelemetryClientExample")

@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * <p>Additionally, this provides an example of using a {@code
  * com.newrelic.telemetry.metrics.MetricBuffer} to hold on to metrics and send them as a batch.
  *
- * <p>To run this example, provide a command line argument for your Insights Insert key.
+ * <p>To run this example, provide a command line argument for your License key.
  */
 public class GaugeExample {
 
@@ -35,12 +35,12 @@ public class GaugeExample {
       Arrays.asList("bedroom", "dining_room", "living_room", "basement");
 
   public static void main(String[] args) throws Exception {
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     MetricBatchSenderFactory factory =
         MetricBatchSenderFactory.fromHttpImplementation((Supplier<HttpPoster>) OkHttpPoster::new);
     MetricBatchSender sender =
-        MetricBatchSender.create(factory.configureWith(insightsInsertKey).build());
+        MetricBatchSender.create(factory.configureWith(licenseKey).useLicenseKey(true).build());
 
     MetricBuffer metricBuffer = new MetricBuffer(getCommonAttributes());
 
