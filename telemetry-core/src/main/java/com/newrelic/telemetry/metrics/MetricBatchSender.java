@@ -18,7 +18,6 @@ import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
 import com.newrelic.telemetry.metrics.json.MetricToJson;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
@@ -102,7 +101,6 @@ public class MetricBatchSender {
         url = configuration.getEndpointUrl();
       }
     }
-
 
     MetricBatchMarshaller marshaller =
         new MetricBatchMarshaller(

@@ -16,7 +16,6 @@ import com.newrelic.telemetry.logs.json.LogJsonCommonBlockWriter;
 import com.newrelic.telemetry.logs.json.LogJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
