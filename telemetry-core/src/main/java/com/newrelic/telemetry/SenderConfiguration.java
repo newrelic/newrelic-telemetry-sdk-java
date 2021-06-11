@@ -18,6 +18,9 @@ public class SenderConfiguration {
   private final URL endpointUrl;
   private final boolean useLicenseKey;
 
+  public static String endpointRegion = "US";
+
+
   public SenderConfiguration(
       String apiKey,
       HttpPoster httpPoster,
@@ -63,6 +66,9 @@ public class SenderConfiguration {
   public boolean useLicenseKey() {
     return useLicenseKey;
   }
+
+  public String getRegion() { return endpointRegion; }
+
 
   public static SenderConfigurationBuilder builder(String defaultUrl, String basePath) {
     return new SenderConfigurationBuilder(defaultUrl, basePath);
@@ -125,6 +131,20 @@ public class SenderConfiguration {
      */
     public SenderConfigurationBuilder useLicenseKey(boolean useLicenseKey) {
       this.useLicenseKey = useLicenseKey;
+      return this;
+    }
+
+    /**
+     * Sets the region so that it is used in the individual batch senders (e.x. MetricBatchSender,
+     * LogBatchSender, SpanBatchSenders) to configure regional endpoints and send data to New Relic
+     *
+     * @param region String to indicate whether the account is in an American (US) or European (EU) region
+     * @return this builder
+     *
+     */
+
+    public SenderConfigurationBuilder setRegion(String region) {
+      SenderConfiguration.endpointRegion = region.toUpperCase();
       return this;
     }
 

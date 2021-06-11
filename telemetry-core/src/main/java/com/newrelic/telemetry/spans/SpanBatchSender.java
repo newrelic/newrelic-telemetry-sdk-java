@@ -16,6 +16,8 @@ import com.newrelic.telemetry.spans.json.SpanJsonCommonBlockWriter;
 import com.newrelic.telemetry.spans.json.SpanJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
@@ -26,7 +28,7 @@ public class SpanBatchSender {
 
   private static final String SPANS_PATH = "/trace/v1";
   private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
-
+  private static final String EUROPEAN_URL = "https://trace-api.eu.newrelic.com";
   private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
   private final SpanBatchMarshaller marshaller;
@@ -91,7 +93,17 @@ public class SpanBatchSender {
     Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
-    URL url = configuration.getEndpointUrl();
+    // Get endpoint url corresponding to user region
+    URL url;
+    if (configuration.getRegion().equals("US")) {
+      url = configuration.getEndpointUrl();
+    } else {
+      try {
+        url = new URL(EUROPEAN_URL + SPANS_PATH);
+      } catch (MalformedURLException wrongURL) {
+        url = configuration.getEndpointUrl();
+      }
+    }
 
     SpanBatchMarshaller marshaller =
         new SpanBatchMarshaller(
