@@ -15,6 +15,7 @@ import com.newrelic.telemetry.exceptions.ResponseException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 public class EventBatchSender {
   private static final String EVENTS_PATH = "/v1/accounts/events";
   private static final String DEFAULT_URL = "https://insights-collector.newrelic.com/";
+  private static final String EUROPEAN_URL = "https://insights-collector.eu01.nr-data.net";
   private static final Response EMPTY_BATCH_RESPONSE = new Response(202, "Ignored", "Empty batch");
 
   private static final Logger logger = LoggerFactory.getLogger(EventBatchSender.class);
@@ -79,7 +81,16 @@ public class EventBatchSender {
     Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
-    URL url = configuration.getEndpointUrl();
+    URL url;
+    if (configuration.getRegion().equals("US")) {
+      url = configuration.getEndpointUrl();
+    } else {
+      try {
+        url = new URL(EUROPEAN_URL + EVENTS_PATH);
+      } catch (MalformedURLException wrongURL) {
+        url = configuration.getEndpointUrl();
+      }
+    }
 
     EventBatchMarshaller marshaller = new EventBatchMarshaller();
 
