@@ -92,16 +92,13 @@ public class LogBatchSender {
     Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
-    // Get endpoint URL corresponding to user region
-    URL url;
-    if (configuration.getRegion().equals("US")) {
-      url = configuration.getEndpointUrl();
-    } else {
-      try {
-        url = new URL(EUROPEAN_URL + LOGS_PATH);
-      } catch (MalformedURLException wrongURL) {
-        url = configuration.getEndpointUrl();
-      }
+    String userRegion = configuration.getRegion();
+
+    URL url = null;
+    try {
+      url = returnEndpoint(userRegion);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
     }
 
     LogBatchMarshaller marshaller =
@@ -118,6 +115,27 @@ public class LogBatchSender {
             configuration.useLicenseKey());
 
     return new LogBatchSender(marshaller, sender);
+  }
+
+  public static URL returnEndpoint(String userRegion) throws MalformedURLException {
+    URL url = null;
+    if (userRegion.equals("US")) {
+      try {
+        url = new URL(DEFAULT_URL.substring(0, DEFAULT_URL.length() - 1) + LOGS_PATH);
+        return url;
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    } else if (userRegion.equals("EU")) {
+      try {
+        url = new URL(EUROPEAN_URL + LOGS_PATH);
+        return url;
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    }
+    throw new MalformedURLException(
+        "A valid region (EU or US) needs to be added to generate the right endpoint");
   }
 
   public static SenderConfiguration.SenderConfigurationBuilder configurationBuilder() {
