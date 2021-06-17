@@ -82,12 +82,17 @@ public class EventBatchSender {
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
     String userRegion = configuration.getRegion();
+    boolean isCustomEndpoint = configuration.isUserProvideEndpoint();
 
     URL url = null;
-    try {
-      url = returnEndpoint(userRegion);
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
+    if (isCustomEndpoint == true) {
+      url = configuration.getEndpointUrl();
+    } else {
+      try {
+        url = returnEndpoint(userRegion);
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
     }
 
     EventBatchMarshaller marshaller = new EventBatchMarshaller();
@@ -106,6 +111,7 @@ public class EventBatchSender {
 
   public static URL returnEndpoint(String userRegion) throws MalformedURLException {
     URL url = null;
+
     if (userRegion.equals("US")) {
       try {
         url = new URL(DEFAULT_URL.substring(0, DEFAULT_URL.length() - 1) + EVENTS_PATH);

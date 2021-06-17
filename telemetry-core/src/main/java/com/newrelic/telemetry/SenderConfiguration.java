@@ -14,6 +14,7 @@ import java.net.URL;
 /** Configuration options for the various classes that send data to the New Relic ingest APIs. */
 public class SenderConfiguration {
   private static final String DEFAULT_US_REGION = "US";
+  private static boolean userProvidedEndpoint = false;
 
   private final BaseConfig baseConfig;
   private final HttpPoster httpPoster;
@@ -80,6 +81,10 @@ public class SenderConfiguration {
     return endpointRegion;
   }
 
+  public boolean isUserProvideEndpoint() {
+    return userProvidedEndpoint;
+  }
+
   public static SenderConfigurationBuilder builder(String defaultUrl, String basePath) {
     return new SenderConfigurationBuilder(defaultUrl, basePath);
   }
@@ -124,13 +129,14 @@ public class SenderConfiguration {
 
     /**
      * Configure the *full* endpoint URL for data to be sent to, including the path. You should only
-     * use this method if you wish to modify the default behavior, which is to send data to the
-     * Portland production US endpoints.
+     * use this method if you wish to send data to endpoints other than the US and EU production endpoints.
+     *
      *
      * @param endpoint A full {@link URL}, including the path.
      * @return this builder.
      */
     public SenderConfigurationBuilder endpoint(URL endpoint) {
+      SenderConfiguration.userProvidedEndpoint = true;
       this.endpointUrl = endpoint;
       return this;
     }

@@ -93,12 +93,17 @@ public class SpanBatchSender {
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
     String userRegion = configuration.getRegion();
+    boolean isCustomEndpoint = configuration.isUserProvideEndpoint();
 
     URL url = null;
-    try {
-      url = returnEndpoint(userRegion);
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
+    if (isCustomEndpoint == true) {
+      url = configuration.getEndpointUrl();
+    } else {
+      try {
+        url = returnEndpoint(userRegion);
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
     }
 
     SpanBatchMarshaller marshaller =
