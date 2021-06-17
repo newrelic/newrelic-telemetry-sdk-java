@@ -129,8 +129,8 @@ public class SenderConfiguration {
 
     /**
      * Configure the *full* endpoint URL for data to be sent to, including the path. You should only
-     * use this method if you wish to send data to endpoints other than the US and EU production endpoints.
-     *
+     * use this method if you wish to send data to endpoints other than the US and EU production
+     * endpoints.
      *
      * @param endpoint A full {@link URL}, including the path.
      * @return this builder.
