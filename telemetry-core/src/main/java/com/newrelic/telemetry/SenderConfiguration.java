@@ -156,7 +156,7 @@ public class SenderConfiguration {
      * LogBatchSender, SpanBatchSenders) to configure regional endpoints and send data to New Relic
      *
      * @param region String to indicate whether the account is in an American or European region. US
-     *     --> American Region and EU --> European Region
+     *     (for American Region), EU (for European Region)
      * @return this builder
      */
     public SenderConfigurationBuilder setRegion(String region) throws IllegalArgumentException {
