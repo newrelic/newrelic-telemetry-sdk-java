@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class SpanBatchSender {
 
   private static final String SPANS_PATH = "/trace/v1";
-  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
+  private static final String DEFAULT_URL = "https://trace-api.newrelic.com";
   private static final String EUROPEAN_URL = "https://trace-api.eu.newrelic.com";
   private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
@@ -93,10 +93,11 @@ public class SpanBatchSender {
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
     String userRegion = configuration.getRegion();
-    boolean isCustomEndpoint = configuration.isUserProvideEndpoint();
+    String defaultUrl = DEFAULT_URL + SPANS_PATH;
+    String endpointUrlToString = configuration.getEndpointUrl().toString();
 
     URL url = null;
-    if (isCustomEndpoint == true) {
+    if (!endpointUrlToString.equals(defaultUrl)) {
       url = configuration.getEndpointUrl();
     } else {
       try {
@@ -126,7 +127,7 @@ public class SpanBatchSender {
     URL url = null;
     if (userRegion.equals("US")) {
       try {
-        url = new URL(DEFAULT_URL.substring(0, DEFAULT_URL.length() - 1) + SPANS_PATH);
+        url = new URL(DEFAULT_URL + SPANS_PATH);
         return url;
       } catch (MalformedURLException e) {
         e.printStackTrace();

@@ -14,7 +14,6 @@ import java.net.URL;
 /** Configuration options for the various classes that send data to the New Relic ingest APIs. */
 public class SenderConfiguration {
   private static final String DEFAULT_US_REGION = "US";
-  private static boolean userProvidedEndpoint = false;
 
   private final BaseConfig baseConfig;
   private final HttpPoster httpPoster;
@@ -81,10 +80,6 @@ public class SenderConfiguration {
     return endpointRegion;
   }
 
-  public boolean isUserProvideEndpoint() {
-    return userProvidedEndpoint;
-  }
-
   public static SenderConfigurationBuilder builder(String defaultUrl, String basePath) {
     return new SenderConfigurationBuilder(defaultUrl, basePath);
   }
@@ -136,7 +131,6 @@ public class SenderConfiguration {
      * @return this builder.
      */
     public SenderConfigurationBuilder endpoint(URL endpoint) {
-      SenderConfiguration.userProvidedEndpoint = true;
       this.endpointUrl = endpoint;
       return this;
     }

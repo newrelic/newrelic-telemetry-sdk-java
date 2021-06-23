@@ -2,6 +2,7 @@ package com.newrelic.telemetry;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.net.URL;
 import org.junit.jupiter.api.Test;
 
 class SenderConfigurationTest {
@@ -32,5 +33,36 @@ class SenderConfigurationTest {
             });
     String expectedExceptionMessage = "The only supported regions are the US and EU regions";
     assertEquals(expectedExceptionMessage, testIllegalArgumentException.getMessage());
+  }
+
+  @Test
+  void defaultEndpointTest() throws Exception {
+    URL testEndpointURL = new URL(testURL + testPath);
+    SenderConfiguration testConfig = SenderConfiguration.builder(testURL, testPath).build();
+    assertEquals(testEndpointURL, testConfig.getEndpointUrl());
+  }
+
+  @Test
+  void userProvidedEndpointTest() throws Exception {
+    URL testEndpointURL = new URL("https://google.com");
+    SenderConfiguration testConfig =
+        SenderConfiguration.builder(testURL, testPath).endpoint(testEndpointURL).build();
+    assertEquals(testEndpointURL, testConfig.getEndpointUrl());
+  }
+
+  @Test
+  void defaultEndpointAsStringTest() throws Exception {
+    String endpointURLAsString = testURL + testPath;
+    SenderConfiguration testConfig = SenderConfiguration.builder(testURL, testPath).build();
+    assertEquals(endpointURLAsString, testConfig.getEndpointUrl().toString());
+  }
+
+  @Test
+  void userEndpointAsStringTest() throws Exception {
+    URL testEndpointURL = new URL("https://google.com");
+    String endpointURLAsString = "https://google.com";
+    SenderConfiguration testConfig =
+        SenderConfiguration.builder(testURL, testPath).endpoint(testEndpointURL).build();
+    assertEquals(endpointURLAsString, testConfig.getEndpointUrl().toString());
   }
 }

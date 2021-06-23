@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class MetricBatchSender {
 
   private static final String METRICS_PATH = "/metric/v1";
-  private static final String DEFAULT_URL = "https://metric-api.newrelic.com/";
+  private static final String DEFAULT_URL = "https://metric-api.newrelic.com";
   private static final String EUROPEAN_URL = "https://metric-api.eu.newrelic.com";
 
   private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
@@ -91,10 +91,12 @@ public class MetricBatchSender {
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
     String userRegion = configuration.getRegion();
-    boolean isCustomEndpoint = configuration.isUserProvideEndpoint();
+
+    String defaultUrl = DEFAULT_URL + METRICS_PATH;
+    String endpointUrlToString = configuration.getEndpointUrl().toString();
 
     URL url = null;
-    if (isCustomEndpoint == true) {
+    if (!endpointUrlToString.equals(defaultUrl)) {
       url = configuration.getEndpointUrl();
     } else {
       try {
@@ -124,7 +126,7 @@ public class MetricBatchSender {
     URL url = null;
     if (userRegion.equals("US")) {
       try {
-        url = new URL(DEFAULT_URL.substring(0, DEFAULT_URL.length() - 1) + METRICS_PATH);
+        url = new URL(DEFAULT_URL + METRICS_PATH);
         return url;
       } catch (MalformedURLException e) {
         e.printStackTrace();
