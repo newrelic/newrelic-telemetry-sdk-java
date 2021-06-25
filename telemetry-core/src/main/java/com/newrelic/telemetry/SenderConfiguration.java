@@ -154,7 +154,7 @@ public class SenderConfiguration {
      * @return this builder
      */
     public SenderConfigurationBuilder setRegion(String region) throws IllegalArgumentException {
-      // Add IllegalArgumentException if region isn't US or EU
+
       region = region.toUpperCase();
       if (!region.equals("US") && !region.equals("EU")) {
         throw new IllegalArgumentException("The only supported regions are the US and EU regions");

@@ -49,20 +49,4 @@ class SenderConfigurationTest {
         SenderConfiguration.builder(testURL, testPath).endpoint(testEndpointURL).build();
     assertEquals(testEndpointURL, testConfig.getEndpointUrl());
   }
-
-  @Test
-  void defaultEndpointAsStringTest() throws Exception {
-    String endpointURLAsString = testURL + testPath;
-    SenderConfiguration testConfig = SenderConfiguration.builder(testURL, testPath).build();
-    assertEquals(endpointURLAsString, testConfig.getEndpointUrl().toString());
-  }
-
-  @Test
-  void userEndpointAsStringTest() throws Exception {
-    URL testEndpointURL = new URL("https://google.com");
-    String endpointURLAsString = "https://google.com";
-    SenderConfiguration testConfig =
-        SenderConfiguration.builder(testURL, testPath).endpoint(testEndpointURL).build();
-    assertEquals(endpointURLAsString, testConfig.getEndpointUrl().toString());
-  }
 }
