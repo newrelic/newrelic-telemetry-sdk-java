@@ -18,6 +18,7 @@ import com.newrelic.telemetry.exceptions.RetryWithSplitException;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -94,5 +95,44 @@ public class EventBatchSenderTest {
     Response result = logBatchSender.sendBatch(batch);
     assertEquals(expected, result);
     assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
+  }
+
+  @Test
+  public void testDefaultEndpoint() throws Exception {
+    URL testURL = new URL("https://insights-collector.newrelic.com/v1/accounts/events");
+
+    EventBatchMarshaller testMarshaller = mock(EventBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    EventBatchSender testEventBatchSender = new EventBatchSender(testMarshaller, testSender);
+    assertEquals(testURL, testEventBatchSender.returnEndpoint("US"));
+  }
+
+  @Test
+  public void testEUEndpoint() throws Exception {
+    URL testEUURL = new URL("https://insights-collector.eu01.nr-data.net/v1/accounts/events");
+
+    EventBatchMarshaller testMarshaller = mock(EventBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    EventBatchSender testEventBatchSender = new EventBatchSender(testMarshaller, testSender);
+    assertEquals(testEUURL, testEventBatchSender.returnEndpoint("EU"));
+  }
+
+  @Test
+  public void testException() {
+    EventBatchMarshaller testMarshaller = mock(EventBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    EventBatchSender testEventBatchSender = new EventBatchSender(testMarshaller, testSender);
+    Exception testMalformedURLException =
+        assertThrows(
+            MalformedURLException.class,
+            () -> {
+              testEventBatchSender.returnEndpoint("random");
+            });
+    String expectedExceptionMessage =
+        "A valid region (EU or US) needs to be added to generate the right endpoint";
+    assertEquals(expectedExceptionMessage, testMalformedURLException.getMessage());
   }
 }

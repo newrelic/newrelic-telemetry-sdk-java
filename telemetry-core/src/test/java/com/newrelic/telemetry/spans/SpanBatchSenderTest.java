@@ -4,8 +4,7 @@
  */
 package com.newrelic.telemetry.spans;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -19,6 +18,7 @@ import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.spans.json.SpanBatchMarshaller;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -86,5 +86,44 @@ class SpanBatchSenderTest {
     Response result = spanBatchSender.sendBatch(batch);
     assertEquals(expected, result);
     assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
+  }
+
+  @Test
+  public void testDefaultEndpoint() throws Exception {
+    URL testURL = new URL("https://trace-api.newrelic.com/trace/v1");
+
+    SpanBatchMarshaller testMarshaller = mock(SpanBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    SpanBatchSender testSpanBatchSender = new SpanBatchSender(testMarshaller, testSender);
+    assertEquals(testURL, testSpanBatchSender.returnEndpoint("US"));
+  }
+
+  @Test
+  public void testEUEndpoint() throws Exception {
+    URL testEUURL = new URL("https://trace-api.eu.newrelic.com/trace/v1");
+
+    SpanBatchMarshaller testMarshaller = mock(SpanBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    SpanBatchSender testSpanBatchSender = new SpanBatchSender(testMarshaller, testSender);
+    assertEquals(testEUURL, testSpanBatchSender.returnEndpoint("EU"));
+  }
+
+  @Test
+  public void testException() {
+    SpanBatchMarshaller testMarshaller = mock(SpanBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    SpanBatchSender testSpanBatchSender = new SpanBatchSender(testMarshaller, testSender);
+    Exception testMalformedURLException =
+        assertThrows(
+            MalformedURLException.class,
+            () -> {
+              testSpanBatchSender.returnEndpoint("random");
+            });
+    String expectedExceptionMessage =
+        "A valid region (EU or US) needs to be added to generate the right endpoint";
+    assertEquals(expectedExceptionMessage, testMalformedURLException.getMessage());
   }
 }

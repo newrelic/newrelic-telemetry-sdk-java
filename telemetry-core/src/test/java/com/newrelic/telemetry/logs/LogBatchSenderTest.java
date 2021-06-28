@@ -4,8 +4,7 @@
  */
 package com.newrelic.telemetry.logs;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -19,6 +18,7 @@ import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.logs.json.LogBatchMarshaller;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -85,5 +85,44 @@ class LogBatchSenderTest {
     LogBatch batch = new LogBatch(Collections.emptyList(), new Attributes());
     Response response = testClass.sendBatch(batch);
     assertEquals(202, response.getStatusCode());
+  }
+
+  @Test
+  public void testDefaultEndpoint() throws Exception {
+    URL testURL = new URL("https://log-api.newrelic.com/log/v1");
+
+    LogBatchMarshaller testMarshaller = mock(LogBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    LogBatchSender testLogBatchSender = new LogBatchSender(testMarshaller, testSender);
+    assertEquals(testURL, testLogBatchSender.returnEndpoint("US"));
+  }
+
+  @Test
+  public void testEUEndpoint() throws Exception {
+    URL testEUURL = new URL("https://log-api.eu.newrelic.com/log/v1");
+
+    LogBatchMarshaller testMarshaller = mock(LogBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    LogBatchSender testLogBatchSender = new LogBatchSender(testMarshaller, testSender);
+    assertEquals(testEUURL, testLogBatchSender.returnEndpoint("EU"));
+  }
+
+  @Test
+  public void testException() {
+    LogBatchMarshaller testMarshaller = mock(LogBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    LogBatchSender testLogBatchSender = new LogBatchSender(testMarshaller, testSender);
+    Exception testMalformedURLException =
+        assertThrows(
+            MalformedURLException.class,
+            () -> {
+              testLogBatchSender.returnEndpoint("random");
+            });
+    String expectedExceptionMessage =
+        "A valid region (EU or US) needs to be added to generate the right endpoint";
+    assertEquals(expectedExceptionMessage, testMalformedURLException.getMessage());
   }
 }

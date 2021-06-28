@@ -4,21 +4,19 @@
  */
 package com.newrelic.telemetry.metrics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.BaseConfig;
-import com.newrelic.telemetry.Response;
+import com.newrelic.telemetry.*;
 import com.newrelic.telemetry.http.HttpPoster;
 import com.newrelic.telemetry.http.HttpResponse;
 import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
 import com.newrelic.telemetry.transport.BatchDataSender;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -86,5 +84,44 @@ class MetricBatchSenderTest {
     Response result = metricBatchSender.sendBatch(batch);
     assertEquals(expected, result);
     assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
+  }
+
+  @Test
+  public void testDefaultEndpoint() throws Exception {
+    URL testURL = new URL("https://metric-api.newrelic.com/metric/v1");
+
+    MetricBatchMarshaller testMarshaller = mock(MetricBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    MetricBatchSender testMetricBatchSender = new MetricBatchSender(testMarshaller, testSender);
+    assertEquals(testURL, testMetricBatchSender.returnEndpoint("US"));
+  }
+
+  @Test
+  public void testEUEndpoint() throws Exception {
+    URL testEUURL = new URL("https://metric-api.eu.newrelic.com/metric/v1");
+
+    MetricBatchMarshaller testMarshaller = mock(MetricBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    MetricBatchSender testMetricBatchSender = new MetricBatchSender(testMarshaller, testSender);
+    assertEquals(testEUURL, testMetricBatchSender.returnEndpoint("EU"));
+  }
+
+  @Test
+  public void testException() {
+    MetricBatchMarshaller testMarshaller = mock(MetricBatchMarshaller.class);
+    BatchDataSender testSender = mock(BatchDataSender.class);
+
+    MetricBatchSender testMetricBatchSender = new MetricBatchSender(testMarshaller, testSender);
+    Exception testMalformedURLException =
+        assertThrows(
+            MalformedURLException.class,
+            () -> {
+              testMetricBatchSender.returnEndpoint("random");
+            });
+    String expectedExceptionMessage =
+        "A valid region (EU or US) needs to be added to generate the right endpoint";
+    assertEquals(expectedExceptionMessage, testMalformedURLException.getMessage());
   }
 }

@@ -16,6 +16,7 @@ import com.newrelic.telemetry.spans.json.SpanJsonCommonBlockWriter;
 import com.newrelic.telemetry.spans.json.SpanJsonTelemetryBlockWriter;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
@@ -25,8 +26,8 @@ import org.slf4j.LoggerFactory;
 public class SpanBatchSender {
 
   private static final String SPANS_PATH = "/trace/v1";
-  private static final String DEFAULT_URL = "https://trace-api.newrelic.com/";
-
+  private static final String DEFAULT_URL = "https://trace-api.newrelic.com";
+  private static final String EUROPEAN_URL = "https://trace-api.eu.newrelic.com";
   private static final Logger logger = LoggerFactory.getLogger(SpanBatchSender.class);
 
   private final SpanBatchMarshaller marshaller;
@@ -91,7 +92,20 @@ public class SpanBatchSender {
     Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
-    URL url = configuration.getEndpointUrl();
+    String userRegion = configuration.getRegion();
+    String defaultUrl = DEFAULT_URL + SPANS_PATH;
+    String endpointUrlToString = configuration.getEndpointUrl().toString();
+
+    URL url = null;
+    if (!endpointUrlToString.equals(defaultUrl)) {
+      url = configuration.getEndpointUrl();
+    } else {
+      try {
+        url = returnEndpoint(userRegion);
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    }
 
     SpanBatchMarshaller marshaller =
         new SpanBatchMarshaller(
@@ -107,6 +121,27 @@ public class SpanBatchSender {
             configuration.useLicenseKey());
 
     return new SpanBatchSender(marshaller, sender);
+  }
+
+  public static URL returnEndpoint(String userRegion) throws MalformedURLException {
+    URL url = null;
+    if (userRegion.equals("US")) {
+      try {
+        url = new URL(DEFAULT_URL + SPANS_PATH);
+        return url;
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    } else if (userRegion.equals("EU")) {
+      try {
+        url = new URL(EUROPEAN_URL + SPANS_PATH);
+        return url;
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    }
+    throw new MalformedURLException(
+        "A valid region (EU or US) needs to be added to generate the right endpoint");
   }
 
   public static SenderConfiguration.SenderConfigurationBuilder configurationBuilder() {

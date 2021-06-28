@@ -18,6 +18,7 @@ import com.newrelic.telemetry.metrics.json.MetricBatchMarshaller;
 import com.newrelic.telemetry.metrics.json.MetricToJson;
 import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
@@ -27,7 +28,8 @@ import org.slf4j.LoggerFactory;
 public class MetricBatchSender {
 
   private static final String METRICS_PATH = "/metric/v1";
-  private static final String DEFAULT_URL = "https://metric-api.newrelic.com/";
+  private static final String DEFAULT_URL = "https://metric-api.newrelic.com";
+  private static final String EUROPEAN_URL = "https://metric-api.eu.newrelic.com";
 
   private static final Logger logger = LoggerFactory.getLogger(MetricBatchSender.class);
 
@@ -88,7 +90,21 @@ public class MetricBatchSender {
     Utils.verifyNonNull(configuration.getApiKey(), "API key cannot be null");
     Utils.verifyNonNull(configuration.getHttpPoster(), "an HttpPoster implementation is required.");
 
-    URL url = configuration.getEndpointUrl();
+    String userRegion = configuration.getRegion();
+
+    String defaultUrl = DEFAULT_URL + METRICS_PATH;
+    String endpointUrlToString = configuration.getEndpointUrl().toString();
+
+    URL url = null;
+    if (!endpointUrlToString.equals(defaultUrl)) {
+      url = configuration.getEndpointUrl();
+    } else {
+      try {
+        url = returnEndpoint(userRegion);
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    }
 
     MetricBatchMarshaller marshaller =
         new MetricBatchMarshaller(
@@ -104,6 +120,27 @@ public class MetricBatchSender {
             configuration.useLicenseKey());
 
     return new MetricBatchSender(marshaller, sender);
+  }
+
+  public static URL returnEndpoint(String userRegion) throws MalformedURLException {
+    URL url = null;
+    if (userRegion.equals("US")) {
+      try {
+        url = new URL(DEFAULT_URL + METRICS_PATH);
+        return url;
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    } else if (userRegion.equals("EU")) {
+      try {
+        url = new URL(EUROPEAN_URL + METRICS_PATH);
+        return url;
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
+    }
+    throw new MalformedURLException(
+        "A valid region (EU or US) needs to be added to generate the right endpoint");
   }
 
   public static SenderConfigurationBuilder configurationBuilder() {
