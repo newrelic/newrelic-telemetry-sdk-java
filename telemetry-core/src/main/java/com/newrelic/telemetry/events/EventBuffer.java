@@ -5,10 +5,9 @@
 package com.newrelic.telemetry.events;
 
 import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.util.IngestWarnings;
 import com.newrelic.telemetry.util.Utils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +20,11 @@ import org.slf4j.LoggerFactory;
  */
 public final class EventBuffer {
   private static final Logger logger = LoggerFactory.getLogger(EventBuffer.class);
-
+  private static final int maxNumberOfAttributes = 254;
+  private static final int maxAttributeNameLength = 255;
+  private static final int maxAttributeValueLength = 4096;
   private final Queue<Event> events = new ConcurrentLinkedQueue<>();
-
+  private final IngestWarnings ingestWarnings = new IngestWarnings();
   private final Attributes commonAttributes;
 
   /**
@@ -42,6 +43,12 @@ public final class EventBuffer {
    * @param event The new {@link Event} instance to be sent.
    */
   public void addEvent(Event event) {
+    Map<String, Object> attributes = event.getAttributes().asMap();
+
+    ingestWarnings.isValidNumberOfAttributes(attributes, "Event");
+    ingestWarnings.validAttributeNames(attributes);
+    ingestWarnings.validAttributeValues(attributes);
+
     events.add(event);
   }
 

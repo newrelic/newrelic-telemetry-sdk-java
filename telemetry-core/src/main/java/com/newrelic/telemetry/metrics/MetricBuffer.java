@@ -5,9 +5,11 @@
 package com.newrelic.telemetry.metrics;
 
 import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.util.IngestWarnings;
 import com.newrelic.telemetry.util.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.LoggerFactory;
@@ -23,9 +25,9 @@ import org.slf4j.LoggerFactory;
  */
 public final class MetricBuffer {
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MetricBuffer.class);
-
+  private static final int maxMetricAttributes = 100;
   private final Queue<Metric> metrics = new ConcurrentLinkedQueue<>();
-
+  private final IngestWarnings ingestWarnings = new IngestWarnings();
   private final Attributes commonAttributes;
 
   /**
@@ -44,7 +46,38 @@ public final class MetricBuffer {
    * @param metric The new {@link Metric} instance to be sent.
    */
   public void addMetric(Metric metric) {
+    System.out.println(metric.getClass());
     metrics.add(metric);
+  }
+
+  public void addMetric(Count countMetric) {
+    Map<String, Object> attributes = countMetric.getAttributes();
+
+    ingestWarnings.isValidNumberOfAttributes(attributes, "Metric");
+    ingestWarnings.validAttributeNames(attributes);
+    ingestWarnings.validAttributeValues(attributes);
+
+    metrics.add(countMetric);
+  }
+
+  public void addMetric(Gauge gaugeMetric) {
+    Map<String, Object> attributes = gaugeMetric.getAttributes();
+
+    ingestWarnings.isValidNumberOfAttributes(attributes, "Metric");
+    ingestWarnings.validAttributeNames(attributes);
+    ingestWarnings.validAttributeValues(attributes);
+
+    metrics.add(gaugeMetric);
+  }
+
+  public void addMetric(Summary summaryMetric) {
+    Map<String, Object> attributes = summaryMetric.getAttributes();
+
+    ingestWarnings.isValidNumberOfAttributes(attributes, "Metric");
+    ingestWarnings.validAttributeNames(attributes);
+    ingestWarnings.validAttributeValues(attributes);
+
+    metrics.add(summaryMetric);
   }
 
   /**
