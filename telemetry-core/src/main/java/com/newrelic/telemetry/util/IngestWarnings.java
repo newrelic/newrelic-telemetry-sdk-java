@@ -58,8 +58,10 @@ public class IngestWarnings {
 
   public void validAttributeNames(Map<String, Object> attributes) {
     for (String attributeName : attributes.keySet()) {
-      if (attributeName.length() > maxAttributeNameLength) {
-        attributeNameWarning(attributeName);
+      if (attributeName != null) {
+        if (attributeName.length() > maxAttributeNameLength) {
+          attributeNameWarning(attributeName);
+        }
       }
     }
   }
@@ -73,10 +75,12 @@ public class IngestWarnings {
 
   public void validAttributeValues(Map<String, Object> attributes) {
     for (String attributeName : attributes.keySet()) {
-      if (attributes.get(attributeName) instanceof String) {
-        String attributeValue = attributes.get(attributeName).toString();
-        if (attributeValue.length() > maxAttributeValueLength) {
-          attributeValueWarning(attributeValue);
+      if (attributeName != null) {
+        if (attributes.get(attributeName) instanceof String) {
+          String attributeValue = attributes.get(attributeName).toString();
+          if (attributeValue.length() > maxAttributeValueLength) {
+            attributeValueWarning(attributeValue);
+          }
         }
       }
     }
