@@ -160,11 +160,8 @@ public class Log implements Telemetry {
      * @return log builder instance
      */
     public LogBuilder attributes(Attributes attributes) {
-
       Map<String, Object> attrs = attributes.asMap();
-      ingestWarnings.isValidNumberOfAttributes(attrs, "Log");
-      ingestWarnings.validAttributeNames(attrs);
-      ingestWarnings.validAttributeValues(attrs);
+      ingestWarnings.raiseIngestWarnings(attrs, "Log");
 
       this.attributes = attributes;
       return this;

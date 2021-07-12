@@ -18,7 +18,7 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.isValidNumberOfAttributes(testAttributes, "Event");
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
     verify(testIngestWarnings, never()).eventWarningNumAttributes();
   }
 
@@ -31,7 +31,7 @@ class IngestWarningsTest {
       testAttributes.put("Attribute" + i, i);
     }
 
-    testIngestWarnings.isValidNumberOfAttributes(testAttributes, "Event");
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
     verify(testIngestWarnings).eventWarningNumAttributes();
   }
 
@@ -43,7 +43,7 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.isValidNumberOfAttributes(testAttributes, "Metric");
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Metric");
     verify(testIngestWarnings, never()).metricWarningNumAttributes();
   }
 
@@ -55,7 +55,7 @@ class IngestWarningsTest {
       testAttributes.put("Attribute" + i, i);
     }
 
-    testIngestWarnings.isValidNumberOfAttributes(testAttributes, "Metric");
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Metric");
     verify(testIngestWarnings).metricWarningNumAttributes();
   }
 
@@ -67,7 +67,7 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.isValidNumberOfAttributes(testAttributes, "Log");
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Log");
     verify(testIngestWarnings, never()).logWarningNumAttributes();
   }
 
@@ -80,7 +80,7 @@ class IngestWarningsTest {
       testAttributes.put("Attribute" + i, i);
     }
 
-    testIngestWarnings.isValidNumberOfAttributes(testAttributes, "Log");
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Log");
     verify(testIngestWarnings).logWarningNumAttributes();
   }
 
@@ -94,7 +94,7 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.validAttributeNames(testAttributes);
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
     verify(testIngestWarnings, never()).attributeNameWarning("test");
   }
 
@@ -120,7 +120,7 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.validAttributeNames(testAttributes);
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
     verify(testIngestWarnings).attributeNameWarning(longAttrName);
   }
 
@@ -133,7 +133,7 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.validAttributeValues(testAttributes);
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
     verify(testIngestWarnings, never()).attributeValueWarning("test");
   }
 
@@ -158,7 +158,34 @@ class IngestWarningsTest {
     testAttributes.put("name", "bob");
     testAttributes.put("sunny", true);
 
-    testIngestWarnings.validAttributeValues(testAttributes);
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
+    verify(testIngestWarnings).attributeValueWarning(longAttrValue);
+  }
+
+  @Test
+  void invalidAttributeNameAndValueTest() {
+    String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    StringBuilder sb = new StringBuilder();
+    Random random = new Random();
+    int length = 5000;
+
+    for (int i = 0; i < length; i++) {
+      int index = random.nextInt(alphabet.length());
+      char randomChar = alphabet.charAt(index);
+      sb.append(randomChar);
+    }
+
+    String longAttrValue = sb.toString();
+
+    IngestWarnings testIngestWarnings = spy(new IngestWarnings());
+    Map<String, Object> testAttributes = new HashMap<>();
+    testAttributes.put(longAttrValue, longAttrValue);
+    testAttributes.put("name", "bob");
+    testAttributes.put("sunny", true);
+
+    testIngestWarnings.raiseIngestWarnings(testAttributes, "Event");
+
+    verify(testIngestWarnings).attributeNameWarning(longAttrValue);
     verify(testIngestWarnings).attributeValueWarning(longAttrValue);
   }
 }

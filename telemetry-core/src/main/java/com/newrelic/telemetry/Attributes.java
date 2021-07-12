@@ -8,7 +8,6 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A collection of key-value pairs that can be used as the dimensional attributes for metrics.
@@ -87,17 +86,6 @@ public class Attributes {
   }
 
   /**
-   * Remove a attribute and its value.
-   *
-   * @param key to locate the value
-   * @return this
-   */
-  public Attributes remove(String key) {
-    rawAttributes.remove(key);
-    return this;
-  }
-
-  /**
    * Get the value of an attribute.
    *
    * @param key to locate the value
@@ -119,16 +107,6 @@ public class Attributes {
   /** @return true if there are no attributes in this Attributes instance */
   public boolean isEmpty() {
     return rawAttributes.isEmpty();
-  }
-
-  /** @return number of attributes */
-  public int numAttributes() {
-    return rawAttributes.size();
-  }
-
-  /** @return attribute names */
-  public Set<String> attributeNames() {
-    return rawAttributes.keySet();
   }
 
   @Override

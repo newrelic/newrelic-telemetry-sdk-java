@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class MetricBuffer {
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MetricBuffer.class);
-  private static final int maxMetricAttributes = 100;
   private final Queue<Metric> metrics = new ConcurrentLinkedQueue<>();
   private final IngestWarnings ingestWarnings = new IngestWarnings();
   private final Attributes commonAttributes;
@@ -41,42 +40,35 @@ public final class MetricBuffer {
   }
 
   /**
-   * Append a {@link Metric} to this buffer, to be sent in the next {@link MetricBatch}.
+   * Append a {@link Count} to this buffer, to be sent in the next {@link MetricBatch}.
    *
-   * @param metric The new {@link Metric} instance to be sent.
+   * @param countMetric The new {@link Count} instance to be sent.
    */
-  public void addMetric(Metric metric) {
-    System.out.println(metric.getClass());
-    metrics.add(metric);
-  }
-
   public void addMetric(Count countMetric) {
     Map<String, Object> attributes = countMetric.getAttributes();
-
-    ingestWarnings.isValidNumberOfAttributes(attributes, "Metric");
-    ingestWarnings.validAttributeNames(attributes);
-    ingestWarnings.validAttributeValues(attributes);
-
+    ingestWarnings.raiseIngestWarnings(attributes, "Metric");
     metrics.add(countMetric);
   }
 
+  /**
+   * Append a {@link Gauge} to this buffer, to be sent in the next {@link MetricBatch}.
+   *
+   * @param gaugeMetric The new {@link Gauge} instance to be sent.
+   */
   public void addMetric(Gauge gaugeMetric) {
     Map<String, Object> attributes = gaugeMetric.getAttributes();
-
-    ingestWarnings.isValidNumberOfAttributes(attributes, "Metric");
-    ingestWarnings.validAttributeNames(attributes);
-    ingestWarnings.validAttributeValues(attributes);
-
+    ingestWarnings.raiseIngestWarnings(attributes, "Metric");
     metrics.add(gaugeMetric);
   }
 
+  /**
+   * Append a {@link Summary} to this buffer, to be sent in the next {@link MetricBatch}.
+   *
+   * @param summaryMetric The new {@link Summary} instance to be sent.
+   */
   public void addMetric(Summary summaryMetric) {
     Map<String, Object> attributes = summaryMetric.getAttributes();
-
-    ingestWarnings.isValidNumberOfAttributes(attributes, "Metric");
-    ingestWarnings.validAttributeNames(attributes);
-    ingestWarnings.validAttributeValues(attributes);
-
+    ingestWarnings.raiseIngestWarnings(attributes, "Metric");
     metrics.add(summaryMetric);
   }
 

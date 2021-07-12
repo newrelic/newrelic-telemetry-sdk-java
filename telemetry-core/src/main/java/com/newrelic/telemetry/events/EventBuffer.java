@@ -20,9 +20,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class EventBuffer {
   private static final Logger logger = LoggerFactory.getLogger(EventBuffer.class);
-  private static final int maxNumberOfAttributes = 254;
-  private static final int maxAttributeNameLength = 255;
-  private static final int maxAttributeValueLength = 4096;
   private final Queue<Event> events = new ConcurrentLinkedQueue<>();
   private final IngestWarnings ingestWarnings = new IngestWarnings();
   private final Attributes commonAttributes;
@@ -44,11 +41,7 @@ public final class EventBuffer {
    */
   public void addEvent(Event event) {
     Map<String, Object> attributes = event.getAttributes().asMap();
-
-    ingestWarnings.isValidNumberOfAttributes(attributes, "Event");
-    ingestWarnings.validAttributeNames(attributes);
-    ingestWarnings.validAttributeValues(attributes);
-
+    ingestWarnings.raiseIngestWarnings(attributes, "Event");
     events.add(event);
   }
 
