@@ -4,6 +4,27 @@
  */
 package com.newrelic.telemetry.examples;
 
+import static java.util.Collections.singleton;
+
+import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.TelemetryClient;
+import com.newrelic.telemetry.events.Event;
+import com.newrelic.telemetry.events.EventBatch;
+import com.newrelic.telemetry.logs.Log;
+import com.newrelic.telemetry.logs.LogBatch;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.Summary;
+import com.newrelic.telemetry.spans.Span;
+import com.newrelic.telemetry.spans.SpanBatch;
+import java.net.InetAddress;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
 /**
  * This example shows how to use the TelemetryClient to handle standard error conditions.
  *
@@ -16,7 +37,6 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    /*
     // create a TelemetryClient with an http connect timeout of 10 seconds.
     TelemetryClient telemetryClient =
         TelemetryClient.create(
@@ -35,10 +55,9 @@ public class TelemetryClientExample {
 
     // make sure to shutdown the client, else the background Executor will stop the program from
     // exiting.
-    telemetryClient.shutdown(); */
+    telemetryClient.shutdown();
   }
 
-  /*
   private static void sendSampleLogEntry(
       TelemetryClient telemetryClient, Attributes commonAttributes, Span span) {
     Log log =
@@ -85,7 +104,7 @@ public class TelemetryClientExample {
         new Summary(
             "throughput", 25, 100, 1, 10, startTime, System.currentTimeMillis(), new Attributes()));
 
-    MetricBatch batch = metricBuffer.createBatch();
+    MetricBatch batch = metricBuffer.createBatch().get(0);
 
     // The TelemetryClient uses the recommended techniques for responding to errors from the
     // New Relic APIs. It uses a background thread to schedule the sending, handling retries
@@ -105,5 +124,5 @@ public class TelemetryClientExample {
     SpanBatch spanBatch = new SpanBatch(singleton(sampleSpan), commonAttributes, traceId);
     telemetryClient.sendBatch(spanBatch);
     return sampleSpan;
-  } */
+  }
 }

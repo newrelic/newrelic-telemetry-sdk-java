@@ -118,16 +118,16 @@ public final class MetricBuffer {
   }
 
   /**
-   * Creates an {@link ArrayList<MetricBatch>} from the contents of this buffer, then clears the
-   * contents of this buffer.
+   * Creates an ArrayList<MetricBatch> from the contents of this buffer, then clears the contents of
+   * this buffer.
    *
    * <p>{@link Metric Metrics} are added to a MetricBatch. When each metric is added, the size (in
    * bytes) of the metric is calculated. When the total size of the metrics in the batch exceeds the
    * MAX_UNCOMPRESSED_BATCH_SIZE, the current batch is sent to New Relic, and a new MetricBatch is
    * created. This process repeats until all metrics are removed from the queue.
    *
-   * @return An {@link ArrayList<MetricBatch>}. Each {@link MetricBatch} in the ArrayList contains
-   *     an immutable collection of {@link Metric Metrics}.
+   * @return An ArrayList<MetricBatch>. Each {@link MetricBatch} in the ArrayList contains an
+   *     immutable collection of {@link Metric Metrics}.
    */
   public ArrayList<MetricBatch> createBatches() {
     logger.debug("Creating metric batch.");
@@ -188,13 +188,13 @@ public final class MetricBuffer {
   }
 
   /**
-   * Creates an {@link ArrayList<MetricBatch>} by calling {@link #createSingleBatch()} or {@link
+   * Creates an ArrayList<MetricBatch> by calling {@link #createSingleBatch()} or {@link
    * #createBatches()}. This depends on if the user wants to split batches on size limit or not
    * (splitBatch). If splitBatch = false, {@link #createSingleBatch()} is called. If splitBatch =
    * true, {@link #createBatches()} is called.
    *
-   * @return An {@link ArrayList<MetricBatch>}. Each {@link MetricBatch} in the ArrayList contains
-   *     an immutable collection of {@link Metric Metrics}.
+   * @return An ArrayList<MetricBatch>. Each {@link MetricBatch} in the ArrayList contains an
+   *     immutable collection of {@link Metric Metrics}.
    */
   public ArrayList<MetricBatch> createBatch() {
     ArrayList<MetricBatch> batches = new ArrayList<MetricBatch>();
