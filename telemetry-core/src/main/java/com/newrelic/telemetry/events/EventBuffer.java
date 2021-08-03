@@ -92,16 +92,16 @@ public final class EventBuffer {
   }
 
   /**
-   * Creates an ArrayList<EventBatch> from the contents of this buffer, then clears the contents of
-   * this buffer.
+   * Creates an ArrayList of EventBatch objects from the contents of this buffer, then clears the
+   * contents of this buffer.
    *
    * <p>{@link Event Events} are added to an EventBatch. When each event is added, the size (in
    * bytes) of the event is calculated. When the total size of the events in the batch exceeds the
    * MAX_UNCOMPRESSED_BATCH_SIZE, the current batch is sent to New Relic, and a new EventBatch is
    * created. This process repeats until all events are removed from the queue.
    *
-   * @return An ArrayList<EventBatch>. Each {@link EventBatch} in the ArrayList contains an
-   *     immutable collection of {@link Event Events}.
+   * @return An ArrayList of EventBatch objects. Each {@link EventBatch} in the ArrayList contains
+   *     an immutable collection of {@link Event Events}.
    */
   public ArrayList<EventBatch> createBatches() {
     logger.debug("Creating Event batch.");
@@ -147,13 +147,13 @@ public final class EventBuffer {
   }
 
   /**
-   * Creates an ArrayList<EventBatch> by calling {@link #createSingleBatch()} or {@link
+   * Creates an ArrayList of EventBatch objects by calling {@link #createSingleBatch()} or {@link
    * #createBatches()}. This depends on if the user wants to split batches on size limit or not
    * (splitBatch). If splitBatch = false, {@link #createSingleBatch()} is called. If splitBatch =
    * true, {@link #createBatches()} is called.
    *
-   * @return An ArrayList<EventBatch>. Each {@link EventBatch} in the ArrayList contains an
-   *     immutable collection of {@link Event Events}.
+   * @return An ArrayList of EventBatch objects. Each {@link EventBatch} in the ArrayList contains
+   *     an immutable collection of {@link Event Events}.
    */
   public ArrayList<EventBatch> createBatch() {
     ArrayList<EventBatch> batches = new ArrayList<EventBatch>();
