@@ -104,12 +104,12 @@ public class TelemetryClientExample {
         new Summary(
             "throughput", 25, 100, 1, 10, startTime, System.currentTimeMillis(), new Attributes()));
 
-    MetricBatch batch = metricBuffer.createBatch();
+    //MetricBatch batch = metricBuffer.createBatch();
 
     // The TelemetryClient uses the recommended techniques for responding to errors from the
     // New Relic APIs. It uses a background thread to schedule the sending, handling retries
     // transparently.
-    telemetryClient.sendBatch(batch);
+    //telemetryClient.sendBatch(batch);
   }
 
   private static Span sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
