@@ -132,7 +132,8 @@ public class BatchDataSender {
   private byte[] compressJson(String result) throws IOException {
     ByteArrayOutputStream compressedOutput = new ByteArrayOutputStream();
     GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressedOutput);
-    gzipOutputStream.write(result.getBytes(StandardCharsets.UTF_8));
+    gzipOutputStream.write(
+        result.getBytes(StandardCharsets.UTF_8)); // Used to get number of bytes in piece of data
     gzipOutputStream.close();
     return compressedOutput.toByteArray();
   }
@@ -141,6 +142,7 @@ public class BatchDataSender {
       throws DiscardBatchException, RetryWithSplitException, RetryWithBackoffException,
           RetryWithRequestedWaitException {
     Map<String, String> headers = new HashMap<>();
+
     if (useLicenseKey) {
       headers.put("X-License-Key", apiKey);
     } else {

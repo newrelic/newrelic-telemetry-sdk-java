@@ -21,12 +21,7 @@ import com.newrelic.telemetry.transport.BatchDataSender;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -53,10 +48,13 @@ public class EventBatchSenderTest {
 
     EventBatchSender testClass = new EventBatchSender(marshaller, sender);
 
+    ArrayList<EventBatch> testEventBatch = new ArrayList<EventBatch>();
+    testEventBatch.add(batch);
+
     assertThrows(
         RetryWithSplitException.class,
         () -> {
-          testClass.sendBatch(batch);
+          testClass.sendBatch(testEventBatch);
         });
   }
 
@@ -64,7 +62,11 @@ public class EventBatchSenderTest {
   void testEmptyBatch() throws Exception {
     EventBatchSender testClass = new EventBatchSender(null, null);
     EventBatch batch = new EventBatch(Collections.emptyList(), new Attributes());
-    Response response = testClass.sendBatch(batch);
+
+    ArrayList<EventBatch> testBatchList = new ArrayList<EventBatch>();
+    testBatchList.add(batch);
+
+    Response response = testClass.sendBatch(testBatchList);
     assertEquals(202, response.getStatusCode());
   }
 
@@ -92,7 +94,11 @@ public class EventBatchSenderTest {
 
     EventBatchSender logBatchSender = EventBatchSender.create(posterSupplier, baseConfig);
 
-    Response result = logBatchSender.sendBatch(batch);
+    ArrayList<EventBatch> testBatchList = new ArrayList<EventBatch>();
+    testBatchList.add(batch);
+
+    Response result = logBatchSender.sendBatch(testBatchList);
+
     assertEquals(expected, result);
     assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
   }
