@@ -9,7 +9,6 @@ import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry;
 import com.newrelic.telemetry.util.IngestWarnings;
 import com.newrelic.telemetry.util.Utils;
-import java.util.Map;
 
 /** A Log instance represents a single entry in a log. */
 public class Log implements Telemetry {
@@ -160,9 +159,6 @@ public class Log implements Telemetry {
      * @return log builder instance
      */
     public LogBuilder attributes(Attributes attributes) {
-      Map<String, Object> attrs = attributes.asMap();
-      ingestWarnings.raiseIngestWarnings(attrs, "Log");
-
       this.attributes = attributes;
       return this;
     }

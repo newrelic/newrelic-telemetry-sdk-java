@@ -86,16 +86,6 @@ public class Attributes {
   }
 
   /**
-   * Get the value of an attribute.
-   *
-   * @param key to locate the value
-   * @return this
-   */
-  public Object get(String key) {
-    return rawAttributes.get(key);
-  }
-
-  /**
    * Make a copy of these attributes.
    *
    * @return An unmodifiable copy of these attributes, as a Map.

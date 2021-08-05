@@ -46,7 +46,7 @@ public final class MetricBuffer {
    */
   public void addMetric(Count countMetric) {
     Map<String, Object> attributes = countMetric.getAttributes();
-    ingestWarnings.raiseIngestWarnings(attributes, "Metric");
+    ingestWarnings.raiseIngestWarnings(attributes, countMetric);
     metrics.add(countMetric);
   }
 
@@ -57,7 +57,7 @@ public final class MetricBuffer {
    */
   public void addMetric(Gauge gaugeMetric) {
     Map<String, Object> attributes = gaugeMetric.getAttributes();
-    ingestWarnings.raiseIngestWarnings(attributes, "Metric");
+    ingestWarnings.raiseIngestWarnings(attributes, gaugeMetric);
     metrics.add(gaugeMetric);
   }
 
@@ -68,7 +68,7 @@ public final class MetricBuffer {
    */
   public void addMetric(Summary summaryMetric) {
     Map<String, Object> attributes = summaryMetric.getAttributes();
-    ingestWarnings.raiseIngestWarnings(attributes, "Metric");
+    ingestWarnings.raiseIngestWarnings(attributes, summaryMetric);
     metrics.add(summaryMetric);
   }
 

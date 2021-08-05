@@ -41,7 +41,7 @@ public final class EventBuffer {
    */
   public void addEvent(Event event) {
     Map<String, Object> attributes = event.getAttributes().asMap();
-    ingestWarnings.raiseIngestWarnings(attributes, "Event");
+    ingestWarnings.raiseIngestWarnings(attributes, event);
     events.add(event);
   }
 
