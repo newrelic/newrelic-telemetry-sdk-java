@@ -7,6 +7,7 @@ package com.newrelic.telemetry.logs;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry;
+import com.newrelic.telemetry.util.IngestWarnings;
 import com.newrelic.telemetry.util.Utils;
 
 /** A Log instance represents a single entry in a log. */
@@ -130,6 +131,7 @@ public class Log implements Telemetry {
     private long timestamp = System.currentTimeMillis();
     private String message;
     private Attributes attributes = new Attributes();
+    private IngestWarnings ingestWarnings = new IngestWarnings();
     private String serviceName; // service.name <- goes in attributes
     private String level;
     private Throwable throwable;
@@ -181,6 +183,7 @@ public class Log implements Telemetry {
 
     /** @return Create the new {@link Log} entry. */
     public Log build() {
+
       return new Log(this, throwable);
     }
 

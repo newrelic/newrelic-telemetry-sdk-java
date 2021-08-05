@@ -10,6 +10,7 @@ import com.newrelic.telemetry.SenderConfiguration;
 import com.newrelic.telemetry.logs.Log;
 import com.newrelic.telemetry.logs.LogBatch;
 import com.newrelic.telemetry.logs.LogBatchSender;
+import com.newrelic.telemetry.util.IngestWarnings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,32 +49,35 @@ public class LogExample {
             .build();
     LogBatchSender sender = LogBatchSender.create(configuration);
 
+    IngestWarnings logIngestWarnings = new IngestWarnings();
     List<Log> logs = new ArrayList<>();
     logs.add(Log.builder().level("INFO").message("Start of process").build());
     for (String item : items) {
       String logId = UUID.randomUUID().toString();
       Attributes attributes = new Attributes().put("id", logId).put("food", item);
-      logs.add(
-          Log.builder()
-              .attributes(attributes)
-              .message("Processing " + item)
-              .level("DEBUG")
-              .build());
+      Log log =
+          Log.builder().attributes(attributes).message("Processing " + item).level("DEBUG").build();
+      logIngestWarnings.raiseIngestWarnings(attributes.asMap(), log);
+      logs.add(log);
+
       if (new Random().nextBoolean()) {
-        logs.add(
+        Log failedLog =
             Log.builder()
                 .attributes(attributes)
                 .message("Failed to process " + item)
                 .level("ERROR")
                 .throwable(makeException(item))
-                .build());
+                .build();
+        logIngestWarnings.raiseIngestWarnings(attributes.asMap(), failedLog);
+        logs.add(failedLog);
       }
-      logs.add(
+      Log doneLog =
           Log.builder()
               .attributes(attributes)
               .message("Done processing " + item)
               .level("DEBUG")
-              .build());
+              .build();
+      logs.add(doneLog);
     }
     logs.add(Log.builder().level("INFO").message("End of process").build());
 
