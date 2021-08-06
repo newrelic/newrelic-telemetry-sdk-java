@@ -29,6 +29,7 @@ public final class MetricBuffer {
   private final IngestWarnings ingestWarnings = new IngestWarnings();
   private final Attributes commonAttributes;
   private final boolean splitBatch;
+  private static final int MAX_UNCOMPRESSED_BATCH_SIZE = 180000000;
 
   /**
    * Create a new buffer with the provided common set of attributes.
@@ -135,19 +136,10 @@ public final class MetricBuffer {
     Collection<Metric> metricsInBatch = new ArrayList<>();
 
     int currentUncompressedBatchSize = 0;
-    int MAX_UNCOMPRESSED_BATCH_SIZE = 180000000;
 
     // Construct JSON for common attributes and add to uncompressed batch size
 
-    AttributesJson attrsJson = new AttributesJson();
-    StringBuilder commonAttributeSb = new StringBuilder();
-    commonAttributeSb
-        .append("\"common\":")
-        .append("{")
-        .append("\"attributes\":")
-        .append(attrsJson.toJson(commonAttributes.asMap()))
-        .append("}");
-    String commonJson = commonAttributeSb.toString();
+    String commonJson = generateCommonJSON();
 
     currentUncompressedBatchSize += commonJson.getBytes(StandardCharsets.UTF_8).length;
 
@@ -185,6 +177,24 @@ public final class MetricBuffer {
     }
     metricBatches.add(new MetricBatch(metricsInBatch, this.commonAttributes));
     return metricBatches;
+  }
+
+  /**
+   * Generates a JSON String that contains all of the common attribute information. This JSON string
+   * is used in a MetricBatch of any size.
+   */
+  public String generateCommonJSON() {
+
+    AttributesJson attrsJson = new AttributesJson();
+    StringBuilder commonAttributeSb = new StringBuilder();
+    commonAttributeSb
+        .append("\"common\":")
+        .append("{")
+        .append("\"attributes\":")
+        .append(attrsJson.toJson(commonAttributes.asMap()))
+        .append("}");
+    String commonAttrString = commonAttributeSb.toString();
+    return commonAttrString;
   }
 
   /**
