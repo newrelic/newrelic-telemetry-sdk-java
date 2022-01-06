@@ -1,23 +1,19 @@
-buildscript {
-    dependencies {
-        classpath("gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.8")
-    }
-}
+import com.newrelic.telemetry.gradle.configureRepositories
+import com.newrelic.telemetry.gradle.configuredPom
 
 plugins {
     java
+    id("java-library")
+    id("maven-publish")
+    id("signing")
+    id("com.github.sherter.google-java-format") version "0.8"
+    id("org.ysb33r.java.modulehelper") version("0.9.0") apply false
+    id("com.github.johnrengelman.shadow") version ("5.2.0") apply false
 }
 
-apply(plugin = "java")
-apply(plugin = "java-library")
-apply(plugin = "maven-publish")
-apply(plugin = "signing")
-
-apply(plugin = "com.github.sherter.google-java-format")
-
 allprojects {
-    group = "com.newrelic.telemetry"
-    version = project.findProperty("releaseVersion") as String
+    val release: String? by project
+    version = if ("true" == release) version else "${version}-SNAPSHOT"
     repositories {
         mavenCentral()
         jcenter()
@@ -28,14 +24,14 @@ allprojects {
             events("passed", "skipped", "failed")
         }
     }
-
 }
 
-listOf(":telemetry-core", ":telemetry", ":telemetry-http-okhttp", ":telemetry-http-java11").forEach {
+listOf(":telemetry-http-okhttp", ":telemetry-http-java11" , ":telemetry-all").forEach {
     project(it) {
         apply(plugin = "java-library")
         apply(plugin = "maven-publish")
         apply(plugin = "signing")
+        val release: String? by project
         tasks {
             val taskScope = this
             val sources = sourceSets
@@ -53,64 +49,26 @@ listOf(":telemetry-core", ":telemetry", ":telemetry-http-okhttp", ":telemetry-ht
 
             val jar: Jar by taskScope
             jar.apply {
-                manifest.attributes["Implementation-Version"] = project.version
-                manifest.attributes["Implementation-Vendor"] = "New Relic, Inc"
+                manifest {
+                    attributes(mapOf(
+                            "Implementation-Version" to project.version,
+                            "Implementation-Vendor" to "New Relic, Inc.",
+                            "Automatic-Module-Name" to "com.newrelic.telemetry" // Hack
+                    ))
+                }
             }
         }
         val useLocalSonatype = project.properties["useLocalSonatype"] == "true"
-
         configure<PublishingExtension> {
             publications {
                 create<MavenPublication>("mavenJava") {
                     from(components["java"])
                     artifact(tasks["sourcesJar"])
                     artifact(tasks["javadocJar"])
-                    pom {
-                        name.set(project.name)
-                        description.set("Used to send telemetry data to New Relic")
-                        url.set("https://github.com/newrelic/newrelic-telemetry-sdk-java")
-                        licenses {
-                            license {
-                                name.set("The Apache License, Version 2.0")
-                                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                                distribution.set("repo")
-                            }
-                        }
-                        developers {
-                            developer {
-                                id.set("newrelic")
-                                name.set("New Relic")
-                                email.set("opensource@newrelic.com")
-                            }
-                        }
-                        scm {
-                            url.set("git@github.com:newrelic/newrelic-telemetry-sdk-java.git")
-                            connection.set("scm:git:git@github.com:newrelic/newrelic-telemetry-sdk-java.git")
-                        }
-                    }
+                    configuredPom(project)
                 }
             }
-            repositories {
-                maven {
-                    if (useLocalSonatype) {
-                        val releasesRepoUrl = uri("http://localhost:8081/repository/maven-releases/")
-                        val snapshotsRepoUrl = uri("http://localhost:8081/repository/maven-snapshots/")
-                        url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-                    }
-                    else {
-                        val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                        val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-                        url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-                        configure<SigningExtension> {
-                            sign(publications["mavenJava"])
-                        }
-                    }
-                    credentials {
-                        username = project.properties["sonatypeUsername"] as String?
-                        password = project.properties["sonatypePassword"] as String?
-                    }
-                }
-            }
+            configureRepositories(project, useLocalSonatype, "mavenJava", release)
         }
     }
 }

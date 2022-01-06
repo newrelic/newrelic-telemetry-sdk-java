@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 New Relic Corporation. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.newrelic.telemetry;
 
 import com.newrelic.telemetry.http.HttpPoster;
@@ -15,19 +20,27 @@ import java.util.Map;
 public class Java11HttpPoster implements HttpPoster {
   private final HttpClient httpClient;
 
-  /** Create a Java11HttpPoster with your own object. */
+  /**
+   * Create a Java11HttpPoster with your own object.
+   *
+   * @param httpClient - the preconstructed HTTP client object
+   */
   public Java11HttpPoster(HttpClient httpClient) {
     this.httpClient = httpClient;
   }
 
-  /** Create a default Java11HttpPoster with a custom call timeout. */
+  /**
+   * Create a default Java11HttpPoster with a custom call timeout.
+   *
+   * @param callTimeout - the timeout for HTTP calls
+   */
   public Java11HttpPoster(Duration callTimeout) {
     this.httpClient = HttpClient.newBuilder().connectTimeout(callTimeout).build();
   }
 
-  /** Create a default Java11HttpPoster. */
+  /** Create a default Java11HttpPoster with a connect timeout set to 2 seconds. */
   public Java11HttpPoster() {
-    this.httpClient = HttpClient.newBuilder().build();
+    this(Duration.ofSeconds(2));
   }
 
   @Override
@@ -37,7 +50,7 @@ public class Java11HttpPoster implements HttpPoster {
     try {
       var builder =
           HttpRequest.newBuilder(url.toURI()).POST(HttpRequest.BodyPublishers.ofByteArray(body));
-      headers.forEach((k, v) -> builder.header(k, v));
+      headers.forEach(builder::header);
       builder.header("Content-Type", mediaType);
       var req = builder.build();
 
@@ -57,5 +70,17 @@ public class Java11HttpPoster implements HttpPoster {
         actual.statusCode(),
         "" + actual.statusCode(),
         actual.headers().map());
+  }
+
+  public static MetricBatchSenderFactory metricSenderFactory() {
+    return MetricBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new);
+  }
+
+  public static SpanBatchSenderFactory spanSenderFactory() {
+    return SpanBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new);
+  }
+
+  public static EventBatchSenderFactory eventSenderFactory() {
+    return EventBatchSenderFactory.fromHttpImplementation(Java11HttpPoster::new);
   }
 }

@@ -4,6 +4,7 @@
 # Ignore Gradle build output directory
 build
 out
+.generated-src
 
 # Ignore IntelliJ files
 .DS_Store

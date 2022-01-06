@@ -1,19 +1,28 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.examples;
 
-import com.newrelic.telemetry.*;
-import com.newrelic.telemetry.SimpleSpanBatchSender;
-import com.newrelic.telemetry.metrics.*;
+import static java.util.Collections.singleton;
+
+import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.TelemetryClient;
+import com.newrelic.telemetry.events.Event;
+import com.newrelic.telemetry.events.EventBatch;
+import com.newrelic.telemetry.logs.Log;
+import com.newrelic.telemetry.logs.LogBatch;
+import com.newrelic.telemetry.metrics.Count;
+import com.newrelic.telemetry.metrics.Gauge;
+import com.newrelic.telemetry.metrics.MetricBatch;
+import com.newrelic.telemetry.metrics.MetricBuffer;
+import com.newrelic.telemetry.metrics.Summary;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
-import com.newrelic.telemetry.spans.SpanBatchSender;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -28,23 +37,43 @@ public class TelemetryClientExample {
   public static void main(String[] args) throws Exception {
     String insightsInsertKey = args[0];
 
-    MetricBatchSender batchSender =
-        SimpleMetricBatchSender.builder(insightsInsertKey, Duration.of(10, ChronoUnit.SECONDS))
-            .build();
-    SpanBatchSender spanBatchSender = SimpleSpanBatchSender.builder(insightsInsertKey).build();
+    // create a TelemetryClient with an http connect timeout of 10 seconds.
+    TelemetryClient telemetryClient =
+        TelemetryClient.create(
+            () -> new OkHttpPoster(Duration.of(10, ChronoUnit.SECONDS)), insightsInsertKey);
+    Attributes commonAttributes =
+        new Attributes()
+            .put("exampleName", "TelemetryClientExample")
+            .put("service.name", "TelemetryClientExampleService")
+            .put("host.hostname", InetAddress.getLocalHost().getHostName())
+            .put("environment", "staging");
 
-    TelemetryClient telemetryClient = new TelemetryClient(batchSender, spanBatchSender);
-
-    Attributes commonAttributes = new Attributes().put("exampleName", "TelemetryClientExample");
-    commonAttributes.put("host.hostname", InetAddress.getLocalHost().getHostName());
-    commonAttributes.put("environment", "staging");
-
-    sendSampleSpan(telemetryClient, commonAttributes);
+    Span span = sendSampleSpan(telemetryClient, commonAttributes);
     sendSampleMetrics(telemetryClient, commonAttributes);
+    sendSampleEvent(telemetryClient, commonAttributes);
+    sendSampleLogEntry(telemetryClient, commonAttributes, span);
 
     // make sure to shutdown the client, else the background Executor will stop the program from
     // exiting.
     telemetryClient.shutdown();
+  }
+
+  private static void sendSampleLogEntry(
+      TelemetryClient telemetryClient, Attributes commonAttributes, Span span) {
+    Log log =
+        Log.builder()
+            .level("INFO")
+            .message("Logging a message here about a span.")
+            .attributes(
+                new Attributes().put("span.id", span.getId()).put("trace.id", span.getTraceId()))
+            .build();
+    telemetryClient.sendBatch(new LogBatch(singleton(log), commonAttributes));
+  }
+
+  private static void sendSampleEvent(
+      TelemetryClient telemetryClient, Attributes commonAttributes) {
+    Event event = new Event("TestEvent", new Attributes().put("testKey", "testValue"));
+    telemetryClient.sendBatch(new EventBatch(singleton(event), commonAttributes));
   }
 
   private static void sendSampleMetrics(
@@ -53,7 +82,6 @@ public class TelemetryClientExample {
 
     MetricBuffer metricBuffer =
         MetricBuffer.builder()
-            .serviceName("Sample Service")
             .instrumentationProvider("Manual instrumentation")
             .attributes(commonAttributes)
             .build();
@@ -84,17 +112,17 @@ public class TelemetryClientExample {
     telemetryClient.sendBatch(batch);
   }
 
-  private static void sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
+  private static Span sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
     Span sampleSpan =
         Span.builder(UUID.randomUUID().toString())
             .timestamp(System.currentTimeMillis())
+            .traceId(UUID.randomUUID().toString())
             .durationMs(150d)
-            .serviceName("Test Service")
             .name("testSpan")
             .build();
     String traceId = UUID.randomUUID().toString();
-    SpanBatch spanBatch =
-        new SpanBatch(Collections.singleton(sampleSpan), commonAttributes, traceId);
+    SpanBatch spanBatch = new SpanBatch(singleton(sampleSpan), commonAttributes, traceId);
     telemetryClient.sendBatch(spanBatch);
+    return sampleSpan;
   }
 }

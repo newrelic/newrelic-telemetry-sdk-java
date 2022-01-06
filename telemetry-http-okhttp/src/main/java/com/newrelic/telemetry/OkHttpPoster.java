@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -20,12 +20,25 @@ import okhttp3.RequestBody;
 public class OkHttpPoster implements HttpPoster {
   private final OkHttpClient okHttpClient;
 
-  /** Create an OkHttpPoster with a default OkHttpClient, with only a custom call timeout. */
+  /** Create an OkHttpPoster with a default OkHttpClient, and a connect timeout of 2 seconds. */
+  public OkHttpPoster() {
+    this(Duration.ofSeconds(2));
+  }
+
+  /**
+   * Create an OkHttpPoster with a default OkHttpClient, with only a custom http timeout.
+   *
+   * @param callTimeout expected call timeout
+   */
   public OkHttpPoster(Duration callTimeout) {
     this(new OkHttpClient.Builder().callTimeout(callTimeout).build());
   }
 
-  /** Create an OkHttpPoster with your own OkHttpClient implementation. */
+  /**
+   * Create an OkHttpPoster with your own OkHttpClient implementation.
+   *
+   * @param client http client responsible for the http communication
+   */
   public OkHttpPoster(OkHttpClient client) {
     this.okHttpClient = client;
   }
@@ -43,5 +56,17 @@ public class OkHttpPoster implements HttpPoster {
           response.message(),
           response.headers().toMultimap());
     }
+  }
+
+  public static MetricBatchSenderFactory metricSenderFactory() {
+    return MetricBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+  }
+
+  public static SpanBatchSenderFactory spanSenderFactory() {
+    return SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+  }
+
+  public static EventBatchSenderFactory eventSenderFactory() {
+    return EventBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
   }
 }

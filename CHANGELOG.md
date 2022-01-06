@@ -4,8 +4,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Coming soon
-- Enable adding additional user agent information to the HTTP requests made by the SDK.
+## [0.13.0] - TBD 
+- EU Endpoint Support added by [updating the SenderConfigurationBuilder API](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/276). 
+- Includes endpoints that send Metric, Event, Log, and Span data to New Relic One.
+- Added warnings to let users know if data exceeds some Ingest API limits. 
+
+## [0.12.0] - 2021-02-19
+- Accepts a New Relic APM license key as an alternative to an Insights Insert API key.
+
+## [0.11.0] - 2021-01-26
+- Merge `telemetry` module into `telemetry-core`
+- Remove erroneous `module-info.class` from `telemetry-core` jar
+
+## [0.10.0] - 2021-01-08
+- Deprecated endpoint  and endpointWithPath APIs have been removed
+- Add the notion of a notification handler to capture feedback from the TelemetryClient
+- Adds a rate limiter on a how much telemetry can be scheduled to be sent
+- Batch types are specified in relevant log messages
+
+## [0.9.0] - 2020-10-23
+- Fixed telemetry-all to be a modular java build.
+- Improve javadocs.
+
+## [0.8.0] - 2020-09-29
+- CRITICAL: Fix default ingest URI for event data. Upgrade strongly recommended.
+- Size of `MetricBuffer` [is now exposed via `size()` method](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/215).
+- [x-request-id header is now included](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/218) on data ingest http requests, and `TelemetryBatch` instances each have a UUID.
+- Cleaner, [less verbose shutdown](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/220).
+- Events now [disallow null and empty event types](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/221).
+- When audit logging is enabled, dropped metrics [will now be logged](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/222) for troubleshooting.
+- We now have [an example](https://github.com/newrelic/newrelic-telemetry-sdk-java/blob/main/telemetry_examples/src/main/java/com/newrelic/telemetry/examples/SpanToTraceObserverExample.java) of how to send spans to an Infinite Tracing trace observer.
+
+
+## [0.7.0] - 2020-07-27
+- Quieter logging when IOExceptions occur during data transmission.
+- Improve accuracy of version handling when bundled with other software (onejar/shadowjar)
+- Add `.endpoint(url)` to the `SenderConfiguration` and deprecate the others that don't take a fully qualified URL.
+- Better support for SLF4J with Java 11 modules system
+- Add simple one-shot factory methods `OkHttp.newTelemetryClient()` and `Java11Http.newTelemetryClient()`
+- Upgrade to OkHttp 4.8.0 (latest)  
+
+## [0.6.1] - 2020-06-18
+- Fix the default metric API URL to point at the metric API
+
+## [0.6.0] - 2020-05-28
+- Add initial preliminary support for Logs data type
+- Simplified creation TelemetryClient and friends
+- Remove hard gson dependency in a way that is compatible with other versions of gson
+
+## [0.5.1] - 2020-04-30
+- Restore methods that were deleted from deprecated classes.
+
+## [0.5.0] - 2020-04-30
+- Add support for Events data type
+- Add Java 11 HTTP provider
+- Add javadoc.io
+- Use Gradle shadowing to remove C&P GSON code (Thanks wpoch)
+- Remove Lombok dependency
+- Miscellaneous cleanups/enhancements
 
 ## [0.4.0] - 2020-03-04
 - Additional documentation for logging

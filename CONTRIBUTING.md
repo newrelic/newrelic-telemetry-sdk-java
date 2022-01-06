@@ -42,7 +42,6 @@ The easiest way to do this is to autogenerate the methods in the IDE, and when a
 
 You should not have a need to override or modify the generated boilerplate, but if you do so, you must include a comment that explains why.
 
-
 ## Coding Style Guidelines
 Our code base is formatted according to the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
 
@@ -61,7 +60,6 @@ The Telemetry SDK comes with tests in:.
 
 `integration_test`
 `telemetry-core/src/test`
-`telemetry/src/test`
 `telemetry-http-okhttp/src/test`
 
 You can run all of these tests, and verify that your code is formatted correctly by running

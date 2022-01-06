@@ -1,15 +1,15 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry.examples;
 
 import com.newrelic.telemetry.Attributes;
-import com.newrelic.telemetry.SimpleSpanBatchSender;
+import com.newrelic.telemetry.OkHttpPoster;
+import com.newrelic.telemetry.SpanBatchSenderFactory;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,11 +21,11 @@ import org.slf4j.LoggerFactory;
 /**
  * This is an example of sending a batch of Spans to New Relic.
  *
- * <p>A SpanBatchSender is created with the Insights insert key and the reference http
- * implementation from OkHttp. An example batch of 4 spans (apples, oranges, beer, wine) is created
- * and then sent via sender.sendBatch().
+ * <p>A SpanBatchSender is created with the License key and the reference http implementation from
+ * OkHttp. An example batch of 4 spans (apples, oranges, beer, wine) is created and then sent via
+ * sender.sendBatch().
  *
- * <p>To run this example, pass the insights api key as a commandline argument.
+ * <p>To run this example, pass the License Key as a command line argument.
  */
 public class SpanExample {
   private static final Logger logger = LoggerFactory.getLogger(SpanExample.class);
@@ -36,12 +36,15 @@ public class SpanExample {
 
   public static void main(String[] args) throws Exception {
     logger.info("Starting the SpanExample");
-    String insightsInsertKey = args[0];
+    String licenseKey = args[0];
 
     SpanBatchSender sender =
-        SimpleSpanBatchSender.builder(insightsInsertKey, Duration.ofSeconds(5))
-            .enableAuditLogging()
-            .build();
+        SpanBatchSender.create(
+            SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new)
+                .configureWith(licenseKey)
+                .useLicenseKey(true)
+                .auditLoggingEnabled(true)
+                .build());
 
     List<Span> spans = new ArrayList<>();
     String traceId = UUID.randomUUID().toString();

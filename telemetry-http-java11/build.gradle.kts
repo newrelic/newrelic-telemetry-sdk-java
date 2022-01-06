@@ -1,7 +1,5 @@
-private object Versions {
-    const val junit = "5.3.1"
-    const val jsonassert = "1.5.0"
-}
+val junitVersion: String by project
+val jsonassertVersion: String by project
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -9,9 +7,9 @@ configure<JavaPluginConvention> {
 }
 
 dependencies {
-    "api"(project(":telemetry-core"))
+    api(project(":telemetry-core"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.junit}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.junit}")
-    testImplementation("org.skyscreamer:jsonassert:${Versions.jsonassert}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation("org.skyscreamer:jsonassert:${jsonassertVersion}")
 }

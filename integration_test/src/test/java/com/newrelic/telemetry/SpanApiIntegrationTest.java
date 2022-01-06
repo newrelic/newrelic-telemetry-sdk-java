@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 New Relic Corporation. All rights reserved.
+ * Copyright 2020 New Relic Corporation. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.newrelic.telemetry;
@@ -15,7 +15,8 @@ import com.google.common.net.MediaType;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +41,15 @@ class SpanApiIntegrationTest {
   private static final int SERVICE_PORT = 1080 + new Random().nextInt(900);
   private static String containerIpAddress;
   private static MockServerClient mockServerClient;
-  private static final GenericContainer container =
-      new GenericContainer("jamesdbloom/mockserver:mockserver-5.5.1")
+  private static final GenericContainer<?> container =
+      new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
+          .withLogConsumer(outputFrame -> System.out.print(outputFrame.getUtf8String()))
           .withExposedPorts(SERVICE_PORT);
+  private static URL endpointUrl;
   private SpanBatchSender spanBatchSender;
 
   @BeforeAll
-  static void beforeClass() {
+  static void beforeClass() throws MalformedURLException {
     container.setPortBindings(singletonList(SERVICE_PORT + ":1080"));
     container.setWaitStrategy(new WaitAllStrategy());
     container.setStartupCheckStrategy(
@@ -54,19 +57,23 @@ class SpanApiIntegrationTest {
     container.start();
     containerIpAddress = container.getContainerIpAddress();
     mockServerClient = new MockServerClient(containerIpAddress, SERVICE_PORT);
+    endpointUrl = new URL("http://" + containerIpAddress + ":" + SERVICE_PORT + "/trace/v1");
   }
 
   @BeforeEach
   void setUp() throws Exception {
     mockServerClient.reset();
-    spanBatchSender =
-        SpanBatchSender.builder()
-            .apiKey("fakeKey")
+    SpanBatchSenderFactory factory =
+        SpanBatchSenderFactory.fromHttpImplementation(OkHttpPoster::new);
+    SenderConfiguration config =
+        factory
+            .configureWith("fakeKey")
             .httpPoster(new OkHttpPoster(Duration.ofMillis(1500)))
-            .uriOverride(URI.create("http://" + containerIpAddress + ":" + SERVICE_PORT))
-            .enableAuditLogging()
-            .secondaryUserAgent("myTestApp", null)
+            .endpoint(endpointUrl)
+            .auditLoggingEnabled(true)
+            .secondaryUserAgent("myTestApp")
             .build();
+    spanBatchSender = SpanBatchSender.create(config);
   }
 
   @Test
@@ -100,9 +107,12 @@ class SpanApiIntegrationTest {
                     json(
                         new SpanPayload[] {expectedPayload},
                         MediaType.JSON_UTF_8,
-                        MatchType.ONLY_MATCHING_FIELDS))
+                        MatchType.STRICT))
                 .withHeader("User-Agent", "NewRelic-Java-TelemetrySDK/.* myTestApp")
                 .withHeader("Content-Type", "application/json; charset=utf-8")
+                .withHeader(
+                    "X-Request-Id",
+                    "^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$")
                 .withHeader("Content-Length", ".*"))
         .respond(new HttpResponse().withStatusCode(202));
 
@@ -138,6 +148,14 @@ class SpanApiIntegrationTest {
     public SpanPayload(ImmutableMap<String, Object> of, List<Map<String, Object>> singletonList) {
       common = of;
       spans = singletonList;
+    }
+
+    public Map<String, Object> getCommon() {
+      return common;
+    }
+
+    public List<Map<String, Object>> getSpans() {
+      return spans;
     }
   }
 }
