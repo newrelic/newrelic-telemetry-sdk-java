@@ -25,7 +25,7 @@ For the most recently published version, see [Releases](https://github.com/newre
 
 ## Installation
 
-In order to send metrics or spans to New Relic, you will need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#license-key) for the account to which you want to send data. 
+In order to send metrics or spans to New Relic, you will need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#ingest-license-key) for the account to which you want to send data. 
 
 Maven dependencies:
 
@@ -69,8 +69,8 @@ SDK to product additional logging at `DEBUG` level. This logging includes the de
 *WARNING*: If you enable audit logging, all the data in your spans and metrics will be sent to your logging system. It is recommended that you only enable
 audit logging when absolutely necessary.
 
-#### Use License Key
-The various builders for the Telemetry SDK components include an option to `useLicenseKey`. Enabling this option will cause the SDK to inform the API endpoints the key you provided is a New Relic License Key.
+#### Use license key
+The various builders for the Telemetry SDK components include an option to `useLicenseKey`. Enabling this option will cause the SDK to inform the API endpoints the key you provided is a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#ingest-license-key).
 
 ### For developers: 
 #### Requirements
@@ -126,7 +126,7 @@ This is the core module for sending dimensional metrics and spans to New Relic. 
 
 `com.newrelic.telemetry:telemetry-core`
 
-In order to send metrics and spans to New Relic, you will also need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key) for the account to which you want to send data. 
+In order to send metrics and spans to New Relic, you will also need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#ingest-license-key) for the account to which you want to send data. 
 
 This is an implementation of the required http client interface using Java 11 JDK classes as the underlying library.
 The `telemetry-http-java11` library is published under the maven coordinates:
