@@ -16,7 +16,7 @@ For the most recently published version, see [Releases](https://github.com/newre
 
 ## Get started
 
-In order to send metrics or spans to New Relic, you will need an [Insights Insert API Key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key).
+In order to send metrics or spans to New Relic, you will need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#license-key) for the account to which you want to send data. 
 
 Maven dependencies:
 
@@ -111,9 +111,7 @@ This is the core module for sending dimensional metrics and spans to New Relic. 
 
 `com.newrelic.telemetry:telemetry-core`
 
-In order to send metrics and spans to New Relic, you will also need an Insights Insert API Key. 
-Please see [New Relic Api Keys](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key)
-for more information.
+In order to send metrics and spans to New Relic, you will also need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#user-api-key) for the account to which you want to send data. 
 
 #### `telemetry`
 This module contains code for using all New Relic telemetry modules, gathered in one place, as well as what we 
