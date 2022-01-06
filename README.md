@@ -128,6 +128,7 @@ This is the core module for sending dimensional metrics and spans to New Relic. 
 
 In order to send metrics and spans to New Relic, you will also need a New Relic [license key](https://docs.newrelic.com/docs/apis/getting-started/intro-apis/understand-new-relic-api-keys#ingest-license-key) for the account to which you want to send data. 
 
+#### `telemetry-http-java11`
 This is an implementation of the required http client interface using Java 11 JDK classes as the underlying library.
 The `telemetry-http-java11` library is published under the maven coordinates:
 
