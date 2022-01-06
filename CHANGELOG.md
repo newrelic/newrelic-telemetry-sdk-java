@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.13.0] - TBD 
+## [0.13.0] 
 - EU Endpoint Support added by [updating the SenderConfigurationBuilder API](https://github.com/newrelic/newrelic-telemetry-sdk-java/pull/276). 
 - Includes endpoints that send Metric, Event, Log, and Span data to New Relic One.
 - Added warnings to let users know if data exceeds some Ingest API limits. 
