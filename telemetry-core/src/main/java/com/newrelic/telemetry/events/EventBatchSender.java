@@ -17,6 +17,7 @@ import com.newrelic.telemetry.transport.BatchDataSender;
 import com.newrelic.telemetry.util.Utils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +57,31 @@ public class EventBatchSender {
         "Sending an event batch (number of events: {}) to the New Relic event ingest endpoint)",
         batch.size());
     String json = marshaller.toJson(batch);
-
     return sender.send(json, batch);
+  }
+
+  /**
+   * Send batches of events to New Relic.
+   *
+   * @param eventBatches An ArrayList where each element is an EventBatch. Each EventBatch will be
+   *     sent to New Relic one by one. Each batch will be drained of accumulated events as a part of
+   *     this process.
+   * @return The response from the ingest API.
+   * @throws ResponseException In cases where the batch is unable to be successfully sent, one of
+   *     the subclasses of {@link ResponseException} will be thrown. See the documentation on that
+   *     hierarchy for details on the recommended ways to respond to those exceptions.
+   */
+  public Response sendBatch(ArrayList<EventBatch> eventBatches) throws ResponseException {
+    Response response = new Response(200, "success", "sent data");
+    for (EventBatch batch : eventBatches) {
+      response = sendBatch(batch);
+
+      // If there is an issue with a batch, stop sending batches
+      if ((response.getStatusCode() != 200)) {
+        return response;
+      }
+    }
+    return response;
   }
 
   /**

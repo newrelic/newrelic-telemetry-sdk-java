@@ -19,10 +19,7 @@ import com.newrelic.telemetry.transport.BatchDataSender;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -45,7 +42,10 @@ class MetricBatchSenderTest {
 
     MetricBatchSender testClass = new MetricBatchSender(marshaller, sender);
 
-    Response result = testClass.sendBatch(batch);
+    ArrayList<MetricBatch> testMetricBatch = new ArrayList<MetricBatch>();
+    testMetricBatch.add(batch);
+
+    Response result = testClass.sendBatch(testMetricBatch);
     assertEquals(response, result);
   }
 
@@ -53,7 +53,11 @@ class MetricBatchSenderTest {
   void testEmptyBatch() throws Exception {
     MetricBatchSender testClass = new MetricBatchSender(null, null);
     MetricBatch batch = new MetricBatch(Collections.emptyList(), new Attributes());
-    Response response = testClass.sendBatch(batch);
+
+    ArrayList<MetricBatch> testMetricBatch = new ArrayList<MetricBatch>();
+    testMetricBatch.add(batch);
+
+    Response response = testClass.sendBatch(testMetricBatch);
     assertEquals(202, response.getStatusCode());
   }
 
@@ -81,7 +85,11 @@ class MetricBatchSenderTest {
 
     MetricBatchSender metricBatchSender = MetricBatchSender.create(posterSupplier, baseConfig);
 
-    Response result = metricBatchSender.sendBatch(batch);
+    /* New Code */
+    ArrayList<MetricBatch> testMetricBatch = new ArrayList<MetricBatch>();
+    testMetricBatch.add(batch);
+
+    Response result = metricBatchSender.sendBatch(testMetricBatch);
     assertEquals(expected, result);
     assertTrue(((String) headersCaptor.getValue().get("User-Agent")).endsWith(" second"));
   }

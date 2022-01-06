@@ -7,6 +7,7 @@ package com.newrelic.telemetry.metrics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.newrelic.telemetry.Attributes;
+import java.util.ArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -64,9 +65,9 @@ class MetricBufferTest {
     metricBuffer.addMetric(new Summary("bar", 3, 44d, 22d, 99d, 0, 10, commonAttributes));
     metricBuffer.addMetric(new Count("baz", 44f, 0, 10, commonAttributes));
 
-    MetricBatch batch = metricBuffer.createBatch();
+    ArrayList<MetricBatch> batches = metricBuffer.createBatch();
 
-    assertEquals(commonAttributes, batch.getCommonAttributes());
+    assertEquals(commonAttributes, batches.get(0).getCommonAttributes());
   }
 
   @Test
@@ -87,5 +88,107 @@ class MetricBufferTest {
             .instrumentationProvider(provider)
             .build();
     assertEquals(expectedAttributes, buffer.getCommonAttributes());
+  }
+
+  @Test
+  @DisplayName("Check that one batch is created")
+  void testCreateOneBatch() {
+
+    long startTimeMillis = 300;
+    long currentTimeMillis = 350;
+    double testDouble = 60.3;
+
+    MetricBuffer testMetricBuffer = new MetricBuffer(new Attributes());
+
+    Attributes testAttributes = new Attributes();
+    testAttributes.put("item", "Apple");
+    testAttributes.put("location", "downtown");
+
+    Count testCount =
+        new Count("TestEvent", testDouble, startTimeMillis, currentTimeMillis, testAttributes);
+    testMetricBuffer.addMetric(testCount);
+
+    ArrayList<MetricBatch> testBatchesList = testMetricBuffer.createBatch();
+    assertEquals(1, testBatchesList.size());
+  }
+
+  @Test
+  @DisplayName("Multiple Metric Batches Not Enabled: Check if a single batch is created")
+  void testCreateSingleBatchWithMultipleNotEnabled() {
+    /**
+     * The uncompressed payload size for this example is 268000070 bytes. If splitOnSizeLimit =
+     * true, then 2 batches should be created. This is because the maximum uncompressed payload size
+     * for a batch is 180000000 bytes. However, since splitOnSizeLimit = false (by default), only 1
+     * batch should be created.
+     */
+    long startTimeMillis = 300;
+    long currentTimeMillis = 350;
+    double testDouble = 60.3;
+
+    Attributes testAttributes = new Attributes();
+    testAttributes.put("item", "Apple");
+    testAttributes.put("location", "downtown");
+
+    MetricBuffer testMetricBuffer = new MetricBuffer(new Attributes());
+
+    for (int i = 0; i < 1500000; i++) {
+      Count testCount =
+          new Count("TestEvent", testDouble, startTimeMillis, currentTimeMillis, testAttributes);
+      testMetricBuffer.addMetric(testCount);
+    }
+
+    ArrayList<MetricBatch> testEventBatches = testMetricBuffer.createBatch();
+    assertEquals(1, testEventBatches.size());
+  }
+
+  @Test
+  @DisplayName("Multiple Metric Batches Enabled: Check if a single batch is created")
+  void testCreateOneBatchWithMultipleEnabled() {
+
+    long startTimeMillis = 300;
+    long currentTimeMillis = 350;
+    double testDouble = 60.3;
+
+    MetricBuffer testMetricBuffer = new MetricBuffer(new Attributes(), true);
+
+    Attributes testAttributes = new Attributes();
+    testAttributes.put("item", "Apple");
+    testAttributes.put("location", "downtown");
+
+    Count testCount =
+        new Count("TestEvent", testDouble, startTimeMillis, currentTimeMillis, testAttributes);
+    testMetricBuffer.addMetric(testCount);
+
+    ArrayList<MetricBatch> testBatchesList = testMetricBuffer.createBatch();
+    assertEquals(1, testBatchesList.size());
+  }
+
+  @Test
+  @DisplayName("Multiple Metric Batches Enabled: Check that multiple batches are created")
+  void testCreateMultipleBatchesWithMultipleEnabled() {
+
+    /**
+     * The uncompressed payload size for this example is 268000070 bytes (from the .createBatch()
+     * method). Since the maximum uncompressed payload size for a batch is 180000000 bytes, 2
+     * batches should be created.
+     */
+    long startTimeMillis = 300;
+    long currentTimeMillis = 350;
+    double testDouble = 60.3;
+
+    Attributes testAttributes = new Attributes();
+    testAttributes.put("item", "Apple");
+    testAttributes.put("location", "downtown");
+
+    MetricBuffer testMetricBuffer = new MetricBuffer(new Attributes(), true);
+
+    for (int i = 0; i < 1500000; i++) {
+      Count testCount =
+          new Count("TestEvent", testDouble, startTimeMillis, currentTimeMillis, testAttributes);
+      testMetricBuffer.addMetric(testCount);
+    }
+
+    ArrayList<MetricBatch> testBatchesList = testMetricBuffer.createBatch();
+    assertEquals(2, testBatchesList.size());
   }
 }

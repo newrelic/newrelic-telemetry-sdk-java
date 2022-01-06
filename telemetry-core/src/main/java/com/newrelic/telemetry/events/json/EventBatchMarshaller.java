@@ -46,7 +46,7 @@ public class EventBatchMarshaller {
     return builder.toString();
   }
 
-  static String mapToJson(Event event) {
+  public static String mapToJson(Event event) {
     try {
       StringWriter out = new StringWriter();
       JsonWriter jsonWriter = new JsonWriter(out);

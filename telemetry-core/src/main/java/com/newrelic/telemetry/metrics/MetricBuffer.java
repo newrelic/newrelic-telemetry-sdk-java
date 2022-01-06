@@ -5,12 +5,12 @@
 package com.newrelic.telemetry.metrics;
 
 import com.newrelic.telemetry.Attributes;
+import com.newrelic.telemetry.json.AttributesJson;
+import com.newrelic.telemetry.metrics.json.MetricToJsonStatic;
 import com.newrelic.telemetry.util.IngestWarnings;
 import com.newrelic.telemetry.util.Utils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Queue;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +28,8 @@ public final class MetricBuffer {
   private final Queue<Metric> metrics = new ConcurrentLinkedQueue<>();
   private final IngestWarnings ingestWarnings = new IngestWarnings();
   private final Attributes commonAttributes;
+  private final boolean splitBatch;
+  private static final int MAX_UNCOMPRESSED_BATCH_SIZE = 180000000;
 
   /**
    * Create a new buffer with the provided common set of attributes.
@@ -36,7 +38,19 @@ public final class MetricBuffer {
    *     {@link Metric} in this buffer.
    */
   public MetricBuffer(Attributes commonAttributes) {
+    this(commonAttributes, false);
+  }
+
+  /**
+   * Create a new buffer with the provided common set of attributes.
+   *
+   * @param commonAttributes These attributes will be appended (by the New Relic backend) to every
+   *     {@link Metric} in this buffer.
+   * @param splitOnSizeLimit Flag to indicate whether to split batch when size limit is hit.
+   */
+  public MetricBuffer(Attributes commonAttributes, boolean splitOnSizeLimit) {
     this.commonAttributes = Utils.verifyNonNull(commonAttributes);
+    this.splitBatch = splitOnSizeLimit;
   }
 
   /**
@@ -80,6 +94,7 @@ public final class MetricBuffer {
   public int size() {
     return metrics.size();
   }
+
   /**
    * Creates a new {@link MetricBatch} from the contents of this buffer, then clears the contents of
    * this buffer.
@@ -90,7 +105,7 @@ public final class MetricBuffer {
    *
    * @return A new {@link MetricBatch} with an immutable collection of {@link Metric Metrics}.
    */
-  public MetricBatch createBatch() {
+  public MetricBatch createSingleBatch() {
     logger.debug("Creating metric batch.");
     Collection<Metric> metrics = new ArrayList<>(this.metrics.size());
 
@@ -101,6 +116,106 @@ public final class MetricBuffer {
     }
 
     return new MetricBatch(metrics, this.commonAttributes);
+  }
+
+  /**
+   * Creates an ArrayList of MetricBatch objects from the contents of this buffer, then clears the
+   * contents of this buffer.
+   *
+   * <p>{@link Metric Metrics} are added to a MetricBatch. When each metric is added, the size (in
+   * bytes) of the metric is calculated. When the total size of the metrics in the batch exceeds the
+   * MAX_UNCOMPRESSED_BATCH_SIZE, the current batch is sent to New Relic, and a new MetricBatch is
+   * created. This process repeats until all metrics are removed from the queue.
+   *
+   * @return An ArrayList of MetricBatch objects. Each {@link MetricBatch} in the ArrayList contains
+   *     an immutable collection of {@link Metric Metrics}.
+   */
+  public ArrayList<MetricBatch> createBatches() {
+    logger.debug("Creating metric batch.");
+    ArrayList<MetricBatch> metricBatches = new ArrayList<>();
+    Collection<Metric> metricsInBatch = new ArrayList<>();
+
+    int currentUncompressedBatchSize = 0;
+
+    // Construct JSON for common attributes and add to uncompressed batch size
+
+    String commonJson = generateCommonJSON();
+
+    currentUncompressedBatchSize += commonJson.getBytes(StandardCharsets.UTF_8).length;
+
+    // JSON generation + calculating payload size
+
+    Metric curMetric;
+    while ((curMetric = this.metrics.poll()) != null) {
+
+      if (currentUncompressedBatchSize > MAX_UNCOMPRESSED_BATCH_SIZE) {
+        MetricBatch m = new MetricBatch(metricsInBatch, this.commonAttributes);
+        metricBatches.add(m);
+        metricsInBatch = new ArrayList<>();
+        currentUncompressedBatchSize = 0;
+      }
+
+      if (curMetric instanceof Count) {
+        Count curMetricToCount = (Count) curMetric;
+        String countJson = MetricToJsonStatic.writeCountJson(curMetricToCount);
+        currentUncompressedBatchSize += countJson.getBytes(StandardCharsets.UTF_8).length;
+      }
+
+      if (curMetric instanceof Gauge) {
+        Gauge curMetricToGauge = (Gauge) curMetric;
+        String gaugeJson = MetricToJsonStatic.writeGaugeJson(curMetricToGauge);
+        currentUncompressedBatchSize += gaugeJson.getBytes(StandardCharsets.UTF_8).length;
+      }
+
+      if (curMetric instanceof Summary) {
+        Summary curMetricToSummary = (Summary) curMetric;
+        String summaryJson = MetricToJsonStatic.writeSummaryJson(curMetricToSummary);
+        currentUncompressedBatchSize += summaryJson.getBytes(StandardCharsets.UTF_8).length;
+      }
+
+      metricsInBatch.add(curMetric);
+    }
+    metricBatches.add(new MetricBatch(metricsInBatch, this.commonAttributes));
+    return metricBatches;
+  }
+
+  /**
+   * Generates a JSON String that contains all of the common attribute information. This JSON string
+   * is used in a MetricBatch of any size.
+   */
+  public String generateCommonJSON() {
+
+    AttributesJson attrsJson = new AttributesJson();
+    StringBuilder commonAttributeSb = new StringBuilder();
+    commonAttributeSb
+        .append("\"common\":")
+        .append("{")
+        .append("\"attributes\":")
+        .append(attrsJson.toJson(commonAttributes.asMap()))
+        .append("}");
+    String commonAttrString = commonAttributeSb.toString();
+    return commonAttrString;
+  }
+
+  /**
+   * Creates an ArrayList of MetricBatch objects by calling {@link #createSingleBatch()} or {@link
+   * #createBatches()}. This depends on if the user wants to split batches on size limit or not
+   * (splitBatch). If splitBatch = false, {@link #createSingleBatch()} is called. If splitBatch =
+   * true, {@link #createBatches()} is called.
+   *
+   * @return An ArrayList of MetricBatch objects. Each {@link MetricBatch} in the ArrayList contains
+   *     an immutable collection of {@link Metric Metrics}.
+   */
+  public ArrayList<MetricBatch> createBatch() {
+    ArrayList<MetricBatch> batches = new ArrayList<MetricBatch>();
+    if (splitBatch == false) {
+      MetricBatch singleEventBatch = createSingleBatch();
+      batches.add(singleEventBatch);
+      return batches;
+    } else {
+      batches = createBatches();
+      return batches;
+    }
   }
 
   Queue<Metric> getMetrics() {

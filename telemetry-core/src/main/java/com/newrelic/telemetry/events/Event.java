@@ -7,12 +7,15 @@ package com.newrelic.telemetry.events;
 
 import com.newrelic.telemetry.Attributes;
 import com.newrelic.telemetry.Telemetry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An Event is ad hoc set of key-value pairs with an associated timestamp, recorded in the New Relic
  * Metric API.
  */
 public final class Event implements Telemetry {
+  private static final Logger logger = LoggerFactory.getLogger(Event.class);
   private final String eventType;
   private final Attributes attributes;
   private final long timestamp; // in epoch ms
