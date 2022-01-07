@@ -9,7 +9,6 @@ import com.newrelic.telemetry.util.IngestWarnings;
 import com.newrelic.telemetry.util.Utils;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import org.slf4j.LoggerFactory;
@@ -40,36 +39,28 @@ public final class MetricBuffer {
   }
 
   /**
-   * Append a {@link Count} to this buffer, to be sent in the next {@link MetricBatch}.
+   * Append a {@link Metric} to this buffer, to be sent in the next {@link MetricBatch}.
    *
-   * @param countMetric The new {@link Count} instance to be sent.
+   * @param metric The new {@link Metric} instance to be sent.
    */
-  public void addMetric(Count countMetric) {
-    Map<String, Object> attributes = countMetric.getAttributes();
-    ingestWarnings.raiseIngestWarnings(attributes, countMetric);
-    metrics.add(countMetric);
+  public void addMetric(Metric metric) {
+    raiseIngestWarnings(metric);
+    metrics.add(metric);
   }
 
   /**
-   * Append a {@link Gauge} to this buffer, to be sent in the next {@link MetricBatch}.
+   * Add IngestWarnings for concrete Metric implementations.
    *
-   * @param gaugeMetric The new {@link Gauge} instance to be sent.
+   * @param metric Metric instance to validate
    */
-  public void addMetric(Gauge gaugeMetric) {
-    Map<String, Object> attributes = gaugeMetric.getAttributes();
-    ingestWarnings.raiseIngestWarnings(attributes, gaugeMetric);
-    metrics.add(gaugeMetric);
-  }
-
-  /**
-   * Append a {@link Summary} to this buffer, to be sent in the next {@link MetricBatch}.
-   *
-   * @param summaryMetric The new {@link Summary} instance to be sent.
-   */
-  public void addMetric(Summary summaryMetric) {
-    Map<String, Object> attributes = summaryMetric.getAttributes();
-    ingestWarnings.raiseIngestWarnings(attributes, summaryMetric);
-    metrics.add(summaryMetric);
+  private void raiseIngestWarnings(Metric metric) {
+    if (metric instanceof Count) {
+      ingestWarnings.raiseIngestWarnings(((Count) metric).getAttributes(), metric);
+    } else if (metric instanceof Gauge) {
+      ingestWarnings.raiseIngestWarnings(((Gauge) metric).getAttributes(), metric);
+    } else if (metric instanceof Summary) {
+      ingestWarnings.raiseIngestWarnings(((Summary) metric).getAttributes(), metric);
+    }
   }
 
   /**
