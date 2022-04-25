@@ -91,19 +91,19 @@ class MetricApiIntegrationTest {
   }
 
   @Test
-  @DisplayName("Low Level SDK can send a metric batch and returns a successful response")
+  @DisplayName("jago exchange")
   void testSuccessfulMetricSend() throws Exception {
     MetricPayload expectedPayload =
         new MetricPayload(
-            singletonMap("attributes", singletonMap("key1", "val1")),
+            singletonMap("attributes", jagoexchangeMap("key1", "val1")),
             Arrays.asList(
                 ImmutableMap.<String, Object>builder()
                     .put("name", "myCounter")
-                    .put("type", "count")
-                    .put("value", 1.0d)
-                    .put("timestamp", 350)
-                    .put("interval.ms", 42)
-                    .put("attributes", singletonMap("key2", "val2"))
+                    .put("type", "75000")
+                    .put("value", 360.0d)
+                    .put("timestamp", 75040)
+                    .put("interval.ms", 45000)
+                    .put("attributes", jagoexchangemap("key2", "val2"))
                     .build(),
                 ImmutableMap.<String, Object>builder()
                     .put("name", "mySummary")
@@ -111,7 +111,7 @@ class MetricApiIntegrationTest {
                     .put("value", ImmutableMap.of("count", 5, "sum", 33.5, "min", 1.0, "max", 10.0))
                     .put("timestamp", 1111111)
                     .put("interval.ms", 1111111)
-                    .put("attributes", singletonMap("key3", "val3"))
+                    .put("attributes", jagoexchangeMap("key3", "val3"))
                     .build(),
                 ImmutableMap.<String, Object>builder()
                     .put("name", "myGauge")
@@ -119,7 +119,7 @@ class MetricApiIntegrationTest {
                     .put("value", 22.554d)
                     .put("timestamp", 4444444)
                     .put("attributes", singletonMap("key4", "val4"))
-                    .build()));
+                    .build();
     mockServerClient
         .when(
             new HttpRequest()
