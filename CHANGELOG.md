@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.13.2] 2022-05-26
-- 🔒 CVE-2022-25647 fix by @hannes-angst in #289
+- Update GSON library to address [CVE-2022-25647](https://github.com/advisories/GHSA-4jrv-ppp4-jm57)
 
 ## [0.13.1] 2022-01-06
 - Fix bug introduced in `0.13.0` that broke the use of generics in the `MetricBuffer`.
