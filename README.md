@@ -33,27 +33,27 @@ Maven dependencies:
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry-core</artifactId>
-      <version>0.13.1</version>
+      <version>0.13.2</version>
     </dependency>
     <dependency>
       <groupId>com.newrelic.telemetry</groupId>
       <artifactId>telemetry-http-okhttp</artifactId>
-      <version>0.13.1</version>
+      <version>0.13.2</version>
     </dependency>
 ```
 
 Gradle dependencies: 
 
 ```
-implementation("com.newrelic.telemetry:telemetry-core:0.13.1")
-implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.13.1")
+implementation("com.newrelic.telemetry:telemetry-core:0.13.2")
+implementation("com.newrelic.telemetry:telemetry-http-okhttp:0.13.2")
 ```
 
 Take a look at the example code in the [telemetry_examples](telemetry_examples) module. 
 We recommend looking at the [TelemetryClientExample](telemetry_examples/src/main/java/com/newrelic/telemetry/examples/TelemetryClientExample.java)
 first.
 
-Note: If you do not want to include `okhttp` as a transitive depenedency, you will need to provide a custom implementation of the 
+Note: If you do not want to include `okhttp` as a transitive dependency, you will need to provide a custom implementation of the
 `com.newrelic.telemetry.http.HttpPoster` interface, rather than using the `com.newrelic.telemetry:telemetry-http-okhttp` library.
 
 ## Usage
@@ -172,43 +172,6 @@ If you believe you have found a security vulnerability in this project or any of
 If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
 
 To [all contributors](https://github.com/newrelic/newrelic-telemetry-sdk-java/graphs/contributors), we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to [New Relic Telemetry SDK (Java)](https://opensource.newrelic.com/projects/newrelic/newrelic-telemetry-sdk-java).
-
-### Release Process
-
-#### Publish to Staging Repo
-
-To stage the release:
- 
- 1. Create a branch titled <version>_release_branch (e.g. 0.6.0_release_branch) 
- 2. Submit and merge a PR to update the [build.gradle.kts](build.gradle.kts) file with the version to be released (e.g. `version := "0.6.0"`).
- 3. From Github releases, create a release and set the tag like `v0.6.0` and set the branch to the release branch.  You'll fill in the  release notes after release.
- 4. Publish the release to Sonatype and this will run the publish release job.
- 
-Results of the job [can be viewed here](https://github.com/newrelic/newrelic-telemetry-sdk-java/actions?query=workflow%3A%22publish+release+version+explicitly%22).
-
-![publish release version explicitly](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/publish%20release%20version%20explicitly/badge.svg) 
-
-After the release job has run successfully it will publish the new artifact to a staging repository on Sonatype at: https://oss.sonatype.org/#stagingRepositories.
-
-#### Manually Release Staging Repo
-
-1. Find the staging repo on Sonatype, which should be named similar to `comnewrelic-nnnn`, and validate that the contents and version look correct.
-2. If the contents look correct, select the staging repo and choose `close`, leaving a comment such as `releasing 0.6.0`.
-3. When the staging repo is finished closing, select the staging repo and choose `release`, keeping the `Automatically Drop` checkbox checked, and leave a comment such as `releasing 0.6.0`.
-4. Verify that the artifacts were published on Maven Central at: https://repo1.maven.org/maven2/com/newrelic/telemetry/telemetry 
-
-#### Post Release
-
-1. Submit and merge a PR with the following:
-* Update the [build.gradle.kts](build.gradle.kts) file with to a version of a potential future release (e.g. `version  := "0.7.0"`).
-* Update the [CHANGELOG](CHANGELOG.md) with details of the new release:
-  ```markdown
-  ## [0.6.0]
-  - Miscellaneous bug fixes and tweaks
-  ```
-* Update the [Usage](#usage) example in the [README](README.md) with the newly released version (e.g. `implementation("com.newrelic.telemetry:telemetry-core:0.6.0")`).
-
-2. Update the release notes with the changelog details.
  
 [javadoc-image]: https://www.javadoc.io/badge/com.newrelic.telemetry/telemetry.svg
 [javadoc-url]: https://www.javadoc.io/doc/com.newrelic.telemetry/telemetry
