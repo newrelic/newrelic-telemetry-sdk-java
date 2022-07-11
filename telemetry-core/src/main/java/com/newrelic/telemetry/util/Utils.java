@@ -4,6 +4,9 @@
  */
 package com.newrelic.telemetry.util;
 
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+
 /** A class with helper functions */
 public class Utils {
 
@@ -24,5 +27,9 @@ public class Utils {
 
   public static <E> E verifyNonNull(E input) throws IllegalArgumentException {
     return verifyNonNull(input, "input cannot be null");
+  }
+
+  public static UUID generateUUID() {
+    return new UUID(ThreadLocalRandom.current().nextLong(), ThreadLocalRandom.current().nextLong());
   }
 }
