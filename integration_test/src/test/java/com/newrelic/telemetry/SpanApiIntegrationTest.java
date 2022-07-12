@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockserver.model.JsonBody.json;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.net.MediaType;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
@@ -30,6 +29,7 @@ import org.mockserver.client.MockServerClient;
 import org.mockserver.matchers.MatchType;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
+import org.mockserver.model.MediaType;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
@@ -42,7 +42,7 @@ class SpanApiIntegrationTest {
   private static String containerIpAddress;
   private static MockServerClient mockServerClient;
   private static final GenericContainer<?> container =
-      new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.5.1")
+      new GenericContainer<>("jamesdbloom/mockserver:mockserver-5.13.2")
           .withLogConsumer(outputFrame -> System.out.print(outputFrame.getUtf8String()))
           .withExposedPorts(SERVICE_PORT);
   private static URL endpointUrl;
@@ -91,7 +91,7 @@ class SpanApiIntegrationTest {
                         "attributes",
                         ImmutableMap.of(
                             "duration.ms",
-                            60,
+                            60.0,
                             "service.name",
                             "Span Test Service",
                             "name",
