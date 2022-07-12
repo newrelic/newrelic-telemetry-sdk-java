@@ -32,6 +32,7 @@ import com.newrelic.telemetry.metrics.MetricBatchSender;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+import com.newrelic.telemetry.util.Utils;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -352,7 +352,7 @@ class TelemetryClientTest {
 
   private static Metric makeMetric() {
     return new Count(
-        UUID.randomUUID().toString(),
+        Utils.generateUUID().toString(),
         99,
         System.currentTimeMillis() - 100,
         System.currentTimeMillis(),

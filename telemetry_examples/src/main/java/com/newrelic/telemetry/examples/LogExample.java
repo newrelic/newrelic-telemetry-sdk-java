@@ -11,11 +11,11 @@ import com.newrelic.telemetry.logs.Log;
 import com.newrelic.telemetry.logs.LogBatch;
 import com.newrelic.telemetry.logs.LogBatchSender;
 import com.newrelic.telemetry.util.IngestWarnings;
+import com.newrelic.telemetry.util.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class LogExample {
     List<Log> logs = new ArrayList<>();
     logs.add(Log.builder().level("INFO").message("Start of process").build());
     for (String item : items) {
-      String logId = UUID.randomUUID().toString();
+      String logId = Utils.generateUUID().toString();
       Attributes attributes = new Attributes().put("id", logId).put("food", item);
       Log log =
           Log.builder().attributes(attributes).message("Processing " + item).level("DEBUG").build();

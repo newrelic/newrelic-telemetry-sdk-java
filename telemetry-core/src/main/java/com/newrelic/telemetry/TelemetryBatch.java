@@ -16,7 +16,7 @@ import java.util.UUID;
 /** Represents a collection of {@link Telemetry} instances and some common attributes */
 public abstract class TelemetryBatch<T extends Telemetry> {
 
-  private final UUID uuid = UUID.randomUUID();
+  private final UUID uuid = Utils.generateUUID();
   private Collection<T> telemetry;
 
   private Attributes commonAttributes;

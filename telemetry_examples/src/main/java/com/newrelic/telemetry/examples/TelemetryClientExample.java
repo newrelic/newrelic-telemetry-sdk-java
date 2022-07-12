@@ -20,10 +20,10 @@ import com.newrelic.telemetry.metrics.MetricBuffer;
 import com.newrelic.telemetry.metrics.Summary;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
+import com.newrelic.telemetry.util.Utils;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 /**
  * This example shows how to use the TelemetryClient to handle standard error conditions.
@@ -114,13 +114,13 @@ public class TelemetryClientExample {
 
   private static Span sendSampleSpan(TelemetryClient telemetryClient, Attributes commonAttributes) {
     Span sampleSpan =
-        Span.builder(UUID.randomUUID().toString())
+        Span.builder(Utils.generateUUID().toString())
             .timestamp(System.currentTimeMillis())
-            .traceId(UUID.randomUUID().toString())
+            .traceId(Utils.generateUUID().toString())
             .durationMs(150d)
             .name("testSpan")
             .build();
-    String traceId = UUID.randomUUID().toString();
+    String traceId = Utils.generateUUID().toString();
     SpanBatch spanBatch = new SpanBatch(singleton(sampleSpan), commonAttributes, traceId);
     telemetryClient.sendBatch(spanBatch);
     return sampleSpan;

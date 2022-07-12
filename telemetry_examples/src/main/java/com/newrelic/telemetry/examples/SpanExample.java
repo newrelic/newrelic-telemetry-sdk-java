@@ -10,10 +10,10 @@ import com.newrelic.telemetry.SpanBatchSenderFactory;
 import com.newrelic.telemetry.spans.Span;
 import com.newrelic.telemetry.spans.SpanBatch;
 import com.newrelic.telemetry.spans.SpanBatchSender;
+import com.newrelic.telemetry.util.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +47,13 @@ public class SpanExample {
                 .build());
 
     List<Span> spans = new ArrayList<>();
-    String traceId = UUID.randomUUID().toString();
+    String traceId = Utils.generateUUID().toString();
     long spanStartTime = System.currentTimeMillis();
     String parentId = null;
     for (String item : items) {
       int durationMs = random.nextInt(1000);
 
-      String spanId = UUID.randomUUID().toString();
+      String spanId = Utils.generateUUID().toString();
       spans.add(
           Span.builder(spanId)
               .traceId(traceId)
