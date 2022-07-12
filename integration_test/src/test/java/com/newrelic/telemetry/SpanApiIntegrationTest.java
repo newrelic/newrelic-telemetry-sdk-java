@@ -91,7 +91,7 @@ class SpanApiIntegrationTest {
                         "attributes",
                         ImmutableMap.of(
                             "duration.ms",
-                            60,
+                            60.0,
                             "service.name",
                             "Span Test Service",
                             "name",
