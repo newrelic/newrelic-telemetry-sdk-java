@@ -196,8 +196,8 @@ public class BatchDataSender {
     } catch (IOException e) {
       String message =
           String.format(
-              "IOException (message: %s) while trying to send data to New Relic. %s retry recommended",
-              e.getMessage(), batchType);
+              "IOException (message: %s, cause: %s) while trying to send data to New Relic. %s retry recommended",
+              e.getMessage(), e.getCause(), batchType);
       logger.warn(message);
       throw new RetryWithBackoffException(message, e);
     }
