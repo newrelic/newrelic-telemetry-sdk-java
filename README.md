@@ -75,7 +75,7 @@ The various builders for the Telemetry SDK components include an option to `useL
 ### For developers: 
 #### Requirements
 
-* Java 8 or greater
+* Java 11 or greater
 * For IDEA:
 * Docker & docker-compose must be installed for integration testing
 
@@ -93,7 +93,7 @@ For general querying information, see:
 CI builds are run on Github Actions: 
 ![build badge](https://github.com/newrelic/newrelic-telemetry-sdk-java/workflows/main%20build/badge.svg)
 
-The project uses gradle 6 for building, and the gradle wrapper is provided.
+The project uses Java 11 and gradle 6 for building, and the gradle wrapper is provided.
 
 To compile, run the tests and build the jars:
 
