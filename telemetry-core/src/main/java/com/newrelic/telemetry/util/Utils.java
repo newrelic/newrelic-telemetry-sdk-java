@@ -40,18 +40,16 @@ public class Utils {
 
     // Conform to the behavior of UUID.randomUUID()
     // version 4, variant 2: https://www.ietf.org/rfc/rfc4122.txt
-    randomBytes[6]  &= 0x0f;  /* clear version        */
-    randomBytes[6]  |= 0x40;  /* set to version 4     */
-    randomBytes[8]  &= 0x3f;  /* clear variant        */
-    randomBytes[8]  |= 0x80;  /* set to IETF variant  */
+    randomBytes[6] &= 0x0f; /* clear version        */
+    randomBytes[6] |= 0x40; /* set to version 4     */
+    randomBytes[8] &= 0x3f; /* clear variant        */
+    randomBytes[8] |= 0x80; /* set to IETF variant  */
 
     // UUID(byte[]) is private, so replicate the logic here to pack bytes into longs
     long msb = 0;
     long lsb = 0;
-    for (int i=0; i<8; i++)
-      msb = (msb << 8) | (randomBytes[i] & 0xff);
-    for (int i=8; i<16; i++)
-      lsb = (lsb << 8) | (randomBytes[i] & 0xff);
+    for (int i = 0; i < 8; i++) msb = (msb << 8) | (randomBytes[i] & 0xff);
+    for (int i = 8; i < 16; i++) lsb = (lsb << 8) | (randomBytes[i] & 0xff);
 
     return new UUID(msb, lsb);
   }
