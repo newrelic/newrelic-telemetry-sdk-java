@@ -204,9 +204,7 @@ public class BatchDataSender {
   }
 
   private List<String> findHeader(Map<String, List<String>> responseHeaders, String headerName) {
-    return responseHeaders
-        .keySet()
-        .stream()
+    return responseHeaders.keySet().stream()
         .filter(headerName::equalsIgnoreCase)
         .findAny()
         .map(responseHeaders::get)

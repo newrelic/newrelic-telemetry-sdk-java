@@ -43,9 +43,7 @@ public class AttributesJson {
   }
 
   private Map<String, Object> filterIllegalValues(Map<String, Object> attributes) {
-    return attributes
-        .entrySet()
-        .stream()
+    return attributes.entrySet().stream()
         .filter(entry -> entry.getValue() != null)
         .filter(
             entry ->
