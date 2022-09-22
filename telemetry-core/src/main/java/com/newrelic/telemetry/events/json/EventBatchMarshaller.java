@@ -36,9 +36,7 @@ public class EventBatchMarshaller {
     StringBuilder builder = new StringBuilder();
     builder.append("[");
     builder.append(
-        batch
-            .getTelemetry()
-            .stream()
+        batch.getTelemetry().stream()
             .map(decorator)
             .map(EventBatchMarshaller::mapToJson)
             .collect(Collectors.joining(",")));

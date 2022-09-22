@@ -30,8 +30,7 @@ public class MetricBatchJsonTelemetryBlockWriter {
 
     AtomicInteger retainedCount = new AtomicInteger();
     builder.append(
-        metrics
-            .stream()
+        metrics.stream()
             .filter(this::isValid)
             .map(this::toJsonString)
             .peek(x -> retainedCount.getAndIncrement())

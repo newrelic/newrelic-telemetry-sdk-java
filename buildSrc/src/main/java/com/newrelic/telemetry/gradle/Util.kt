@@ -13,15 +13,15 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.task
 
-fun Project.exampleClassTask(namespaceClassName: String) {
+fun Project.exampleClassTask(launcherClassName: String) {
     val apiKey = properties.get("apiKey")?.toString() ?: ""
     val sourceSets = extensions["sourceSets"] as? SourceSetContainer ?: return
 
-    task<JavaExec>(namespaceClassName.split(".").last()) {
+    task<JavaExec>(launcherClassName.split(".").last()) {
         group = "examples"
-        description = "Invokes $namespaceClassName#main"
+        description = "Invokes $launcherClassName#main"
         args = listOf(apiKey)
         classpath = sourceSets.getByName("main").runtimeClasspath
-        main = namespaceClassName
+        main = launcherClassName
     }.onlyIf { apiKey.isNotEmpty() }
 }

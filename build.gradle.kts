@@ -6,7 +6,7 @@ plugins {
     id("java-library")
     id("maven-publish")
     id("signing")
-    id("com.github.sherter.google-java-format") version "0.8"
+    id("com.github.sherter.google-java-format") version "0.9"
     id("org.ysb33r.java.modulehelper") version("0.9.0") apply false
     id("com.github.johnrengelman.shadow") version ("5.2.0") apply false
 }
