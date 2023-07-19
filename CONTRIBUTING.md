@@ -3,7 +3,7 @@ Thanks for your interest in contributing to the Telemetry SDK! We look forward t
 
 ## How to Contribute
 * Read this CONTRIBUTING file
-* Read our [Code of Conduct](CODE_OF_CONDUCT.md)
+* Read our [Code of Conduct](https://opensource.newrelic.com/code-of-conduct/)
 * Submit a [pull request](#pull-request-guidelines) or [issue](#filing-issues--bug-reports). For pull requests, please also:
     * Ensure the [test suite passes](#testing-guidelines).
     * Sign the [Contributor Licensing Agreement](#contributor-license-agreement-cla), if you haven't already done so. (You will be prompted if we don't have a signed CLA already recorded.)
