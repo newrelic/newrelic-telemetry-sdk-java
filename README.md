@@ -1,4 +1,4 @@
-[![Community Project header](https://github.com/newrelic/open-source-office/raw/master/examples/categories/images/Community_Project.png)](https://github.com/newrelic/open-source-office/blob/master/examples/categories/index.md#community-project)
+<a href="https://opensource.newrelic.com/oss-category/#community-project"><picture><source media="(prefers-color-scheme: dark)" srcset="https://github.com/newrelic/opensource-website/raw/main/src/images/categories/dark/Community_Project.png"><source media="(prefers-color-scheme: light)" srcset="https://github.com/newrelic/opensource-website/raw/main/src/images/categories/Community_Project.png"><img alt="New Relic Open Source community project banner." src="https://github.com/newrelic/opensource-website/raw/main/src/images/categories/Community_Project.png"></picture></a>
 
 # New Relic Java Telemetry SDK 
 The New Relic Java Telemetry SDK is an easy way to send data to New Relic.
@@ -156,6 +156,10 @@ is logged.
 
 The backoff strategy is not currently pluggable.  Please file an issue or submit a pull request 
 if you need greater control over this behavior.
+
+## Support
+
+New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub: [Java Agent Forum Topics](https://forum.newrelic.com/s/hubtopic/Topic__c/Default?c__categories=%5B%7B%22icon%22%3A%22standard%3Adefault%22%2C%22id%22%3A%22a6c8W000000EesiQAC%22%2C%22sObjectType%22%3A%22Category__c%22%2C%22title%22%3A%22Java%20Agent%22%2C%22titleFormatted%22%3A%22Java%20Agent%22%7D%5D).
 
 ## Contribute
 
