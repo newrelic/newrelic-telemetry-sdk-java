@@ -13,7 +13,11 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+          
       - name: Run Snyk To Check For Vulnerabilities
         uses: snyk/actions/gradle@master
         env:
