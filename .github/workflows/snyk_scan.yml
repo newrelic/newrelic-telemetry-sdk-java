@@ -4,7 +4,7 @@ name: Snyk Vulnerability Scan
 on:
   workflow_dispatch:
   schedule:
-  - cron: '00 15 * * 1'
+    - cron: '00 15 * * 1'
   push:
     branches:
       - main
@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # pin@v4
         with:
           ref: 'main'
-          
+
       - name: Run Snyk To Check For Vulnerabilities
-        uses: snyk/actions/gradle-jdk11@master
+        uses: snyk/actions/gradle-jdk11@8349f9043a8b7f0f3ee8885bf28f0b388d2446e8 # pin@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
