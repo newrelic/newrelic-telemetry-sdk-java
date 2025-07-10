@@ -47,4 +47,21 @@ class AttributesTest {
     assertTrue(copyOfA.asMap().containsKey("keyOnlyInCopy"));
     assertFalse(a.asMap().containsKey("keyOnlyInCopy"));
   }
+
+  @Test
+  void testContainsKey() {
+    Attributes a = new Attributes().put("foo", "bar");
+    assertTrue(a.containsKey("foo"));
+    assertFalse(a.containsKey("zzz"));
+  }
+
+  @Test
+  void testRemove() {
+    Attributes a = new Attributes().put("foo", "bar");
+    a.put("biz", "baz");
+    assertTrue(a.asMap().containsKey("foo"));
+
+    a.remove("foo");
+    assertFalse(a.asMap().containsKey("foo"));
+  }
 }
