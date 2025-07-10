@@ -86,6 +86,25 @@ public class Attributes {
   }
 
   /**
+   * Check if this Attributes instance contains the provided key
+   *
+   * @param key the key to check for
+   * @return true if the key exists
+   */
+  public boolean containsKey(String key) {
+    return rawAttributes.containsKey(key);
+  }
+
+  /**
+   * Remove the mapping for the supplied key if it exists
+   *
+   * @param key the key for the mapping to remove
+   */
+  public void remove(String key) {
+    rawAttributes.remove(key);
+  }
+
+  /**
    * Make a copy of these attributes.
    *
    * @return An unmodifiable copy of these attributes, as a Map.
