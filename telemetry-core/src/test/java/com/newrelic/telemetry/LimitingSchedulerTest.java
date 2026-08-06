@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,5 +98,137 @@ class LimitingSchedulerTest {
     verify(delegate).shutdown();
     testClass.shutdownNow();
     verify(delegate).shutdownNow();
+  }
+
+  @Test
+  void testBufferUsagePercent() throws Exception {
+    LimitingScheduler testClass = new LimitingScheduler(exec, 100);
+    assertEquals(0, testClass.getBufferUsagePercent());
+    assertEquals(100, testClass.getAvailableCapacity());
+
+    CountDownLatch latch = new CountDownLatch(1);
+    testClass.schedule(
+        50,
+        () -> {
+          try {
+            latch.await();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        });
+
+    // Wait a bit for the task to start
+    Thread.sleep(100);
+    assertEquals(50, testClass.getBufferUsagePercent());
+    assertEquals(50, testClass.getAvailableCapacity());
+
+    latch.countDown();
+    testClass.shutdown();
+    assertTrue(testClass.awaitTermination(5, SECONDS));
+  }
+
+  @Test
+  void testFlushConfiguration() throws Exception {
+    AtomicInteger flushCount = new AtomicInteger(0);
+    CountDownLatch flushLatch = new CountDownLatch(1);
+    LimitingScheduler testClass =
+        new LimitingScheduler(exec, 100, 50, 50); // 50% threshold, 50ms interval
+    testClass.setFlushCallback(
+        () -> {
+          flushCount.incrementAndGet();
+          flushLatch.countDown();
+        });
+
+    // Fill buffer to 60% (should trigger flush)
+    CountDownLatch taskLatch = new CountDownLatch(1);
+    testClass.schedule(
+        60,
+        () -> {
+          try {
+            taskLatch.await();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        });
+
+    // Wait for flush to be triggered
+    assertTrue(
+        flushLatch.await(500, TimeUnit.MILLISECONDS),
+        "Flush should have been triggered within timeout");
+    assertTrue(flushCount.get() > 0, "Flush should have been triggered");
+
+    taskLatch.countDown();
+    testClass.shutdown();
+    assertTrue(testClass.awaitTermination(5, SECONDS));
+  }
+
+  @Test
+  void testFlushConfigurationUpdate() throws Exception {
+    AtomicInteger flushCount = new AtomicInteger(0);
+    CountDownLatch flushLatch = new CountDownLatch(1);
+    LimitingScheduler testClass = new LimitingScheduler(exec, 100);
+    testClass.setFlushCallback(
+        () -> {
+          flushCount.incrementAndGet();
+          flushLatch.countDown();
+        });
+
+    // Initially no flushing configured
+    assertEquals(0, flushCount.get());
+
+    // Configure flushing
+    testClass.configureFlush(50, 50);
+
+    // Fill buffer to 60% (should trigger flush)
+    CountDownLatch taskLatch = new CountDownLatch(1);
+    testClass.schedule(
+        60,
+        () -> {
+          try {
+            taskLatch.await();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        });
+
+    // Wait for flush to be triggered
+    assertTrue(
+        flushLatch.await(500, TimeUnit.MILLISECONDS),
+        "Flush should have been triggered within timeout");
+    assertTrue(flushCount.get() > 0, "Flush should have been triggered");
+
+    taskLatch.countDown();
+    testClass.shutdown();
+    assertTrue(testClass.awaitTermination(5, SECONDS));
+  }
+
+  @Test
+  void testDisableFlush() throws Exception {
+    AtomicInteger flushCount = new AtomicInteger(0);
+    LimitingScheduler testClass = new LimitingScheduler(exec, 100, 50, 50);
+    testClass.setFlushCallback(() -> flushCount.incrementAndGet());
+
+    // Disable flushing
+    testClass.configureFlush(0, 0);
+
+    // Fill buffer to 90% (would normally trigger flush)
+    CountDownLatch taskLatch = new CountDownLatch(1);
+    testClass.schedule(
+        90,
+        () -> {
+          try {
+            taskLatch.await();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+          }
+        });
+
+    // Wait for potential flush check
+    Thread.sleep(150);
+    assertEquals(0, flushCount.get(), "Flush should not have been triggered");
+
+    taskLatch.countDown();
+    testClass.shutdown();
+    assertTrue(testClass.awaitTermination(5, SECONDS));
   }
 }

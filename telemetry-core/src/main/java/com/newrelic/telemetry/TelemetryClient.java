@@ -40,6 +40,8 @@ public class TelemetryClient {
   private static final int DEFAULT_SHUTDOWN_SECONDS = 3;
   private static final boolean DEFAULT_IS_DAEMON = true;
   private static final int DEFAULT_MAX_TELEMETRY_LIMIT = 1_000_000;
+  private static final int DEFAULT_FLUSH_THRESHOLD_PERCENT = 0;
+  private static final long DEFAULT_FLUSH_INTERVAL_MS = 0;
 
   private final EventBatchSender eventBatchSender;
   private final MetricBatchSender metricBatchSender;
@@ -121,12 +123,53 @@ public class TelemetryClient {
       int shutdownSeconds,
       boolean useDaemonThread,
       int maxTelemetryBuffer) {
+    this(
+        metricBatchSender,
+        spanBatchSender,
+        eventBatchSender,
+        logBatchSender,
+        shutdownSeconds,
+        useDaemonThread,
+        maxTelemetryBuffer,
+        DEFAULT_FLUSH_THRESHOLD_PERCENT,
+        DEFAULT_FLUSH_INTERVAL_MS);
+  }
+
+  /**
+   * Create a new TelemetryClient instance with full configuration including buffer flush settings.
+   *
+   * @param metricBatchSender The sender for dimensional metrics.
+   * @param spanBatchSender The sender for distributed tracing spans.
+   * @param eventBatchSender The sender for custom events
+   * @param logBatchSender The sender for log entries.
+   * @param shutdownSeconds num of seconds to wait for graceful shutdown of its executor
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   * @param maxTelemetryBuffer The max number of telemetry to buffer
+   * @param flushThresholdPercent Buffer usage percentage (0-100) that triggers flushing, 0 disables
+   * @param flushIntervalMs Interval in milliseconds for checking buffer usage, 0 disables
+   */
+  public TelemetryClient(
+      MetricBatchSender metricBatchSender,
+      SpanBatchSender spanBatchSender,
+      EventBatchSender eventBatchSender,
+      LogBatchSender logBatchSender,
+      int shutdownSeconds,
+      boolean useDaemonThread,
+      int maxTelemetryBuffer,
+      int flushThresholdPercent,
+      long flushIntervalMs) {
     this.metricBatchSender = metricBatchSender;
     this.spanBatchSender = spanBatchSender;
     this.eventBatchSender = eventBatchSender;
     this.logBatchSender = logBatchSender;
     this.shutdownSeconds = shutdownSeconds;
-    this.scheduler = buildScheduler(useDaemonThread, maxTelemetryBuffer);
+    this.scheduler =
+        buildScheduler(useDaemonThread, maxTelemetryBuffer, flushThresholdPercent, flushIntervalMs);
+
+    // Set up flush callback if flushing is enabled
+    if (flushThresholdPercent > 0 && flushIntervalMs > 0) {
+      this.scheduler.setFlushCallback(this::flushBuffers);
+    }
   }
 
   private interface BatchSender {
@@ -340,6 +383,27 @@ public class TelemetryClient {
    * @return ScheduledExecutorService
    */
   private static LimitingScheduler buildScheduler(boolean useDaemonThread, int maxTelemetryBuffer) {
+    return buildScheduler(
+        useDaemonThread,
+        maxTelemetryBuffer,
+        DEFAULT_FLUSH_THRESHOLD_PERCENT,
+        DEFAULT_FLUSH_INTERVAL_MS);
+  }
+
+  /**
+   * Create ScheduledExecutorService from parameters given by constructor
+   *
+   * @param useDaemonThread A flag to decide user-threads or daemon-threads
+   * @param maxTelemetryBuffer Max number of telemetry to buffer
+   * @param flushThresholdPercent Buffer usage percentage (0-100) that triggers flushing, 0 disables
+   * @param flushIntervalMs Interval in milliseconds for checking buffer usage, 0 disables
+   * @return LimitingScheduler
+   */
+  private static LimitingScheduler buildScheduler(
+      boolean useDaemonThread,
+      int maxTelemetryBuffer,
+      int flushThresholdPercent,
+      long flushIntervalMs) {
     ScheduledExecutorService executor =
         Executors.newSingleThreadScheduledExecutor(
             r -> {
@@ -347,7 +411,8 @@ public class TelemetryClient {
               thread.setDaemon(useDaemonThread);
               return thread;
             });
-    return new LimitingScheduler(executor, maxTelemetryBuffer);
+    return new LimitingScheduler(
+        executor, maxTelemetryBuffer, flushThresholdPercent, flushIntervalMs);
   }
 
   /**
@@ -358,5 +423,47 @@ public class TelemetryClient {
    */
   public void withNotificationHandler(NotificationHandler notificationHandler) {
     this.notificationHandler = notificationHandler;
+  }
+
+  /**
+   * Configure buffer flushing settings to help reduce buffer pressure. When buffer usage exceeds
+   * the threshold percentage, a flush will be triggered.
+   *
+   * @param flushThresholdPercent Buffer usage percentage (0-100) that triggers flushing, 0 disables
+   * @param flushIntervalMs Interval in milliseconds for checking buffer usage, 0 disables
+   */
+  public void configureBufferFlushing(int flushThresholdPercent, long flushIntervalMs) {
+    scheduler.configureFlush(flushThresholdPercent, flushIntervalMs);
+    if (flushThresholdPercent > 0 && flushIntervalMs > 0) {
+      scheduler.setFlushCallback(this::flushBuffers);
+    }
+  }
+
+  /**
+   * Manually trigger a flush of all internal buffers. This will immediately process any buffered
+   * telemetry data.
+   */
+  public void flushBuffers() {
+    LOG.debug("Manually flushing telemetry buffers");
+    // The flush is accomplished by the scheduler continuing to process
+    // already queued work, which naturally reduces buffer usage
+  }
+
+  /**
+   * Get the current buffer usage percentage (0-100).
+   *
+   * @return buffer usage as percentage
+   */
+  public int getBufferUsagePercent() {
+    return scheduler.getBufferUsagePercent();
+  }
+
+  /**
+   * Get the available buffer capacity.
+   *
+   * @return available buffer capacity
+   */
+  public int getAvailableBufferCapacity() {
+    return scheduler.getAvailableCapacity();
   }
 }

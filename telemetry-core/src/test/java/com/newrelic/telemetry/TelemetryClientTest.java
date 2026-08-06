@@ -369,6 +369,65 @@ class TelemetryClientTest {
     org.mockito.Mockito.verify(batchSender, org.mockito.Mockito.times(4)).sendBatch(metricBatch);
   }
 
+  @Test
+  void testBufferFlushConfiguration() throws Exception {
+    MetricBatchSender batchSender = mock(MetricBatchSender.class);
+    TelemetryClient testClass =
+        new TelemetryClient(batchSender, null, null, null, 3, true, 100, 80, 100);
+
+    // Verify buffer usage tracking works
+    assertEquals(0, testClass.getBufferUsagePercent());
+    assertEquals(100, testClass.getAvailableBufferCapacity());
+
+    testClass.shutdown();
+  }
+
+  @Test
+  void testConfigureBufferFlushingAtRuntime() throws Exception {
+    MetricBatchSender batchSender = mock(MetricBatchSender.class);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, null);
+
+    // Initially no flushing configured
+    assertEquals(0, testClass.getBufferUsagePercent());
+
+    // Configure flushing at runtime
+    testClass.configureBufferFlushing(75, 100);
+
+    // Should still work normally
+    assertEquals(0, testClass.getBufferUsagePercent());
+
+    testClass.shutdown();
+  }
+
+  @Test
+  void testManualBufferFlush() throws Exception {
+    MetricBatchSender batchSender = mock(MetricBatchSender.class);
+    TelemetryClient testClass = new TelemetryClient(batchSender, null, null, null);
+
+    // Manual flush should not throw exception
+    testClass.flushBuffers();
+
+    testClass.shutdown();
+  }
+
+  @Test
+  void testFullConstructorWithFlushSettings() throws Exception {
+    MetricBatchSender metricSender = mock(MetricBatchSender.class);
+    SpanBatchSender spanSender = mock(SpanBatchSender.class);
+    EventBatchSender eventSender = mock(EventBatchSender.class);
+    LogBatchSender logSender = mock(LogBatchSender.class);
+
+    TelemetryClient testClass =
+        new TelemetryClient(
+            metricSender, spanSender, eventSender, logSender, 3, true, 1000, 70, 200);
+
+    // Verify the client was created successfully
+    assertEquals(0, testClass.getBufferUsagePercent());
+    assertEquals(1000, testClass.getAvailableBufferCapacity());
+
+    testClass.shutdown();
+  }
+
   private Answer<Object> countDown(CountDownLatch latch) {
     return invocation -> {
       latch.countDown();
