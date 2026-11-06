@@ -40,7 +40,7 @@ tasks {
     test {
         useJUnitPlatform()
 
-        testLogging.showStandardStreams = true
+//        testLogging.showStandardStreams = true
         testLogging.exceptionFormat = TestExceptionFormat.FULL
         testClassesDirs = sourceSets["test"].output.classesDirs
         classpath = sourceSets["test"].runtimeClasspath
