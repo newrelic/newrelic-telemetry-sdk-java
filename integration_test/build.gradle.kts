@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 val guavaVersion: String by project
 val junitVersion: String by project
+val junitPlatformVersion: String by project
 val mockitoVersion: String by project
 val mockserverVersion: String by project
 val okhttpVersion: String by project
@@ -24,6 +25,7 @@ dependencies {
     implementation(project(":telemetry-http-okhttp"))
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${junitVersion}")
     testImplementation("com.squareup.okhttp3:okhttp:${okhttpVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

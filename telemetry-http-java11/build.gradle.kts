@@ -1,4 +1,5 @@
 val junitVersion: String by project
+val junitPlatformVersion: String by project
 val jsonassertVersion: String by project
 
 configure<JavaPluginConvention> {
@@ -11,5 +12,6 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
     testImplementation("org.skyscreamer:jsonassert:${jsonassertVersion}")
 }

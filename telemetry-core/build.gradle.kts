@@ -9,6 +9,7 @@ plugins {
 }
 
 val junitVersion: String by project
+val junitPlatformVersion: String by project
 val jsonassertVersion: String by project
 val mockitoVersion: String by project
 val guavaVersion: String by project
@@ -31,6 +32,7 @@ dependencies {
 
     testImplementation("org.slf4j:slf4j-simple:${slf4jVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
     testImplementation("org.mockito:mockito-core:${mockitoVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testImplementation("com.google.guava:guava:${guavaVersion}")
